@@ -769,11 +769,11 @@ _bump-version:
 	@npm version ${VERSION_TYPE}
 	@echo "Gitty McPusher says: \n Dont forget to push the tag!"
 bump-version-patch:
-	make bump-version VERSION_TYPE=patch
+	make _bump-version VERSION_TYPE=patch
 bump-version-minor:
-	make bump-version VERSION_TYPE=minor
+	make _bump-version VERSION_TYPE=minor
 bump-version-major:
-	make bump-version VERSION_TYPE=major
+	make _bump-version VERSION_TYPE=major
 
 PUBLISH_COMMAND=echo "Git pushing version change" && \
 				git push && \
@@ -788,11 +788,11 @@ _bump-version-and-publish:
 	@${PUBLISH_COMMAND}
 
 bump-hotfix-and-publish:
-	make bump-version-and-publish VERSION_TYPE=patch
+	make _bump-version-and-publish VERSION_TYPE=patch
 bump-minor-and-publish:
-	make bump-version-and-publish VERSION_TYPE=minor
+	make _bump-version-and-publish VERSION_TYPE=minor
 bump-major-and-publish:
-	make bump-version-and-publish VERSION_TYPE=major
+	make _bump-version-and-publish VERSION_TYPE=major
 
 DEPLOYMENT_SLACK_HOOK=
 DEPLOYMENT_PIPELINE_LINK=
