@@ -40,6 +40,7 @@ APT_PACKAGES=(
     net-tools
     awscli
     composer
+    chrome-gnome-shell
 )
 
 echo "Installing packages..."
