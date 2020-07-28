@@ -26,7 +26,7 @@ custom-sake-command-production:
 	make custom-sake-command TARGET_ENVIRONMENT=PRODUCTION
 
 custom-sake-command:
-	@make init
+	@make _init
 	@if [ "${TARGET_ENVIRONMENT}" = "LOCAL" ] ; then \
 		env PATH="$(LOCAL_PHP_LOCATION):$(PATH)" $(SAKE) $(SAKE_COMMAND); \
 	else \

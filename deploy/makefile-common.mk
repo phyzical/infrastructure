@@ -224,7 +224,7 @@ LOCAL_COMMAND=cd $(PROJECT_REPO_DEPLOY_PATH) && ${${COMMAND}}
 HOMESTEAD_COMMAND=$(HOMESTEAD_SSH_COMMAND) -- -t 'cd $(HOMESTEAD_TARGET_PATH) && ${${COMMAND}}'
 CURRENT_TARGET_COMMAND=$($(CURRENT_TARGET_ENVIRONMENT)_COMMAND)
 execute-command:
-	@make init;
+	@make _init;
 	@echo "Executing ${COMMAND}: ($(${COMMAND})) for ${TARGET_ENVIRONMENT}\n";
 	@$(CURRENT_TARGET_COMMAND);
 
@@ -305,15 +305,15 @@ install-dependencies-fresh:
 EXTRA_INSTALL_DEPENDENCIES=echo ""
 ON_AFTER_INSTALL_DEPENDENCIES_COMMAND=echo ""
 install-dependencies:
-	make init-local-env
+	make _init-local-env
 	make composer-install
 	make npm-install
 	$(EXTRA_INSTALL_DEPENDENCIES)
 	${ON_AFTER_INSTALL_DEPENDENCIES_COMMAND}
 
-init:
+_init:
 	@$(CURRENT_TARGET_ENVIRONMENT_CHECK)
-	make init-local-env
+	make _init-local-env
 
 user:
 	@echo $(USER) $(BRANCH) [ $(COMMIT) ]
@@ -325,7 +325,7 @@ ssh-uat:
 ssh-production:
 	make ssh TARGET_ENVIRONMENT=PRODUCTION
 ssh:
-	@make init
+	@make _init
 	$(CURRENT_TARGET_SSH_T) "cd $(CURRENT_TARGET_PATH);bash"
 
 ssh-root-staging:
@@ -335,12 +335,12 @@ ssh-root-uat:
 ssh-root-production:
 	make ssh-root TARGET_ENVIRONMENT=PRODUCTION CURRENT_TARGET_USER="ubuntu"
 ssh-root:
-	@make init
+	@make _init
 	$(CURRENT_TARGET_SSH)
 
 TMP_LOCAL_ENV_VAR=/tmp/envsBeingUpdated.txt
 edit-env-var-server:
-	@make init;
+	@make _init;
 	@echo "backing up env file";
 	@$(CURRENT_TARGET_SSH) "cat $(CURRENT_TARGET_ENV_FILE)" > $(TMP_LOCAL_ENV_VAR);
 	@nano $(TMP_LOCAL_ENV_VAR);
@@ -406,7 +406,7 @@ CURRENT_RSYNC_TASK= echo "rsyncing ${CURRENT_RSYNC_SOURCE_FOLDER} to $(CURRENT_T
 					rsync --stats --links --recursive $(RSYNC_INCLUDES_STRING) --delete $(RSYNC_EXCLUDES_STRING) -e ssh ${CURRENT_RSYNC_SOURCE_FOLDER} $(CURRENT_TARGET_USER)@$(CURRENT_TARGET_SERVER):$(CURRENT_TARGET_PATH);
 PRE_RSYNC_TASK=
 deploy-rsync:
-	@make init
+	@make _init
 	@echo "Deploying present committed code to $(CURRENT_TARGET_ENVIRONMENT_LOWER) server via rsync..."
 	@echo "recreating builds/$(CURRENT_TARGET_ENVIRONMENT_LOWER)-source/"
 	@rm -fr builds/*
@@ -453,7 +453,7 @@ restore-database-uat:
 PRE_DATABASE_RESTORE_COMMAND=echo ""
 POST_DATABASE_RESTORE_COMMAND=echo ""
 restore-database:
-	@make init;
+	@make _init;
 	@$(PRE_DATABASE_RESTORE_COMMAND)
 	@if [ $(CURRENT_TARGET_ENVIRONMENT) = STAGING ] || [ $(CURRENT_TARGET_ENVIRONMENT) = UAT ]; then \
 		echo "Uploading db-backup/$(PROJECT_NAME).latest.mysql to $(CURRENT_TARGET_USER)@$(CURRENT_TARGET_SERVER):mysql-upload.mysql"; \
@@ -504,7 +504,7 @@ restore-assets-uat:
 	make restore-assets TARGET_ENVIRONMENT=UAT
 
 restore-assets:
-	@make init
+	@make _init
 	@du -sk  assets-backup/assets.latest.tgz | cut -f1 > size.txt
 	@if [ $(CURRENT_TARGET_ENVIRONMENT)=STAGING ] || [ $(CURRENT_TARGET_ENVIRONMENT)=UAT ] ; then \
 		echo "Creating assets folder on $(CURRENT_TARGET_SSH)" && \
@@ -533,7 +533,7 @@ backup-assets-uat:
 backup-assets-production:
 	make backup-assets TARGET_ENVIRONMENT=PRODUCTION
 backup-assets:
-	@make init
+	@make _init
 	@-mkdir assets-backup
 	@echo "pulling down $(CURRENT_TARGET_SSH_C):$(CURRENT_TARGET_ASSET_DIR)"
 	@-rm size.txt
@@ -557,7 +557,7 @@ backup-database-production:
 	make backup-database TARGET_ENVIRONMENT=PRODUCTION
 
 backup-database:
-	@make init
+	@make _init
 	@-mkdir db-backup
 	@make copy-env-file
 	@echo "pulling down db-backup/$(PROJECT_NAME)_$(CURRENT_TARGET_ENVIRONMENT_LOWER).$(TIMESTAMP).mysql from $(CURRENT_TARGET_SSH_C)"
@@ -582,7 +582,7 @@ show-current-version-uat:
 show-current-version-production:
 	make show-current-version TARGET_ENVIRONMENT=PRODUCTION
 
-SHOW_CURRENT_VERSION_COMMAND=	@make init && \
+SHOW_CURRENT_VERSION_COMMAND=	@make _init && \
 								$(CURRENT_TARGET_SSH) \
 									'$(TAIL_VERSION)'
 
@@ -609,7 +609,7 @@ show-all-versions-production:
 	make show-all-versions TARGET_ENVIRONMENT=PRODUCTION
 
 show-all-versions:
-	@make init
+	@make _init
 	@$(CURRENT_TARGET_SSH) \
 		'$(CAT_VERSION)'
 
