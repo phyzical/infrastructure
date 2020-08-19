@@ -5,52 +5,66 @@ echo "Starting bootstrapping"
 curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - 
 
 APT_PACKAGES=(
-    make
     ack
     autoconf
     ansible
     automake
+    awscli
+    bash-completion
+    composer
+    chrome-gnome-shell
     docker
     docker.io
+    dconf-editor
     ffmpeg
+    firefox
     gettext
     git
+    github-desktop
     graphviz
     imagemagick
     jq
     markdown
+    make
     nodejs
     npm
-    thunderbird
-    firefox
+    net-tools
+    nmap
     openssh-server
+    default-jdk
     pkg-config
     postgresql
     python3
+    thunderbird
+    thefuck
     tmux
     tree
-    vim
-    wget
-    nmap
-    bash-completion
+    xbindkeys
+    xev 
+    xdotool
     unrar
-    thefuck
     vagrant
     virtualbox
-    net-tools
-    awscli
-    composer
-    chrome-gnome-shell
+    vim
+    vino
+    wget
 )
+
+echo "adding git desktop"
+wget -qO - https://packagecloud.io/shiftkey/desktop/gpgkey | sudo apt-key add -
+sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/shiftkey/desktop/any/ any main" > /etc/apt/sources.list.d/packagecloud-shiftky-desktop.list'
+sudo apt-get update
 
 echo "Installing packages..."
 sudo apt update -y
 sudo apt install -y ${APT_PACKAGES[@]}
 
-sudo add-apt-repository 'deb https://gitblade.com/ppa ./'
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6ECD108C66165FE8
-sudo apt update
-sudo apt install gitblade
+echo "Installing terraform"
+-mkdir ~/bin
+wget https://releases.hashicorp.com/terraform/0.13.0/terraform_0.13.0_linux_amd64.zip
+unzip terraform_0.13.0_linux_amd64.zip
+mv terraform /usr/local/bin
+rm -rf terraform*
 
 echo "Installing snaps..."
 SNAP_PACKAGES=(
@@ -60,6 +74,11 @@ SNAP_PACKAGES=(
 
 echo "Installing packages..."
 sudo snap install ${SNAP_PACKAGES[@]}
+
+if [ ! -f "~/.xbindkeysrc" ]; then
+  echo "\"xdotool key 'Control_L+bracketleft'\" \n b:6"
+  echo "\"xdotool key 'Control_L+bracketright'\" \n b:7"
+fi
 
 if [ ! -f "~/.bash_profile" ]; then
   echo 'export ANDROID_HOME="~/Library/Android/sdk"' >> ~/.bash_profile
@@ -83,3 +102,5 @@ echo "Creating folder structure..."
 [[ ! -d ~/Sites ]] && mkdir ~/Sites
 
 echo "Bootstrapping complete"
+
+echo "Please Reboot"

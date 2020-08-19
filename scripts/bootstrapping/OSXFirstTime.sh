@@ -14,12 +14,7 @@ brew update
 # Install GNU core utilities (those that come with OS X are outdated)
 brew tap Homebrew/homebrew-core
 brew install coreutils
-brew install gnu-sed 
-brew install gnu-tar 
-brew install gnu-indent 
-brew install gnu-which
 brew install grep 
-
 # Install GNU `find`, `locate`, `updatedb`, and `xargs`, g-prefixed
 brew install findutils
 
@@ -67,6 +62,7 @@ PACKAGES=(
     watchman
     unrar
     thefuck
+    terraform
 )
 
 echo "Installing packages..."
@@ -126,25 +122,13 @@ fi
 echo "Installing cask apps..."
 brew cask install ${CASKS[@]}
 
-echo "Installing Python packages..."
-sudo easy_install pip
-PYTHON_PACKAGES=(
-    ipython
-    virtualenv
-    virtualenvwrapper
-)
-sudo pip install ${PYTHON_PACKAGES[@]}
-
 echo "Installing Ruby gems"
 RUBY_GEMS=(
     cocoapods
 )
 sudo gem install ${RUBY_GEMS[@]}
 
-echo "Installing global npm packages..."
-npm install marked -g
-
-echo "Configuring OSX..."
+echo "Configuring OSX Settings..."
 
 # Require password as soon as screensaver or sleep mode starts
 defaults write com.apple.screensaver askForPassword -int 1
@@ -152,10 +136,6 @@ defaults write com.apple.screensaver askForPasswordDelay -int 0
 
 # Show filename extensions by default
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
-
-# Enable tap-to-click
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
-defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
 # Disable the warning when changing a file extension
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
@@ -171,13 +151,17 @@ defaults write NSGlobalDomain FirstClickThreshold -int 2
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad FirstClickThreshold -int 2
 defaults write com.apple.AppleMultitouchTrackpad FirstClickThreshold -int 2
 
+# Enable tap-to-click
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+
+## DISABLE THE “ARE YOU SURE YOU WANT TO OPEN THIS APPLICATION?” DIALOG
+defaults write com.apple.LaunchServices LSQuarantine -bool false
+
 # sets bottom right right click
 defaults write NSGlobalDomain TrackpadCornerSecondaryClick -int 2
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 2
 defaults write com.apple.AppleMultitouchTrackpad TrackpadCornerSecondaryClick -int 2
-
-## DISABLE THE “ARE YOU SURE YOU WANT TO OPEN THIS APPLICATION?” DIALOG
-defaults write com.apple.LaunchServices LSQuarantine -bool false
 
 # sets right click true
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
@@ -188,7 +172,7 @@ defaults write com.apple.AppleMultitouchTrackpad TrackpadRightClick -bool true
 defaults write com.apple.BezelServices kDimTime -int 300
 
 echo "Creating folder structure..."
-[[ ! -d ~/Sites ]] && ln -s /Volumes/Backup/repos ~/Sites
+[[ ! -d ~/Sites ]] && mkdir ~/Sites
 
 # Menu bar: hide the useless Time Machine and Volume icons
 defaults write com.apple.systemuiserver menuExtras -array "/System/Library/CoreServices/Menu Extras/Display.menu" "/System/Library/CoreServices/Menu Extras/Volume.menu" "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" "/System/Library/CoreServices/Menu Extras/AirPort.menu" "/System/Library/CoreServices/Menu Extras/Battery.menu" "/System/Library/CoreServices/Menu Extras/Clock.menu"
@@ -210,7 +194,6 @@ then
   Spotify
   Messages
   Calendar
-  #Finder
   "System Preferences"
   "App Store"
   "MAMP PRO.app"
@@ -229,12 +212,6 @@ killall Dock
 ## RUN A MACOS UPDATE
 sudo softwareupdate --install -all
 
-#remove guest
-#! sudo dscl . delete /Users/Guest
+echo "Bootstrapping complete"
 
-echo "Please manually install any Appstore apps"
-
-echo "Bootstrapping complete Rebooting in 1 minute"
-
-##reboot
-#sudo shutdown -r +1
+echo "Please Reboot"
