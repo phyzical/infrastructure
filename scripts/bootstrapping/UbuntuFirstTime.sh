@@ -24,6 +24,7 @@ APT_PACKAGES=(
     graphviz
     imagemagick
     jq
+    linuxbrew-wrapper
     markdown
     make
     nodejs
@@ -74,6 +75,15 @@ SNAP_PACKAGES=(
 
 echo "Installing packages..."
 sudo snap install ${SNAP_PACKAGES[@]}
+
+echo "Installing brews..."
+BREW_PACKAGES=(
+  hashicorp/tap/terraform-ls
+)
+
+echo "Installing packages..."
+brew install ${BREW_PACKAGES[@]}
+
 
 if [ ! -f "~/.xbindkeysrc" ]; then
   echo "\"xdotool key 'Control_L+bracketleft'\" \n b:6"

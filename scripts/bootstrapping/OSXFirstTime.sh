@@ -63,6 +63,7 @@ PACKAGES=(
     unrar
     thefuck
     terraform
+    hashicorp/tap/terraform-ls
 )
 
 echo "Installing packages..."
@@ -94,6 +95,7 @@ CASKS=(
     thunderbird
     react-native-debugger
     gitup
+    visual-studio-code
 )
 
 if ! -e "~/.bash_profile"; then
