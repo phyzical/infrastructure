@@ -23,7 +23,8 @@ first-time-install-osx:
 
 ## Please populate .env form.env.example
 first-time-install-script-osx:
-	ruby -v || sudo ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	chsh -s /bin/bash
+	ruby -v || ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 	@if [ "$(PC_NAME)" != "" ]; then \
 		sudo chmod +x $(DIR)/scripts/OSXFirstTime.sh; \
 		bash $(DIR)/scripts/OSXFirstTime.sh $(PC_NAME) $(GIT_NAME) $(GIT_EMAIL); \

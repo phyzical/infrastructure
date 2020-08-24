@@ -96,6 +96,8 @@ CASKS=(
     react-native-debugger
     gitup
     visual-studio-code
+    rectangle
+    aws-vault
 )
 
 if ! -e "~/.bash_profile"; then
