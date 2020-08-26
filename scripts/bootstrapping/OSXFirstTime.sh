@@ -113,7 +113,7 @@ if ! grep -q "export ANDROID_HOME" ~/.bash_profile; then
   echo '[ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion' >> ~/.bash_profile
   echo 'eval $(thefuck --alias)' >> ~/.bash_profile
   echo 'GITPS1="\$(__git_ps1 \"(%s)\")"' >> ~/.bash_profile
-  echo 'PS1="\n${GITPS1}\n[\t][\u@\h:\W] \$ "' >> ~/.bash_profile
+  echo 'PS1="\n${GITPS1}\n[\t][\u@\h:\w]\n${PS1_EXTRAS}\$ "' >> ~/.bash_profile
   echo 'PUBLICIP="dig +short myip.opendns.com @resolver1.opendns.com"' >> ~/.bash_profile
   echo "LOCALIP=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')" >> ~/.bash_profile
 fi
