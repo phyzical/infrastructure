@@ -29,11 +29,13 @@ PACKAGES=(
     awscli
     boot2docker
     composer
+    dep
     ffmpeg
     gettext
     gifsicle
     git
     graphviz
+    hashicorp/tap/terraform-ls
     hub
     imagemagick
     jq
@@ -63,7 +65,6 @@ PACKAGES=(
     unrar
     thefuck
     terraform
-    hashicorp/tap/terraform-ls
 )
 
 echo "Installing packages..."
@@ -75,29 +76,31 @@ brew cleanup
 echo "Installing cask..."
 
 CASKS=(
-    jetbrains-toolbox
-    mamp
-    rambox
-    firefox
-    flux
-    google-chrome
-    iterm2
-    spectacle
-    vagrant
-    virtualbox
-    vlc
+    aws-vault
     android-studio
     android-sdk
     android-platform-tools
+    alfred
+    dash
+    firefox
+    flux
+    gitup
+    google-chrome
+    iterm2
+    jetbrains-toolbox
+    mamp
+    rambox
+    rectangle
+    react-native-debugger
+    spectacle
     sublime-text
     spotify
     tunnelblick
     thunderbird
-    react-native-debugger
-    gitup
+    vagrant
+    virtualbox
+    vlc
     visual-studio-code
-    rectangle
-    aws-vault
 )
 
 if ! -e "~/.bash_profile"; then
