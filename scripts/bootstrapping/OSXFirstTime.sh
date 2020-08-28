@@ -80,7 +80,6 @@ CASKS=(
     android-studio
     android-sdk
     android-platform-tools
-    alfred
     dash
     firefox
     flux
