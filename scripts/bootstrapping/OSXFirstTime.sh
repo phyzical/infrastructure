@@ -60,7 +60,8 @@ PACKAGES=(
     wget
     geoip
     nmap
-    bash-completion
+    # not needed anymore cause zsh lyfe
+    #bash-completion
     watchman
     unrar
     thefuck
@@ -102,22 +103,12 @@ CASKS=(
     visual-studio-code
 )
 
-if ! -e "~/.bash_profile"; then
- > ~/.bash_profile
+if ! -e "~/.profile"; then
+ cat ./.profile > ~/.profile
 fi
 
-if ! grep -q "export ANDROID_HOME" ~/.bash_profile; then
-  echo 'export ANDROID_HOME="~/Library/Android/sdk"' >> ~/.bash_profile
-  echo 'export PATH=~/Library/Python/2.7/bin/:$PATH' >> ~/.bash_profile
-  echo 'export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH"' >> ~/.bash_profile
-  echo 'export PATH="$PATH:/Applications/MAMP/Library/bin"' >> ~/.bash_profile
-  echo 'export PATH=/opt/local/bin:/opt/local/sbin:$PATH' >> ~/.bash_profile
-  echo '[ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion' >> ~/.bash_profile
-  echo 'eval $(thefuck --alias)' >> ~/.bash_profile
-  echo 'GITPS1="\$(__git_ps1 \"(%s)\")"' >> ~/.bash_profile
-  echo 'PS1="\n${GITPS1}\n[\t][\u@\h:\w]\n${PS1_EXTRAS}\$ "' >> ~/.bash_profile
-  echo 'PUBLICIP="dig +short myip.opendns.com @resolver1.opendns.com"' >> ~/.bash_profile
-  echo "LOCALIP=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')" >> ~/.bash_profile
+if ! -e "~/.zshrc"; then
+ cat ./.zshrc > ~/.zshrc
 fi
 
 if ! git config --list | grep -q "user.name"; then
