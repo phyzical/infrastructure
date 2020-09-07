@@ -21,6 +21,39 @@ brew install findutils
 # Install Bash 4
 brew install bash
 
+echo "Installing cask..."
+
+CASKS=(
+    aws-vault
+    android-studio
+    android-sdk
+    android-platform-tools
+    dash
+    firefox
+    flux
+    gitup
+    google-chrome
+    iterm2
+    jetbrains-toolbox
+    mamp
+    rambox
+    rectangle
+    react-native-debugger
+    spectacle
+    sublime-text
+    spotify
+    tunnelblick
+    thunderbird
+    vagrant
+    virtualbox
+    vlc
+    visual-studio-code
+    xquartz
+)
+
+echo "Installing cask apps..."
+brew cask install ${CASKS[@]}
+
 PACKAGES=(
     ack
     autoconf
@@ -30,6 +63,7 @@ PACKAGES=(
     boot2docker
     composer
     dep
+    diff-pdf
     ffmpeg
     gettext
     gifsicle
@@ -74,35 +108,6 @@ brew install ${PACKAGES[@]}
 echo "Cleaning up..."
 brew cleanup
 
-echo "Installing cask..."
-
-CASKS=(
-    aws-vault
-    android-studio
-    android-sdk
-    android-platform-tools
-    dash
-    firefox
-    flux
-    gitup
-    google-chrome
-    iterm2
-    jetbrains-toolbox
-    mamp
-    rambox
-    rectangle
-    react-native-debugger
-    spectacle
-    sublime-text
-    spotify
-    tunnelblick
-    thunderbird
-    vagrant
-    virtualbox
-    vlc
-    visual-studio-code
-)
-
 if ! -e "~/.profile"; then
  cat ./.profile > ~/.profile
 fi
@@ -115,9 +120,6 @@ if ! git config --list | grep -q "user.name"; then
  git config --global user.name $2
  git config --global user.email $3
 fi
-
-echo "Installing cask apps..."
-brew cask install ${CASKS[@]}
 
 echo "Installing Ruby gems"
 RUBY_GEMS=(
