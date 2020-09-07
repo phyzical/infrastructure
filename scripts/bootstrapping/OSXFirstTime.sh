@@ -119,6 +119,7 @@ fi
 if ! git config --list | grep -q "user.name"; then
  git config --global user.name $2
  git config --global user.email $3
+ git config --global core.editor "vim" 
 fi
 
 echo "Installing Ruby gems"

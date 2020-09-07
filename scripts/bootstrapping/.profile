@@ -27,10 +27,12 @@ userRepo=$(git remote -v | grep fetch | awk '{print $2}' | grep "github.com" | c
 alias gtpr="echo \"Create PR at: https://github.com/$userRepo/compare/$branch?expand=1\""
 alias gtpl="git pull"
 alias gtpu="git push"
-alias gtpup="git push --set-upstream origin $(git branch --show-current)"
+alias gtpup='git push --set-upstream origin $(git branch --show-current)'
 alias gtm="git merge"
 alias gtc="git checkout"
 alias gtcb="git checkout -b"
 alias gtcp="git cherry-pick"
 alias gts="git stash"
 alias gtsp="git stash pop"
+alias gtd="git describe"
+alias gtl1="git log -1"
