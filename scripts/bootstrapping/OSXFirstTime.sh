@@ -36,6 +36,7 @@ CASKS=(
     iterm2
     jetbrains-toolbox
     mamp
+    macs-fan-control
     rambox
     rectangle
     react-native-debugger
