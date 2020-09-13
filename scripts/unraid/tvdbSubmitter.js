@@ -123,7 +123,8 @@ const getFilesToProcess = () => {
 }
 
 const openSeriesSeasonPage = async (series, season) => {
-  const showSeasonURL = [baseURL, 'series', series, 'seasons', 'official', season].join('/')
+  const seasonClean = season.split(" ")[1]
+  const showSeasonURL = [baseURL, 'series', series, 'seasons', 'official', seasonClean].join('/')
   await page.goto(showSeasonURL)
   const seasonSelector = `//*[contains(text(), "Season ${season}")]`
   await page.waitFor(seasonSelector)
@@ -139,7 +140,7 @@ const openAddEpisodePage = async (series, season) => {
 
 
 const addEpisode = async (episode, series, season) => {
-  console.log("adding episode", episode.jpg)
+  console.log("adding episode", episode.name)
   const seasonFolder = [folder, series, season].join('/')
   await openAddEpisodePage(series, season)
   const infoJson = JSON.parse(fs.readFileSync([seasonFolder, episode.info].join('/')))
@@ -209,8 +210,7 @@ const run = async () => {
   const shows = await getFilesToProcess()
   for (const [series, seasons] of Object.entries(shows)) {
     for (const [season, episodes] of Object.entries(seasons)) {
-      const seasonClean = season.split(" ")[1]
-      await openSeriesSeasonPage(series, seasonClean)
+      await openSeriesSeasonPage(series, season)
       for (const episode of episodes) {
         const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1)
         const episodeFinderSelector = `//tr[.//a[contains(text(),"${fileToRename}")]]/td`
