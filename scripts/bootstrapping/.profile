@@ -24,6 +24,7 @@ alias tfp="terraform plan"
 # git aliases
 branch=$(git rev-parse --abbrev-ref HEAD)
 userRepo=$(git remote -v | grep fetch | awk '{print $2}' | grep "github.com" | cut -d':' -f2 | rev | cut -c5- | rev)
+alias gt="git"
 alias gtpr="echo \"Create PR at: https://github.com/$userRepo/compare/$branch?expand=1\""
 alias gtpl="git pull"
 alias gtpu="git push"
@@ -32,7 +33,9 @@ alias gtm="git merge"
 alias gtc="git checkout"
 alias gtcb="git checkout -b"
 alias gtcp="git cherry-pick"
+alias gtst="git status"
 alias gts="git stash"
 alias gtsp="git stash pop"
 alias gtd="git describe"
 alias gtl1="git log -1"
+alias gtrho="git reset --hard origin"
