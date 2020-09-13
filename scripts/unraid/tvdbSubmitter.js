@@ -107,7 +107,8 @@ const getFilesToProcess = () => {
           return {
             info,
             description,
-            jpg
+            jpg,
+            name: key
           }
         })
       }
@@ -187,7 +188,7 @@ const renameEpisode = async (fileToRename, series, season) => {
   const files = fs.readdirSync(seasonFolder)
   files.forEach(function (file) {
     if (file.includes(fileToRename)) {
-      const newName = `${series}.${episodeText}${file.substring(file.indexOf("."))}`
+      const newName = `${series.replace('-','.')}.${episodeText}${file.substring(file.indexOf("."))}`
       fs.renameSync([seasonFolder, file].join('/'), [seasonFolder, newName].join('/'))
     }
   })
@@ -211,13 +212,11 @@ const run = async () => {
       const seasonClean = season.split(" ")[1]
       await openSeriesSeasonPage(series, seasonClean)
       for (const episode of episodes) {
-        let fileToRename = episode.info.replace('.info.json', "")
-        fileToRename = fileToRename.substring(fileToRename.indexOf(".") + 1)
+        const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1)
         const episodeFinderSelector = `//tr[.//a[contains(text(),"${fileToRename}")]]/td`
         const episodeTextElement = await page.$x(episodeFinderSelector)
         if (episodeTextElement.length == 0) {
           await addEpisode(episode, series, season)
-          console.log('i tried to add again', file)
         }
         await renameEpisode(fileToRename, series, season);
       }
@@ -226,6 +225,7 @@ const run = async () => {
   await finish();
 }
 
+//todo update any shows with - for spaces in youtubedownloader
 
 run().catch(e => {
   console.log('Error: \n', e)

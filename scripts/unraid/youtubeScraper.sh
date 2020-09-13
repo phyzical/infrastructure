@@ -14,19 +14,19 @@ else
     notify normal $message "Youtube" $message
     youtubePath="/mnt/user/Downloads/youtube"
     declare -A sources=(
-        ["JCS"]="https://www.youtube.com/playlist?list=UUYwVxWpjeKFWwu8TML-Te9A"
+        ["JCS-Criminal-Psychology"]="https://www.youtube.com/playlist?list=UUYwVxWpjeKFWwu8TML-Te9A"
         ["Geographics"]="https://www.youtube.com/playlist?list=UUHKRfxkMTqiiv4pF99qGKIw"
         ["Biographics"]="https://www.youtube.com/playlist?list=UUlnDI2sdehVm1zm_LmUHsjQ"
         ["Megaprojects"]="https://www.youtube.com/playlist?list=UU0woBco6Dgcxt0h8SwyyOmw"
         ["ColdFusion"]="https://www.youtube.com/playlist?list=UU4QZ_LsYcvcq7qOsOhpAX4A"
         ["Infographics"]="https://www.youtube.com/playlist?list=UUfdNM3NAhaBOXCafH7krzrA"
-        ["OneDayBuilds"]="https://www.youtube.com/playlist?list=PLJtitKU0CAej22ZWBqrimPkn0Bbo6ci-r"
-        ["ThatChapter"]="https://www.youtube.com/playlist?list=UUL44k-cLrlsdr7PYuMU4yIw"
-        ["IDidAThing"]="https://www.youtube.com/playlist?list=UUJLZe_NoiG0hT7QCX_9vmqw"
+        ["Adam-Savages-One-Day-Builds"]="https://www.youtube.com/playlist?list=PLJtitKU0CAej22ZWBqrimPkn0Bbo6ci-r"
+        ["That-Chapter"]="https://www.youtube.com/playlist?list=UUL44k-cLrlsdr7PYuMU4yIw"
+        ["I-Did-A-Thing"]="https://www.youtube.com/playlist?list=UUJLZe_NoiG0hT7QCX_9vmqw"
         ["VinWiki"]="https://www.youtube.com/playlist?list=UUefl-5pmhZmljwZTE2KrcdA"
-        ["TodayIFoundOut"]="https://www.youtube.com/playlist?list=UU64UiPJwM_e9AqAd7RiD7JA"
-        ["MichealReeves"]="https://www.youtube.com/playlist?list=UUtHaxi4GTYDpJgMSGy7AeSw"
-        ["TheRoyalInstitution"]="https://www.youtube.com/playlist?list=UUYeF244yNGuFefuFKqxIAXw"
+        ["Today-I-Found-Out"]="https://www.youtube.com/playlist?list=UU64UiPJwM_e9AqAd7RiD7JA"
+        ["Micheal-Reeves"]="https://www.youtube.com/playlist?list=UUtHaxi4GTYDpJgMSGy7AeSw"
+        ["The-Royal-Institution"]="https://www.youtube.com/playlist?list=UUYeF244yNGuFefuFKqxIAXw"
     )
     for sourceKey in "${!sources[@]}";
     do
