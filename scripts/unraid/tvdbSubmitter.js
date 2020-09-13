@@ -141,43 +141,47 @@ const openAddEpisodePage = async (series, season) => {
 
 const addEpisode = async (episode, series, season) => {
   console.log("adding episode", episode.name)
-  const seasonFolder = [folder, series, season].join('/')
-  await openAddEpisodePage(series, season)
-  const infoJson = JSON.parse(fs.readFileSync([seasonFolder, episode.info].join('/')))
-  const jpgFile = [seasonFolder, episode.jpg].join('/')
-  const episodeName = infoJson.fulltitle
-  let description
-  if (episode.description) {
-    description = fs.readFileSync([seasonFolder, episode.description].join('/'), 'utf8')
+  if (episode.info) {
+    const seasonFolder = [folder, series, season].join('/')
+    await openAddEpisodePage(series, season)
+    const infoJson = JSON.parse(fs.readFileSync([seasonFolder, episode.info].join('/')))
+    const jpgFile = [seasonFolder, episode.jpg].join('/')
+    const episodeName = infoJson.fulltitle
+    let description
+    if (episode.description) {
+      description = fs.readFileSync([seasonFolder, episode.description].join('/'), 'utf8')
+    } else {
+      description = episodeName
+    }
+    const productionCode = infoJson.id
+    let airDate = infoJson.upload_date //'01/02/2020'
+    airDate = airDate.slice(4, 6) + airDate.slice(6, 8) + airDate.slice(0, 4)
+    const runtime = Math.floor((infoJson.duration / 60)).toString()
+    const addEpisodeFormSelector = 'form.episode-add-form'
+
+    await page.waitFor(addEpisodeFormSelector)
+    await page.type('[name="episodename"]', episodeName)
+    await page.type('[name="overview"]', description)
+    await page.waitFor(2000)
+    await page.$eval(addEpisodeFormSelector, form => form.submit());
+
+    const editEpisodeFormSelector = 'form.episode-edit-form'
+    await page.waitFor(editEpisodeFormSelector)
+    await page.type('[name="productioncode"]', productionCode)
+    await page.type('[name="airdate"]', airDate)
+    await page.type('[name="runtime"]', runtime)
+    await page.waitFor('input[type=file]')
+    const elementHandle = await page.$("input[type=file]");
+    await elementHandle.uploadFile(jpgFile);
+    await page.waitFor(2000)
+    await page.$eval(editEpisodeFormSelector, form => form.submit());
+
+    const episodeAddedSuccessfully = '//*[contains(text(),"Episode was successfully updated!")]'
+    await page.waitFor(episodeAddedSuccessfully)
+    console.log("added episode")
   } else {
-    description = episodeName
+    console.log("Please manually rename episode, info file missing")
   }
-  const productionCode = infoJson.id
-  let airDate = infoJson.upload_date //'01/02/2020'
-  airDate = airDate.slice(4, 6) + airDate.slice(6, 8) + airDate.slice(0, 4)
-  const runtime = Math.floor((infoJson.duration / 60)).toString()
-  const addEpisodeFormSelector = 'form.episode-add-form'
-
-  await page.waitFor(addEpisodeFormSelector)
-  await page.type('[name="episodename"]', episodeName)
-  await page.type('[name="overview"]', description)
-  await page.waitFor(2000)
-  await page.$eval(addEpisodeFormSelector, form => form.submit());
-
-  const editEpisodeFormSelector = 'form.episode-edit-form'
-  await page.waitFor(editEpisodeFormSelector)
-  await page.type('[name="productioncode"]', productionCode)
-  await page.type('[name="airdate"]', airDate)
-  await page.type('[name="runtime"]', runtime)
-  await page.waitFor('input[type=file]')
-  const elementHandle = await page.$("input[type=file]");
-  await elementHandle.uploadFile(jpgFile);
-  await page.waitFor(2000)
-  await page.$eval(editEpisodeFormSelector, form => form.submit());
-
-  const episodeAddedSuccessfully = '//*[contains(text(),"Episode was successfully updated!")]'
-  await page.waitFor(episodeAddedSuccessfully)
-  console.log("added episode")
 }
 
 const renameEpisode = async (fileToRename, series, season) => {
@@ -197,10 +201,10 @@ const renameEpisode = async (fileToRename, series, season) => {
 }
 
 const finish = async () => {
-  await page.screenshot({
-    path: '/tmp/scripts/screenshot.png',
-    fullPage: true
-  });
+  // await page.screenshot({
+  //   path: '/tmp/scripts/screenshot.png',
+  //   fullPage: true
+  // });
   await browser.close();
 }
 
@@ -218,7 +222,11 @@ const run = async () => {
         if (episodeTextElement.length == 0) {
           await addEpisode(episode, series, season)
         }
-        await renameEpisode(fileToRename, series, season);
+        try {
+          await renameEpisode(fileToRename, series, season);
+        } catch (e) {
+          console.log('Renaming Error: \n', e)
+        }
       }
     }
   }
