@@ -126,7 +126,10 @@ const openSeriesSeasonPage = async (series, season) => {
   const seasonClean = season.split(" ")[1]
   const showSeasonURL = [baseURL, 'series', series, 'seasons', 'official', seasonClean].join('/')
   await page.goto(showSeasonURL)
-  const seasonSelector = `//*[contains(text(), "Season ${seasonClean}")]`
+  let seasonSelector = `//*[contains(text(), "Season ${seasonClean}")]`
+  if (seasonClean == '0') {
+    seasonSelector = `//*[contains(text(), "Specials")]`
+  }
   await page.waitFor(seasonSelector)
 }
 
