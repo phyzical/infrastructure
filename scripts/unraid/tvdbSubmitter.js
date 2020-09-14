@@ -164,7 +164,9 @@ const addEpisode = async (episode, series, season) => {
   await page.waitFor(addEpisodeFormSelector)
   await page.type('[name="episodename"]', episodeName)
   await page.type('[name="overview"]', description)
-  await page.waitFor(2000)
+  await page.waitForNavigation({
+    waitUntil: 'networkidle0',
+  });
   await page.$eval(addEpisodeFormSelector, form => form.submit());
 
   const editEpisodeFormSelector = 'form.episode-edit-form'
@@ -175,11 +177,13 @@ const addEpisode = async (episode, series, season) => {
   await page.waitFor('input[type=file]')
   const elementHandle = await page.$("input[type=file]");
   await elementHandle.uploadFile(jpgFile);
-  await page.waitFor(2000)
+  await page.waitForNavigation({
+    waitUntil: 'networkidle0',
+  });
   await page.$eval(editEpisodeFormSelector, form => form.submit());
 
   const episodeAddedSuccessfully = '//*[contains(text(),"Episode was successfully updated!")]'
-  await page.waitFor(episodeAddedSuccessfully)
+  await page.waitFor(episodeAddedSuccessfully, 10000)
   console.log("added episode")
 }
 
