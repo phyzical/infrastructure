@@ -198,6 +198,7 @@ const renameEpisode = async (fileToRename, series, season) => {
       }
     })
   } catch (e) {
+    console.log("renaming failed")
     files.forEach(function (file) {
       if (file.includes(fileToRename)) {
         const newName = `${series.replace('-','.')}.${episodeText}${file.substring(file.indexOf("."))}`
