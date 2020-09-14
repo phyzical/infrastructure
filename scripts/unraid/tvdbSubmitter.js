@@ -217,13 +217,14 @@ const run = async () => {
   const shows = await getFilesToProcess()
   for (const [series, seasons] of Object.entries(shows)) {
     for (const [season, episodes] of Object.entries(seasons)) {
+      await openSeriesSeasonPage(series, season)
       for (const episode of episodes) {
-        await openSeriesSeasonPage(series, season)
         const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1)
         const episodeFinderSelector = `//tr[.//a[contains(text(),"${fileToRename}")]]/td`
         const episodeTextElement = await page.$x(episodeFinderSelector)
         if (episodeTextElement.length == 0) {
           await addEpisode(episode, series, season)
+          await openSeriesSeasonPage(series, season)
         }
         try {
           await renameEpisode(fileToRename, series, season);
