@@ -222,7 +222,11 @@ const run = async () => {
         if (episodeTextElement.length == 0) {
           await addEpisode(episode, series, season)
         }
-        await renameEpisode(fileToRename, series, season);
+        try {
+          await renameEpisode(fileToRename, series, season);
+        } catch (e) {
+          console.log(e)
+        }
       }
     }
   }
