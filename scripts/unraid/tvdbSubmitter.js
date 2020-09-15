@@ -6,6 +6,7 @@ let page
 let email
 let username
 let password
+let renameOnly = false
 
 const inputs = process.argv.slice(2)
 for (let i = 0; i < inputs.length; i++) {
@@ -20,6 +21,9 @@ for (let i = 0; i < inputs.length; i++) {
     case 'username':
       username = inputSplit[1]
       break
+    case 'renameOnly':
+      renameOnly = inputSplit[1] == "true"
+      break;
   }
 }
 
@@ -179,15 +183,13 @@ const addEpisode = async (episode, series, season) => {
   await page.$eval(editEpisodeFormSelector, form => form.submit());
 
   const episodeAddedSuccessfully = '//*[contains(text(),"Episode was successfully updated!")]'
-  await page.waitFor(episodeAddedSuccessfully, 10000)
+  await page.waitFor(episodeAddedSuccessfully)
   console.log("added episode")
 }
 
-const renameEpisode = async (fileToRename, series, season) => {
+const renameEpisode = async (fileToRename, episodeTextElement, series, season) => {
   console.log(`starting renaming ${fileToRename}`)
   const seasonFolder = [folder, series, season].join('/')
-  const episodeFinderSelector = `//tr[.//a[contains(text(),"${fileToRename}")]]/td`
-  const episodeTextElement = await page.$x(episodeFinderSelector)
   const files = fs.readdirSync(seasonFolder)
   try {
     const episodeText = await page.evaluate(element => element.textContent, episodeTextElement[0]);
@@ -229,20 +231,19 @@ const run = async () => {
       await openSeriesSeasonPage(series, season)
       for (const episode of episodes) {
         const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1)
-        const episodeFinderSelector = `//tr[.//a[contains(text(),"${fileToRename}")]]/td`
-        const episodeTextElement = await page.$x(episodeFinderSelector)
-        if (episodeTextElement.length == 0) {
+        const episodeFinderSelector = `//tr[.//a[contains(text(),"${fileToRename}") or contains(text(),"${fileToRename.replace(' -',':')}")]]/td`
+        let episodeTextElement = await page.$x(episodeFinderSelector)
+        if (!renameOnly && episodeTextElement.length == 0) {
           await addEpisode(episode, series, season)
           await openSeriesSeasonPage(series, season)
+          episodeTextElement = await page.$x(episodeFinderSelector)
         }
-        await renameEpisode(fileToRename, series, season);
+        await renameEpisode(fileToRename, episodeTextElement, series, season);
       }
     }
   }
   await finish();
 }
-
-//todo update any shows with - for spaces in youtubedownloader
 
 run().catch(e => {
   console.log('Error: \n', e)
