@@ -1,5 +1,7 @@
 #!/bin/bash
-source ./commonFuncs.sh
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)"
+
+source $DIR/commonFuncs.sh
 
 LOCKFILE="/tmp/backupInProgress.lock"
 
@@ -15,13 +17,13 @@ else
     notify normal $message "Cronjob" $message
     declare -A backupFolders=(
         ["boot"]="/boot/"
-        ["isos"]="/mnt/user/isos/" 
-        ["appdata"]="/mnt/user/appdata/" 
-        ["Tv Shows - moviedb"]="/mnt/user/Media/Tv\ Shows\ -\ moviedb/" 
-        ["Cartoons"]="/mnt/user/Media/Cartoons/" 
-        ["Documentaires"]="/mnt/user/Media/Documentaires/" 
-        ["Movies"]="/mnt/user/Media/Movies/" 
-        ["Tv Shows"]="/mnt/user/Media/Tv\ Shows/" 
+        ["isos"]="/mnt/user/isos/"
+        ["appdata"]="/mnt/user/appdata/"
+        ["Tv Shows - moviedb"]="/mnt/user/Media/Tv\ Shows\ -\ moviedb/"
+        ["Cartoons"]="/mnt/user/Media/Cartoons/"
+        ["Documentaires"]="/mnt/user/Media/Documentaires/"
+        ["Movies"]="/mnt/user/Media/Movies/"
+        ["Tv Shows"]="/mnt/user/Media/Tv\ Shows/"
         ["files"]="/mnt/user/files/"
         ["domains"]="/mnt/user/domains/"
     )
@@ -29,7 +31,7 @@ else
     fromFolder="root@192.168.69.111"
     echo "Making $toFolder"
     mkdir -p "$toFolder"
-    for folderKey in "${!backupFolders[@]}"; 
+    for folderKey in "${!backupFolders[@]}";
     do
         folder=${backupFolders[$folderKey]}
         echo "Rsyncing $fromFolder:$folder to $toFolder$folderKey"
