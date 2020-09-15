@@ -30,6 +30,7 @@ else
         ["Today-I-Found-Out"]="https://www.youtube.com/playlist?list=UU64UiPJwM_e9AqAd7RiD7JA"
         ["Micheal-Reeves"]="https://www.youtube.com/playlist?list=UUtHaxi4GTYDpJgMSGy7AeSw"
         ["The-Royal-Institution"]="https://www.youtube.com/playlist?list=UUYeF244yNGuFefuFKqxIAXw"
+        ["Computerphile"]="https://www.youtube.com/playlist?list=UU9-y-6csu5WGm29I7JiwpnA"
     )
     for sourceKey in "${!sources[@]}";
     do
