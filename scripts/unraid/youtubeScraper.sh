@@ -50,15 +50,18 @@ else
         do
             echo "$f"
             docker run --rm -u $(id -u):$(id -g) -v "$folderPath":"$folderPath" -w "$folderPath" \
-            jrottenberg/ffmpeg -loglevel 0 -n -ss 00:02:00 -i "$f" -vframes 1 "${f%.mp4}-thumb".jpg
+            jrottenberg/ffmpeg -loglevel 0 -y -ss 00:02:00 -i "$f" -vframes 1 "${f%.mp4}-thumb".jpg
         done
         
         echo "Converting images"
-        docker run --rm -v "$folderPath":/src --user=$(id -u):$(id -g) madhead/imagemagick magick mogrify -resize 640x360 \
-        -format jpg "/src/*-thumb.jpg"
-        
         docker run --rm -v "$folderPath":/src --user=$(id -u):$(id -g) \
-        madhead/imagemagick magick mogrify -resize 640x360 -format jpg /src/*.webp
+        madhead/imagemagick magick mogrify -resize 640x360 -format jpg "/src/*-thumb.jpg"
+        
+        if ls /src/*.webp 1> /dev/null 2>&1; then
+            echo "Converting images"
+            docker run --rm -v "$folderPath":/src --user=$(id -u):$(id -g) \
+            madhead/imagemagick magick mogrify -resize 640x360 -format jpg /src/*.webp
+        fi
         
         rm -rf $folderPath/*.webp
     done
