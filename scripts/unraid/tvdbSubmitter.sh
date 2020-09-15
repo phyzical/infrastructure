@@ -18,7 +18,7 @@ else
     docker run --rm -v /root/repos/infrastructure/scripts/unraid:/tmp/scripts \
     -v /mnt/user/Media/temp:/tmp/episodes buildkite/puppeteer \
     node /tmp/scripts/tvdbSubmitter.js email="phyzicaly@hotmail.com" \
-    username="phyzical" password="$1" renameOnly="false"
+    username="phyzical" password="$1" renameOnly="$2"
     
     echo "Finished tvdbsubmitter Download!!"
     rm -f $LOCKFILE
