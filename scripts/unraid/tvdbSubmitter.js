@@ -183,7 +183,9 @@ const addEpisode = async (episode, series, season) => {
   await page.$eval(editEpisodeFormSelector, form => form.submit());
 
   const episodeAddedSuccessfully = '//*[contains(text(),"Episode was successfully updated!")]'
-  await page.waitFor(episodeAddedSuccessfully)
+  await page.waitFor(episodeAddedSuccessfully, {
+    timeout: 100000
+  })
   console.log("added episode")
 }
 
