@@ -228,6 +228,7 @@ const run = async () => {
   const shows = await getFilesToProcess()
   for (const [series, seasons] of Object.entries(shows)) {
     for (const [season, episodes] of Object.entries(seasons)) {
+      console.log(`Starting ${series} - season ${season}`)
       await openSeriesSeasonPage(series, season)
       for (const episode of episodes) {
         const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1)
