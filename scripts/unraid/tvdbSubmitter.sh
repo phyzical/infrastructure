@@ -16,7 +16,8 @@ else
     notify normal $message "tvdbsubmitter" $message
     docker run --rm -v /root/repos/infrastructure/scripts/unraid:/tmp/scripts \
     -v /mnt/user/Downloads/youtube:/tmp/episodes buildkite/puppeteer \
-    node /tmp/scripts/tvdbSubmitter.js email="phyzicaly@hotmail.com" username="phyzical" password="$1"
+    node /tmp/scripts/tvdbSubmitter.js email="phyzicaly@hotmail.com" \
+    username="phyzical" password="$1" renameOnly="false"
     
     echo "Finished tvdbsubmitter Download!!"
     rm -f $LOCKFILE
