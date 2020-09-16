@@ -28,7 +28,7 @@ else
         ["I-Did-A-Thing"]="https://www.youtube.com/playlist?list=UUJLZe_NoiG0hT7QCX_9vmqw"
         ["VinWiki"]="https://www.youtube.com/playlist?list=UUefl-5pmhZmljwZTE2KrcdA"
         ["Today-I-Found-Out"]="https://www.youtube.com/playlist?list=UU64UiPJwM_e9AqAd7RiD7JA"
-        ["Micheal-Reeves"]="https://www.youtube.com/playlist?list=UUtHaxi4GTYDpJgMSGy7AeSw"
+        ["Michael-Reeves"]="https://www.youtube.com/playlist?list=UUtHaxi4GTYDpJgMSGy7AeSw"
         ["The-Royal-Institution"]="https://www.youtube.com/playlist?list=UUYeF244yNGuFefuFKqxIAXw"
         ["Computerphile"]="https://www.youtube.com/playlist?list=UU9-y-6csu5WGm29I7JiwpnA"
         ["colinfurze"]="https://www.youtube.com/playlist?list=UUp68_FLety0O-n9QU6phsgw"
