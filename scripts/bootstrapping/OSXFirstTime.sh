@@ -45,6 +45,7 @@ CASKS=(
     spotify
     tunnelblick
     thunderbird
+    the-unarchiver
     vagrant
     virtualbox
     vlc
