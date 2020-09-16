@@ -28,7 +28,6 @@ CASKS=(
     android-studio
     android-sdk
     android-platform-tools
-    dash
     firefox
     flux
     gitup
