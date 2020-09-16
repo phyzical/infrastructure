@@ -47,19 +47,20 @@ else
         --merge-output-format mp4 -o "$outputFormat" "$source"
         
         folderPath="${youtubePath}/${sourceKey}"
-        echo "screenshots"
-        for f in $folderPath/*.mp4;
-        do
-            echo "$f"
-            docker run --rm -u $(id -u):$(id -g) -v "$folderPath":"$folderPath" -w "$folderPath" \
-            jrottenberg/ffmpeg -loglevel 0 -y -ss 00:02:00 -i "$f" -vframes 1 "${f%.mp4}-thumb".jpg
-        done
+        if ls $folderPath/*.mp4 1> /dev/null 2>&1; then
+          echo "Generate Thumbs"
+          for f in $folderPath/*.mp4;
+          do
+              echo "$f"
+              docker run --rm -u $(id -u):$(id -g) -v "$folderPath":"$folderPath" -w "$folderPath" \
+              jrottenberg/ffmpeg -loglevel 0 -y -ss 00:02:00 -i "$f" -vframes 1 "${f%.mp4}-thumb".jpg
+          done
+          echo "Converting Thumbs"
+          docker run --rm -v "$folderPath":/src --user=$(id -u):$(id -g) \
+          madhead/imagemagick magick mogrify -resize 640x360 -format jpg "/src/*-thumb.jpg"
+        fi
         
-        echo "Converting images"
-        docker run --rm -v "$folderPath":/src --user=$(id -u):$(id -g) \
-        madhead/imagemagick magick mogrify -resize 640x360 -format jpg "/src/*-thumb.jpg"
-        
-        if ls /src/*.webp 1> /dev/null 2>&1; then
+        if ls $folderPath/*.webp 1> /dev/null 2>&1; then
             echo "Converting images"
             docker run --rm -v "$folderPath":/src --user=$(id -u):$(id -g) \
             madhead/imagemagick magick mogrify -resize 640x360 -format jpg /src/*.webp
