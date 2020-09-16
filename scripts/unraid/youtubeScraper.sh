@@ -31,6 +31,8 @@ else
         ["Micheal-Reeves"]="https://www.youtube.com/playlist?list=UUtHaxi4GTYDpJgMSGy7AeSw"
         ["The-Royal-Institution"]="https://www.youtube.com/playlist?list=UUYeF244yNGuFefuFKqxIAXw"
         ["Computerphile"]="https://www.youtube.com/playlist?list=UU9-y-6csu5WGm29I7JiwpnA"
+        ["colinfurze"]="https://www.youtube.com/playlist?list=UUp68_FLety0O-n9QU6phsgw"
+        ["Smarter-Every-Day"]="https://www.youtube.com/playlist?list=UU6107grRI4m0o2-emgoDnAA"
     )
     for sourceKey in "${!sources[@]}";
     do
