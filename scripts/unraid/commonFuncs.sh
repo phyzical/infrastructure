@@ -25,5 +25,5 @@ thumbnail_generate() {
     done
     echo "Converting Thumbs"
     docker run --rm -v "$folder":/src --user=$(id -u):$(id -g) \
-    madhead/imagemagick magick mogrify -resize 640x360 -format jpg "/src/*-thumb.jpg"
+    madhead/imagemagick magick mogrify -resize 640x360 -format jpg "/src/*.jpg"
 }

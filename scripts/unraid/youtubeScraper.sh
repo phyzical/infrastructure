@@ -46,18 +46,20 @@ else
         --write-auto-sub --cookies=cookies.txt --write-description --write-info-json --sub-format "srv1" --sub-lang "en" \
         --merge-output-format mp4 -o "$outputFormat" "$source"
         
-        folderPath="${youtubePath}/${sourceKey}"
-        if ls $folderPath/*.mp4 1> /dev/null 2>&1; then
-            thumbnail_generate "$folderPath"
-        fi
-        
         if ls $folderPath/*.webp 1> /dev/null 2>&1; then
             echo "Converting images"
             docker run --rm -v "$folderPath":/src --user=$(id -u):$(id -g) \
-            madhead/imagemagick magick mogrify -resize 640x360 -format jpg /src/*.webp
+            madhead/imagemagick magick mogrify -format jpg /src/*.webp
         fi
         
         rm -rf $folderPath/*.webp
+        
+        folderPath="${youtubePath}/${sourceKey}"
+        if ls $folderPath/*.mp4 1> /dev/null 2>&1; then
+            echo "generating thumnails"
+            thumbnail_generate "$folderPath"
+        fi
+        
     done
     echo "Renaming subtitles"
     find ${youtubePath} -name "*.srv1" -exec rename .srv1 .srv {} \;
