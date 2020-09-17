@@ -2,7 +2,7 @@
 
 folder="$1"
 echo "$folder"
-for f in "$folder/*.mp4";
+for f in $folder/*.mp4;
 do
     echo "$f"
     docker run --rm -u $(id -u):$(id -g) -v "$folder":"$folder" \
