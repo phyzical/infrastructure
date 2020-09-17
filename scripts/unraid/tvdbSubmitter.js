@@ -160,8 +160,10 @@ const updateEpisode = async (infoJson, jpgFile) => {
   await page.type('[name="airdate"]', airDate)
   await page.type('[name="runtime"]', runtime)
   await page.waitFor('input[type=file]')
-  const elementHandle = await page.$("input[type=file]");
-  await elementHandle.uploadFile(jpgFile);
+  if (jpgFile) {
+    const elementHandle = await page.$("input[type=file]");
+    await elementHandle.uploadFile(jpgFile);
+  }
   await page.waitFor(2000)
   await page.$eval(editEpisodeFormSelector, form => form.submit());
   const episodeAddedSuccessfully = '//*[contains(text(),"Episode was successfully updated!")]'
@@ -197,7 +199,12 @@ const addEpisode = async (episode, series, season) => {
     await updateEpisode(infoJson, jpgFile)
   } catch (e) {
     //try again with tile
-    await updateEpisode(infoJson, jpgTile)
+    try {
+      await updateEpisode(infoJson, jpgTile)
+    } catch (e2) {
+      // otherwise dont bother with an image
+      await updateEpisode(infoJson)
+    }
   }
 
   console.log("added episode")
