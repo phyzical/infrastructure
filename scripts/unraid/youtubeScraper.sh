@@ -48,16 +48,7 @@ else
         
         folderPath="${youtubePath}/${sourceKey}"
         if ls $folderPath/*.mp4 1> /dev/null 2>&1; then
-          echo "Generate Thumbs"
-          for f in $folderPath/*.mp4;
-          do
-              echo "$f"
-              docker run --rm -u $(id -u):$(id -g) -v "$folderPath":"$folderPath" -w "$folderPath" \
-              jrottenberg/ffmpeg -loglevel 0 -n -ss 00:00:25 -i "$f" -vframes 1 "${f%.mp4}-thumb".jpg
-          done
-          echo "Converting Thumbs"
-          docker run --rm -v "$folderPath":/src --user=$(id -u):$(id -g) \
-          madhead/imagemagick magick mogrify -resize 640x360 -format jpg "/src/*-thumb.jpg"
+            thumbnail_generate "$folderPath"
         fi
         
         if ls $folderPath/*.webp 1> /dev/null 2>&1; then
