@@ -1,8 +1,9 @@
 #!/bin/bash
 
 folder="$1"
+mp4Match="$folder/*.mp4"
 echo "$folder"
-for f in $folder/*.mp4;
+for f in $mp4Match;
 do
     echo "$f"
     docker run --rm -u $(id -u):$(id -g) -v "$folder":"$folder" \
