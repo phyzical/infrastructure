@@ -255,7 +255,7 @@ const run = async () => {
       await openSeriesSeasonPage(series, season)
       for (const episode of episodes) {
         const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1)
-        const episodeFinderSelector = `//tr[.//a[contains(text(),"${fileToRename}") or contains(translate(translate(text(),"?'/|-:",""),'"',''),'${fileToRename.replace(/ |'|"|_|\/|-/g,"").replace("|","")}')]]/td`
+        const episodeFinderSelector = `//tr[.//a[contains(text(),"${fileToRename}") or contains(translate(translate(text(),"?'/|-: ",""),'"',''),'${fileToRename.replace(/ |'|"|_|\/|-|\|/g,"")}')]]/td`
         let episodeTextElement = await page.$x(episodeFinderSelector)
         if (!renameOnly && episodeTextElement.length == 0) {
           await addEpisode(episode, series, season)
