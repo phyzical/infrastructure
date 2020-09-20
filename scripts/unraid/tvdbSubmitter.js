@@ -219,8 +219,13 @@ const renameEpisode = async (fileToRename, episodeTextElement, series, season) =
     const episodeText = await page.evaluate(element => element.textContent, episodeTextElement[0]);
     files.forEach(function (file) {
       if (file.includes(fileToRename)) {
-        const newName = `${series.replace(/-/g,'.')}.${episodeText}${file.substring(file.indexOf("."))}`
-        fs.renameSync([seasonFolder, file].join('/'), [seasonFolder, newName].join('/'))
+        const filePath = [seasonFolder, file].join('/')
+        if (file.includes(".description") || file.includes(".json")) {
+          fs.unlinkSync(filePath)
+        } else {
+          const newName = `${series.replace(/-/g,'.')}.${episodeText}${file.substring(file.indexOf("."))}`
+          fs.renameSync(filePath, [seasonFolder, newName].join('/'))
+        }
       }
     })
   } catch (e) {
