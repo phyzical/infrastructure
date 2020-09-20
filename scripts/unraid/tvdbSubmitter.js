@@ -191,7 +191,8 @@ const addEpisode = async (episode, series, season) => {
   const addEpisodeFormSelector = 'form.episode-add-form'
   await page.waitFor(addEpisodeFormSelector)
   await page.type('[name="episodename"]', episodeName)
-  await page.type('[name="overview"]', description)
+  await page.waitFor(1000)
+  await page.type('[name="overview"]', description.slice(0, 500))
   await page.waitFor(2000)
   await page.$eval(addEpisodeFormSelector, form => form.submit());
 
@@ -255,7 +256,7 @@ const run = async () => {
       await openSeriesSeasonPage(series, season)
       for (const episode of episodes) {
         const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1)
-        const episodeFinderSelector = `//tr[.//a[contains(text(),"${fileToRename}") or contains(translate(translate(text(),"?'/|-: ",""),'"',''),'${fileToRename.replace(/ |'|"|_|\/|-|\|/g,"")}')]]/td`
+        const episodeFinderSelector = `//tr[.//a[contains(text(),"${fileToRename}") or contains(translate(translate(text(),"?'/|-*: ",""),'"',''),'${fileToRename.replace(/ |'|"|_|\/|-|\|/g,"")}')]]/td`
         let episodeTextElement = await page.$x(episodeFinderSelector)
         if (!renameOnly && episodeTextElement.length == 0) {
           await addEpisode(episode, series, season)
