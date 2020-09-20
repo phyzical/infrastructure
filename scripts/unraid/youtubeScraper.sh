@@ -33,6 +33,8 @@ else
         ["Computerphile"]="https://www.youtube.com/playlist?list=UU9-y-6csu5WGm29I7JiwpnA"
         ["colinfurze"]="https://www.youtube.com/playlist?list=UUp68_FLety0O-n9QU6phsgw"
         ["Smarter-Every-Day"]="https://www.youtube.com/playlist?list=UU6107grRI4m0o2-emgoDnAA"
+        ["CodysLab"]="https://www.youtube.com/playlist?list=UUu6mSoMNzHQiBIOCkHUa2Aw"
+        ["NileRed"]="https://www.youtube.com/playlist?list=UUFhXFikryT4aFcLkLw2LBLA"
     )
     for sourceKey in "${!sources[@]}";
     do
