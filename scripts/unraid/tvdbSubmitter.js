@@ -218,7 +218,7 @@ const renameEpisode = async (fileToRename, episodeTextElement, series, season) =
     const episodeText = await page.evaluate(element => element.textContent, episodeTextElement[0]);
     files.forEach(function (file) {
       if (file.includes(fileToRename)) {
-        const newName = `${series.replace('-','.')}.${episodeText}${file.substring(file.indexOf("."))}`
+        const newName = `${series.replace(/-/g,'.')}.${episodeText}${file.substring(file.indexOf("."))}`
         fs.renameSync([seasonFolder, file].join('/'), [seasonFolder, newName].join('/'))
       }
     })
