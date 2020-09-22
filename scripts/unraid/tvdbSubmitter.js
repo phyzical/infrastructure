@@ -218,7 +218,7 @@ const renameEpisode = async (fileToRename, episodeTextElement, series, season) =
   try {
     const episodeText = await page.evaluate(element => element.textContent, episodeTextElement[0]);
     files.forEach(function (file) {
-      if (file.includes(fileToRename)) {
+      if (file.includes(`$(fileToRename}.`) || file.includes(`$(fileToRename}-`)) {
         const filePath = [seasonFolder, file].join('/')
         if (file.includes(".description") || file.includes(".json")) {
           fs.unlinkSync(filePath)
