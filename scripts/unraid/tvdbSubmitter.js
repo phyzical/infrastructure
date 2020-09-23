@@ -150,7 +150,8 @@ const openAddEpisodePage = async (series, season) => {
 
 const updateEpisode = async (infoJson, jpgFile) => {
   const productionCode = infoJson.id
-  const runtime = Math.floor((infoJson.duration / 60)).toString()
+  let runtime = Math.floor((infoJson.duration / 60))
+  runtime = runtime > 1 ? runtime.toString() : "1"
   let airDate = infoJson.upload_date //'01/02/2020'
   airDate = `${airDate.slice(0, 4)}-${airDate.slice(4, 6)}-${airDate.slice(6, 8)}` 
 
