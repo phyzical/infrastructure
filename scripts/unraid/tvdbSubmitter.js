@@ -157,9 +157,9 @@ const updateEpisode = async (infoJson, jpgFile) => {
 
   const editEpisodeFormSelector = 'form.episode-edit-form'
   await page.waitFor(editEpisodeFormSelector)
-  await page.$eval('input[name=productioncode]', el => el.value = productionCode)
-  await page.$eval('input[name=airdate]', el => el.value = airDate)
-  await page.$eval('input[name=runtime]', el => el.value = runtime)
+  await page.$eval('input[name=productioncode]', function(el){ el.value = productionCode })
+  await page.$eval('input[name=airdate]', function(el){ el.value = airDate })
+  await page.$eval('input[name=runtime]', function(el){ el.value = runtime })
   await page.waitFor('input[type=file]')
   if (jpgFile) {
     const elementHandle = await page.$("input[type=file]");
@@ -191,8 +191,8 @@ const addEpisode = async (episode, series, season) => {
 
   const addEpisodeFormSelector = 'form.episode-add-form'
   await page.waitFor(addEpisodeFormSelector)
-  await page.$eval('input[name=episodename]', el => el.value = episodeName)
-  await page.$eval('input[name=overview]', el => el.value = description.slice(0, 500))
+  await page.$eval('input[name=episodename]', function(el){ el.value = episodeName })
+  await page.$eval('input[name=overview]', function(el){ el.value = description.slice(0, 500) })
   await page.$eval(addEpisodeFormSelector, form => form.submit());
 
   try {
