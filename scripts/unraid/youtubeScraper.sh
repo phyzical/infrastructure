@@ -35,6 +35,7 @@ else
         ["Smarter-Every-Day"]="https://www.youtube.com/playlist?list=UU6107grRI4m0o2-emgoDnAA"
         ["CodysLab"]="https://www.youtube.com/playlist?list=UUu6mSoMNzHQiBIOCkHUa2Aw"
         ["NileRed"]="https://www.youtube.com/playlist?list=UUFhXFikryT4aFcLkLw2LBLA"
+        ["Mark-Rober"]="https://www.youtube.com/playlist?list=UUY1kMZp36IQSyNx_9h4mpCg"
     )
     for sourceKey in "${!sources[@]}";
     do
