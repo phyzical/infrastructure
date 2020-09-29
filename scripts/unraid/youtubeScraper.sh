@@ -36,6 +36,9 @@ else
         ["CodysLab"]="https://www.youtube.com/playlist?list=UUu6mSoMNzHQiBIOCkHUa2Aw"
         ["NileRed"]="https://www.youtube.com/playlist?list=UUFhXFikryT4aFcLkLw2LBLA"
         ["Mark-Rober"]="https://www.youtube.com/playlist?list=UUY1kMZp36IQSyNx_9h4mpCg"
+        ["Simone-Giertz"]="https://www.youtube.com/playlist?list=UU3KEoMzNz8eYnwBC34RaKCQ"
+        ["Vsauce"]="https://www.youtube.com/playlist?list=UU6nSFpj9HTCZ5t-N3Rm3-HA"
+        ["TheBackyardScientist"]="https://www.youtube.com/playlist?list=UU06E4Y_-ybJgBUMtXx8uNNw"
     )
     for sourceKey in "${!sources[@]}";
     do
