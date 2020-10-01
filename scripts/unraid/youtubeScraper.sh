@@ -39,6 +39,7 @@ else
         ["Simone-Giertz"]="https://www.youtube.com/playlist?list=UU3KEoMzNz8eYnwBC34RaKCQ"
         ["Vsauce"]="https://www.youtube.com/playlist?list=UU6nSFpj9HTCZ5t-N3Rm3-HA"
         ["TheBackyardScientist"]="https://www.youtube.com/playlist?list=UU06E4Y_-ybJgBUMtXx8uNNw"
+        ["Thoughty2"]="https://www.youtube.com/playlist?list=UURlICXvO4XR4HMeEB9JjDlA"
     )
     for sourceKey in "${!sources[@]}";
     do
