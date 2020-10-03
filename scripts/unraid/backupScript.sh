@@ -23,7 +23,7 @@ else
     mkdir -p "$toFolder"
     for folder in "${backupFolders[@]}";
     do
-        folderKey="$(echo folder | awk -F'/' ' { print $NF } ' )"
+        folderKey="$(echo "$folder" | awk -F'/' ' { print $NF } ' )"
         echo "Rsyncing $fromFolder:$folder to $toFolder$folderKey"
         #rsync -a "$fromFolder:$folder" "$toFolder$folderKey" --log-file="$toFolder/rsync-log.txt" --delete
     done
