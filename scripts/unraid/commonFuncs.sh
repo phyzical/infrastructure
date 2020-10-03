@@ -21,7 +21,7 @@ thumbnail_generate() {
         echo "$f"
         docker run --rm -u $(id -u):$(id -g) -v "$folder":"$folder" \
         -w "$folder" jrottenberg/ffmpeg -loglevel 0 -y -ss 00:02:00 -i "$f" \
-        -vframes 1 "${f%.mp4}-thumb".jpg
+        -vframes 1 "${f%.mp4}-screen".jpg
     done
     echo "Converting Thumbs"
     docker run --rm -v "$folder":/src --user=$(id -u):$(id -g) \
