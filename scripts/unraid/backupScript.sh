@@ -27,7 +27,7 @@ else
         folder="$folder/"
         folderKey="$folderKey/"
         echo "Rsyncing $fromFolder:$folder to $toFolder$folderKey"
-        #rsync -a "$fromFolder:$folder" "$toFolder$folderKey" --log-file="$toFolder/rsync-log.txt" --delete
+        rsync -a "$fromFolder:$folder" "$toFolder$folderKey" --log-file="$toFolder/rsync-log.txt" --delete
     done
     echo "Finished Backing Up!!"
     rm -f $LOCKFILE
