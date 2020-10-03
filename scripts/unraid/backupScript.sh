@@ -21,9 +21,9 @@ else
     backupFolders=($@)
     echo "Making $toFolder"
     mkdir -p "$toFolder"
-    for folderKey in "${!backupFolders[@]}";
+    for folder in "${backupFolders[@]}";
     do
-        folder=${backupFolders[$folderKey]}
+        folderKey="$(echo folder | awk -F'/' ' { print $NF } ' )"
         echo "Rsyncing $fromFolder:$folder to $toFolder$folderKey"
         #rsync -a "$fromFolder:$folder" "$toFolder$folderKey" --log-file="$toFolder/rsync-log.txt" --delete
     done
