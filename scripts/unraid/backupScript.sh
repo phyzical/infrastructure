@@ -15,18 +15,17 @@ else
     touch $LOCKFILE
     message="Backup Started"
     notify normal $message "Cronjob" $message
-    #backupFolders=$2
     toFolder="/mnt/user/Backup/"
     fromFolder="$1"
+    shift
+    backupFolders=($@)
     echo "Making $toFolder"
     mkdir -p "$toFolder"
-    echo "$backupFolders"
-    exit 0
     for folderKey in "${!backupFolders[@]}";
     do
         folder=${backupFolders[$folderKey]}
         echo "Rsyncing $fromFolder:$folder to $toFolder$folderKey"
-        rsync -a "$fromFolder:$folder" "$toFolder$folderKey" --log-file="$toFolder/rsync-log.txt" --delete
+        #rsync -a "$fromFolder:$folder" "$toFolder$folderKey" --log-file="$toFolder/rsync-log.txt" --delete
     done
     echo "Finished Backing Up!!"
     rm -f $LOCKFILE
