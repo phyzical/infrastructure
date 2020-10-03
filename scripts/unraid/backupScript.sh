@@ -15,12 +15,12 @@ else
     touch $LOCKFILE
     message="Backup Started"
     notify normal $message "Cronjob" $message
-    backupFolders=$2
+    #backupFolders=$2
     toFolder="/mnt/user/Backup/"
     fromFolder="$1"
     echo "Making $toFolder"
     mkdir -p "$toFolder"
-    echo "$${2}"
+    echo "$backupFolders"
     exit 0
     for folderKey in "${!backupFolders[@]}";
     do
