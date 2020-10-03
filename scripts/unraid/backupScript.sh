@@ -20,6 +20,8 @@ else
     fromFolder="$1"
     echo "Making $toFolder"
     mkdir -p "$toFolder"
+    echo "$${2}"
+    exit 0
     for folderKey in "${!backupFolders[@]}";
     do
         folder=${backupFolders[$folderKey]}
