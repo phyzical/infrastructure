@@ -16,31 +16,6 @@ else
     message="Youtube Started"
     notify normal $message "Youtube" $message
     youtubePath="/mnt/user/Downloads/youtube"
-    declare -A sources=(
-        ["JCS-Criminal-Psychology"]="https://www.youtube.com/playlist?list=UUYwVxWpjeKFWwu8TML-Te9A"
-        ["Geographics"]="https://www.youtube.com/playlist?list=UUHKRfxkMTqiiv4pF99qGKIw"
-        ["Biographics"]="https://www.youtube.com/playlist?list=UUlnDI2sdehVm1zm_LmUHsjQ"
-        ["Megaprojects"]="https://www.youtube.com/playlist?list=UU0woBco6Dgcxt0h8SwyyOmw"
-        ["ColdFusion"]="https://www.youtube.com/playlist?list=UU4QZ_LsYcvcq7qOsOhpAX4A"
-        ["Infographics"]="https://www.youtube.com/playlist?list=UUfdNM3NAhaBOXCafH7krzrA"
-        ["Adam-Savages-One-Day-Builds"]="https://www.youtube.com/playlist?list=PLJtitKU0CAej22ZWBqrimPkn0Bbo6ci-r"
-        ["That-Chapter"]="https://www.youtube.com/playlist?list=UUL44k-cLrlsdr7PYuMU4yIw"
-        ["I-Did-A-Thing"]="https://www.youtube.com/playlist?list=UUJLZe_NoiG0hT7QCX_9vmqw"
-        ["VinWiki"]="https://www.youtube.com/playlist?list=UUefl-5pmhZmljwZTE2KrcdA"
-        ["Today-I-Found-Out"]="https://www.youtube.com/playlist?list=UU64UiPJwM_e9AqAd7RiD7JA"
-        ["Michael-Reeves"]="https://www.youtube.com/playlist?list=UUtHaxi4GTYDpJgMSGy7AeSw"
-        ["The-Royal-Institution"]="https://www.youtube.com/playlist?list=UUYeF244yNGuFefuFKqxIAXw"
-        ["Computerphile"]="https://www.youtube.com/playlist?list=UU9-y-6csu5WGm29I7JiwpnA"
-        ["colinfurze"]="https://www.youtube.com/playlist?list=UUp68_FLety0O-n9QU6phsgw"
-        ["Smarter-Every-Day"]="https://www.youtube.com/playlist?list=UU6107grRI4m0o2-emgoDnAA"
-        ["CodysLab"]="https://www.youtube.com/playlist?list=UUu6mSoMNzHQiBIOCkHUa2Aw"
-        ["NileRed"]="https://www.youtube.com/playlist?list=UUFhXFikryT4aFcLkLw2LBLA"
-        ["Mark-Rober"]="https://www.youtube.com/playlist?list=UUY1kMZp36IQSyNx_9h4mpCg"
-        ["Simone-Giertz"]="https://www.youtube.com/playlist?list=UU3KEoMzNz8eYnwBC34RaKCQ"
-        ["Vsauce"]="https://www.youtube.com/playlist?list=UU6nSFpj9HTCZ5t-N3Rm3-HA"
-        ["TheBackyardScientist"]="https://www.youtube.com/playlist?list=UU06E4Y_-ybJgBUMtXx8uNNw"
-        ["Thoughty2"]="https://www.youtube.com/playlist?list=UURlICXvO4XR4HMeEB9JjDlA"
-    )
     for sourceKey in "${!sources[@]}";
     do
         source=${sources[$sourceKey]}
