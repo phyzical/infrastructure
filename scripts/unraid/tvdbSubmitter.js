@@ -253,25 +253,25 @@ const finish = async () => {
 const run = async () => {
   await init();
   await doLogin();
-  // const shows = await getFilesToProcess()
-  // for (const [series, seasons] of Object.entries(shows)) {
-  //   for (const [season, episodes] of Object.entries(seasons)) {
-  //     console.log(`Starting ${series} - season ${season}`)
-  //     await openSeriesSeasonPage(series, season)
-  //     for (const episode of episodes) {
-  //       const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1)
-  //       // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
-  //       const episodeFinderSelector = `//tr[.//a[contains(translate(translate(translate(text(),"?'/|-*: \\",""),'"',''),'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') ,'${fileToRename.toLowerCase().replace(/\\| |'|"|_|\/|-|\|/g,"")}')]]/td`
-  //       let episodeTextElement = await page.$x(episodeFinderSelector)
-  //       if (!renameOnly && episodeTextElement.length == 0) {
-  //         await addEpisode(episode, series, season)
-  //         await openSeriesSeasonPage(series, season)
-  //         episodeTextElement = await page.$x(episodeFinderSelector)
-  //       }
-  //       await renameEpisode(fileToRename, episodeTextElement, series, season);
-  //     }
-  //   }
-  // }
+  const shows = await getFilesToProcess()
+  for (const [series, seasons] of Object.entries(shows)) {
+    for (const [season, episodes] of Object.entries(seasons)) {
+      console.log(`Starting ${series} - season ${season}`)
+      await openSeriesSeasonPage(series, season)
+      for (const episode of episodes) {
+        const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1)
+        // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
+        const episodeFinderSelector = `//tr[.//a[contains(translate(translate(translate(text(),"?'/|-*: \\",""),'"',''),'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') ,'${fileToRename.toLowerCase().replace(/\\| |'|"|_|\/|-|\|/g,"")}')]]/td`
+        let episodeTextElement = await page.$x(episodeFinderSelector)
+        if (!renameOnly && episodeTextElement.length == 0) {
+          await addEpisode(episode, series, season)
+          await openSeriesSeasonPage(series, season)
+          episodeTextElement = await page.$x(episodeFinderSelector)
+        }
+        await renameEpisode(fileToRename, episodeTextElement, series, season);
+      }
+    }
+  }
   await finish();
 }
 
