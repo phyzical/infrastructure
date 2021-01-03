@@ -51,11 +51,12 @@ const doLogin = async () => {
   console.log("starting login")
 
   const loginURL = [baseURL, 'auth', 'login'].join('/')
-  const iAcceptSelector = '//*[contains(text(),"I accept")]'
   await page.goto(loginURL)
-  await page.waitFor(iAcceptSelector)
-  const iAcceptButton = await page.$x(iAcceptSelector)
-  await iAcceptButton[0].click()
+  // i accept is gone?
+  // const iAcceptSelector = '//*[contains(text(),"I accept")]'
+  // await page.waitFor(iAcceptSelector)
+  // const iAcceptButton = await page.$x(iAcceptSelector)
+  // await iAcceptButton[0].click()
 
   const loginFormSelector = 'form[action="/auth/login"]'
   await page.waitFor(loginFormSelector)
@@ -242,35 +243,35 @@ const renameEpisode = async (fileToRename, episodeTextElement, series, season) =
 }
 
 const finish = async () => {
-  // await page.screenshot({
-  //   path: '/tmp/scripts/screenshot.png',
-  //   fullPage: true
-  // });
+  await page.screenshot({
+    path: '/tmp/scripts/screenshot.png',
+    fullPage: true
+  });
   await browser.close();
 }
 
 const run = async () => {
   await init();
   await doLogin();
-  const shows = await getFilesToProcess()
-  for (const [series, seasons] of Object.entries(shows)) {
-    for (const [season, episodes] of Object.entries(seasons)) {
-      console.log(`Starting ${series} - season ${season}`)
-      await openSeriesSeasonPage(series, season)
-      for (const episode of episodes) {
-        const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1)
-        // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
-        const episodeFinderSelector = `//tr[.//a[contains(translate(translate(translate(text(),"?'/|-*: \\",""),'"',''),'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') ,'${fileToRename.toLowerCase().replace(/\\| |'|"|_|\/|-|\|/g,"")}')]]/td`
-        let episodeTextElement = await page.$x(episodeFinderSelector)
-        if (!renameOnly && episodeTextElement.length == 0) {
-          await addEpisode(episode, series, season)
-          await openSeriesSeasonPage(series, season)
-          episodeTextElement = await page.$x(episodeFinderSelector)
-        }
-        await renameEpisode(fileToRename, episodeTextElement, series, season);
-      }
-    }
-  }
+  // const shows = await getFilesToProcess()
+  // for (const [series, seasons] of Object.entries(shows)) {
+  //   for (const [season, episodes] of Object.entries(seasons)) {
+  //     console.log(`Starting ${series} - season ${season}`)
+  //     await openSeriesSeasonPage(series, season)
+  //     for (const episode of episodes) {
+  //       const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1)
+  //       // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
+  //       const episodeFinderSelector = `//tr[.//a[contains(translate(translate(translate(text(),"?'/|-*: \\",""),'"',''),'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') ,'${fileToRename.toLowerCase().replace(/\\| |'|"|_|\/|-|\|/g,"")}')]]/td`
+  //       let episodeTextElement = await page.$x(episodeFinderSelector)
+  //       if (!renameOnly && episodeTextElement.length == 0) {
+  //         await addEpisode(episode, series, season)
+  //         await openSeriesSeasonPage(series, season)
+  //         episodeTextElement = await page.$x(episodeFinderSelector)
+  //       }
+  //       await renameEpisode(fileToRename, episodeTextElement, series, season);
+  //     }
+  //   }
+  // }
   await finish();
 }
 
