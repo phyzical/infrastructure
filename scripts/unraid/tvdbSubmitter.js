@@ -182,12 +182,11 @@ const addEpisode = async (episode, series, season) => {
   const jpgFile = [seasonFolder, episode.jpg].join('/')
   const jpgTile = [seasonFolder, episode.jpgTile].join('/')
   const episodeName = infoJson.fulltitle
-  let description
-  if (episode.description) {
-    description = fs.readFileSync([seasonFolder, episode.description].join('/'), 'utf8')
-  } else {
-    description = episodeName
-  }
+  let description = episodeName
+
+  // if (episode.description) {
+  //   description = fs.readFileSync([seasonFolder, episode.description].join('/'), 'utf8')
+  // }
 
   const addEpisodeFormSelector = 'form.episode-add-form'
   await page.waitFor(addEpisodeFormSelector)
