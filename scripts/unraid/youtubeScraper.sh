@@ -28,6 +28,8 @@ else
         --write-auto-sub --cookies=cookies.txt --write-description --write-info-json --convert-subs=srt --sub-lang "en" \
         --merge-output-format mp4 -o "$outputFormat" "$source"
         
+        folderPath="${youtubePath}/${sourceKey}"
+        
         if ls $folderPath/*.webp 1> /dev/null 2>&1; then
             echo "Converting images"
             docker run --rm -v "$folderPath":/src --user=$(id -u):$(id -g) \
@@ -36,7 +38,6 @@ else
         
         rm -rf $folderPath/*.webp
         
-        folderPath="${youtubePath}/${sourceKey}"
         if ls $folderPath/*.mp4 1> /dev/null 2>&1; then
             echo "generating thumnails"
             thumbnail_generate "$folderPath"
