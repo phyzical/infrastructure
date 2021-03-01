@@ -1,0 +1,19 @@
+{
+  "name": "show-submitter",
+  "version": "0.0.1",
+  "description": "Adds shows to various show source (Mainly Youtube)",
+  "license": "MIT",
+  "preferGlobal": true,
+  "dependencies": {
+    "puppeteer": "^8.0.0"
+  },
+  "devDependencies": {
+    "typescript": "4.2.2",
+    "@typescript-eslint/parser": "4.15.2",
+    "@typescript-eslint/eslint-plugin": "4.15.2",
+    "eslint": "7.21.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-typescript": "0.14.0"
+  }
+}

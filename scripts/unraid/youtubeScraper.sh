@@ -25,7 +25,7 @@ else
         echo "Downloading ${sourceKey}"
         docker run --rm -u $(id -u):$(id -g) -v ${youtubePath}:/workdir:rw mikenye/youtube-dl \
         -f "$format" --download-archive "${sourceKey}.txt" --write-thumbnail --add-metadata --ignore-errors \
-        --write-auto-sub --cookies=cookies.txt --write-description --write-info-json --convert-subs=srt --sub-lang "en" \
+        --write-auto-sub --cookies=cookies.txt --write-info-json --convert-subs=srt --sub-lang "en" \
         --merge-output-format mp4 -o "$outputFormat" "$source"
         
         folderPath="${youtubePath}/${sourceKey}"
