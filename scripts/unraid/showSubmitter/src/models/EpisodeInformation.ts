@@ -1,5 +1,5 @@
-import { EpisodeInformationInterface } from "./interfaces/submitter/InformationInterface";
-import { InformationInterface } from "./interfaces/youtube/InformationInterface";
+import { EpisodeInformationInterface } from "../interfaces/submitter/EpisodeInformationInterface";
+import { InformationInterface } from "../interfaces/youtube/InformationInterface";
 
 class EpisodeInformation implements EpisodeInformationInterface {
   informationJson: InformationInterface;

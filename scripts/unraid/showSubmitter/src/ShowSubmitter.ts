@@ -1,7 +1,7 @@
-import {TvdbSubmitter} from './submitter/TvdbSubmitter';
-import fs from 'fs';
-import {BaseSubmitter} from './submitter/BaseSubmitter';
-import { Episode } from './Episode';
+import { TvdbSubmitter} from './models/submitter/TvdbSubmitter';
+import {BaseSubmitter} from './models/submitter/BaseSubmitter';
+import { Episode } from './models/Episode';
+import { FileHandler } from './models/file/FileHandler';
 
 class ShowSubmitter {
   email: string
@@ -14,9 +14,7 @@ class ShowSubmitter {
   constructor() {
     this.folder = "/tmp/episodes";
     this.renameOnly = false;
-    this.submitters = [
-      TvdbSubmitter
-    ];
+    this.submitters = [];
   }
 
   _parseArguments (): void {
@@ -40,97 +38,9 @@ class ShowSubmitter {
     }
   }
 
-  _getDirectories (source: string): Array<string> {
-    return fs.readdirSync(source, {
-      withFileTypes: true
-    })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name);
-  }
-
-
-  _fileAccumulator(acc: Array<string>, file: string): Array<string> {
-    if (!isNaN(file[0]) && file.includes('.mp4')) {
-      acc.push(file.replace('.mp4', ""));
-    }
-    return acc;
-  }
-
-  _seriesAccumulator (seriesAcc: Record<string, unknown>, series: string): Record<string, unknown> {
-    const seriesPath = [this.folder, series].join('/');
-    seriesAcc[series] = this._getDirectories(seriesPath).reduce((seasonAcc, season) => {
-      if (season.includes('season') || season.includes('Season')) {
-        const seasonPath = [seriesPath, season].join('/');
-        const files = fs.readdirSync(seasonPath);
-        seasonAcc[season] = files.reduce(this._fileAccumulator, []).map((key) => {
-          const episode = new Episode();
-          episode.informationFile = files.find(function (file) {
-            return file.includes(key) && file.includes('.json');
-          });
-
-          episode.thumbnailFile = files.find(function (file) {
-            return file.includes(key) && (file.includes('-screen.jpg') || file.includes('-thumb.jpg'));
-          });
-
-          // look for non thumb as backup
-          episode.thumbnailFileTile = files.find(function (file) {
-            return file.includes(key) && file.includes('.jpg');
-          });
-
-          if (!episode.thumbnailFile) {
-            episode.thumbnailFile = episode.thumbnailFileTile;
-          }
-          console.log( episode.informationFile);
-          //todo make sure the above has this.folder
-          // return episode;
-        });
-      }
-      return seasonAcc;
-    }, {});
-    return seriesAcc;
-  }
-  
-  _getFilesToProcess (): Record<string, unknown> {
-    console.log("Collating episodes");
-    const filesForProcessing = this._getDirectories(this.folder).reduce(this._seriesAccumulator, {});
-    console.log("Collated episodes");
-    return filesForProcessing;
-  }
-
-  async _renameEpisodeFiles (fileToRename: string, episodeText: string, series: string, season: string): Promise<void> {
-    console.log(`starting renaming ${fileToRename}`);
-    const seasonFolder = [this.folder, series, season].join('/');
-    const files = fs.readdirSync(seasonFolder);
-    if (episodeText.length > 0) {
-      files.forEach(function (file) {
-        if (file.includes(`${fileToRename}.`) || file.includes(`${fileToRename}-`)) {
-          const filePath = [seasonFolder, file].join('/');
-          if (file.includes(".description") || file.includes(".json")) {
-            fs.unlinkSync(filePath);
-          } else {
-            const newName = `${series.replace(/-/g,'.')}.${episodeText}${file.substring(file.indexOf("."))}`;
-            fs.renameSync(filePath, [seasonFolder, newName].join('/'));
-          }
-        }
-      });
-    } else {
-      console.log("renaming failed probably means it didn't get added correctly?");
-      files.forEach(function (file) {
-        if (file.includes(fileToRename)) {
-          const errorDir = [seasonFolder, 'errored'].join('/');
-          if (!fs.existsSync(errorDir)) {
-            fs.mkdirSync(errorDir);
-          }
-          fs.renameSync([seasonFolder, file].join('/'), [errorDir, file].join('/'));
-        }
-      });
-    }
-    console.log("finished renaming");
-  }
-
   async _initSubmitters (): Promise<void> {
-    this.submitters.forEach(async (submitterClass: BaseSubmitter): Promise<void> => {
-      const submitter = new submitterClass(this.username, this.password, this.email);
+    this.submitters.push(new TvdbSubmitter(this.username, this.password, this.email));
+    this.submitters.forEach(async (submitter: BaseSubmitter): Promise<void> => {
       await submitter.init();
       await submitter.doLogin();
     });
@@ -172,7 +82,8 @@ class ShowSubmitter {
     try {
       this._parseArguments();
       this._initSubmitters();
-      const shows = await this._getFilesToProcess();
+      const fileHandler = new FileHandler(this.folder);
+      const shows = fileHandler.getFilesToProcess();
       for (const [series, seasons] of Object.entries(shows)) {
         for (const [season, episodes] of Object.entries(seasons)) {
           console.log(`Starting ${series} - season ${season}`);
@@ -180,7 +91,7 @@ class ShowSubmitter {
             const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1);
             this._addEpisodes(fileToRename, series, season, episode);
             const finalFilename = await this._verifyAddedEpisodes(fileToRename, series, season);
-            await this._renameEpisodeFiles(fileToRename, finalFilename, series, season);
+            await fileHandler.renameEpisodeFiles(fileToRename, finalFilename, series, season);
           }
           console.log(`Finished ${series} - season ${season}`);
         }

@@ -1,6 +1,6 @@
 import puppeteer, { Browser, Page } from "puppeteer";
 import { Episode } from "../Episode";
-import { GenericSubmitterInterface } from "../interfaces/submitter/GenericSubmitterInterface";
+import { GenericSubmitterInterface } from "../../interfaces/submitter/GenericSubmitterInterface";
 
 class BaseSubmitter implements GenericSubmitterInterface {
   browser: Browser;

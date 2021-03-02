@@ -1,4 +1,4 @@
-import { EpisodeInterface } from "./EpisodeInterface";
+import { EpisodeInterface } from "../EpisodeInterface";
 
 interface GenericSubmitterInterface {
   doLogin(): Promise<void>;

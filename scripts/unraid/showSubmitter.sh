@@ -23,7 +23,7 @@ else
     notify normal $message "tvdbsubmitter" $message
     docker run --rm -v $DIR/showSubmitter:/tmp/scripts \
     -v "$youtubeFolder":/tmp/episodes buildkite/puppeteer \
-    node /tmp/scripts/ShowSubmitter.js email="$email" \
+    node /tmp/scripts/main.js email="$email" \
     username="$username" password="$password" renameOnly="$renameOnly"
     
     echo "Finished tvdbsubmitter Download!!"

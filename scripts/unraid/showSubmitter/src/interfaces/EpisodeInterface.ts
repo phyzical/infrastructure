@@ -1,11 +1,11 @@
-import { EpisodeInformation } from "../EpisodeInformation";
+import { EpisodeInformationInterface } from "./submitter/EpisodeInformationInterface";
 
 interface EpisodeInterface {
   informationFile: string;
   thumbnailFile: string;
   thumbnailFileTile: string;
   name: string;
-  information(): EpisodeInformation;
+  information(): EpisodeInformationInterface;
 }
 
 export { EpisodeInterface };

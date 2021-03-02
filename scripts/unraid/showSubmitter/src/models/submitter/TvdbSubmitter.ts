@@ -1,16 +1,9 @@
 import { BaseSubmitter } from "./BaseSubmitter";
-import fs from "fs";
-import { GenericSubmitterInterface } from "../interfaces/GenericSubmitterInterface";
-import { InformationInterface } from "../interfaces/youtube/InformationInterface";
 import { Episode } from "../Episode";
 import { EpisodeInformation } from "../EpisodeInformation";
+import { setHtmlInput, submitHtmlForm } from '../../helpers/PuppeteerHelper';
 
-const setHtmlInput = (el: Element, v: any) =>
-  ((<HTMLInputElement>el).value = v);
-
-const submitHtmlForm = (form: Element) => (<HTMLFormElement>form).submit();
-
-class TvdbSubmitter extends BaseSubmitter implements GenericSubmitterInterface {
+class TvdbSubmitter extends BaseSubmitter {
   #baseURL = "https://thetvdb.com";
 
   async getEpisodeIdentifier(fileToRename: string): Promise<string> {

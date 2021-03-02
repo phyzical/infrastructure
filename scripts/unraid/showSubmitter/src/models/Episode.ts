@@ -1,5 +1,5 @@
 import { EpisodeInformation } from "./EpisodeInformation";
-import { EpisodeInterface } from "./interfaces/EpisodeInterface";
+import { EpisodeInterface } from "../interfaces/EpisodeInterface";
 import fs from "fs";
 
 class Episode implements EpisodeInterface {
