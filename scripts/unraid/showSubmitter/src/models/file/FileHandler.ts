@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { Episode } from '../Episode';
+import { Episode } from '../Episode.js';
 
 class FileHandler {
   folder:string

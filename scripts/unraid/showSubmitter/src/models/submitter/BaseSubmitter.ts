@@ -1,6 +1,8 @@
 import puppeteer, { Browser, Page } from "puppeteer";
-import { Episode } from "../Episode";
-import { GenericSubmitterInterface } from "../../interfaces/submitter/GenericSubmitterInterface";
+
+import { Episode } from "../Episode.js";
+import { GenericSubmitterInterface } from "../../interfaces/submitter/GenericSubmitterInterface.js";
+import { ShowSubmitter } from "../../ShowSubmitter.js";
 
 class BaseSubmitter implements GenericSubmitterInterface {
   browser: Browser;
@@ -54,8 +56,10 @@ class BaseSubmitter implements GenericSubmitterInterface {
       .toJSON()
       .slice(0, 10)
       .replace(/-/g, "");
+    const screenshotPath = `${ShowSubmitter.folder}/${nowDateString}-${submitterName}.png`
+    console.log(`screen shot can be found at ${screenshotPath}`)
     await this.page.screenshot({
-      path: `/tmp/scripts/${nowDateString}-${submitterName}.png`,
+      path: screenshotPath,
       fullPage: true,
     });
     await this.browser.close();

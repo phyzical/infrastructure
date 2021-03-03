@@ -1,3 +1,3 @@
-import { ShowSubmitter } from "./build/ShowSubmitter";
+import { ShowSubmitter } from "./build/ShowSubmitter.js";
 
-new ShowSubmitter().run();
+new ShowSubmitter().start();

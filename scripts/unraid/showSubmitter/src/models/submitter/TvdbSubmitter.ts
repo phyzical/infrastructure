@@ -1,7 +1,7 @@
-import { BaseSubmitter } from "./BaseSubmitter";
-import { Episode } from "../Episode";
-import { EpisodeInformation } from "../EpisodeInformation";
-import { setHtmlInput, submitHtmlForm } from '../../helpers/PuppeteerHelper';
+import { BaseSubmitter } from "./BaseSubmitter.js";
+import { Episode } from "../Episode.js";
+import { EpisodeInformation } from "../EpisodeInformation.js";
+import { setHtmlInput, submitHtmlForm } from '../../helpers/PuppeteerHelper.js';
 
 class TvdbSubmitter extends BaseSubmitter {
   #baseURL = "https://thetvdb.com";

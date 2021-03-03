@@ -1,5 +1,5 @@
-import { EpisodeInformation } from "./EpisodeInformation";
-import { EpisodeInterface } from "../interfaces/EpisodeInterface";
+import { EpisodeInformation } from "./EpisodeInformation.js";
+import { EpisodeInterface } from "../interfaces/EpisodeInterface.js";
 import fs from "fs";
 
 class Episode implements EpisodeInterface {
