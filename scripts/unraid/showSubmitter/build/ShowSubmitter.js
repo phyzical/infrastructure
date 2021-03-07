@@ -14,7 +14,7 @@ class ShowSubmitter {
         this.renameOnly = false;
         this.submitters = [];
     }
-    _parseArguments() {
+    parseArguments() {
         const inputs = process.argv.slice(2);
         for (let i = 0; i < inputs.length; i++) {
             const inputSplit = inputs[i].split('=');
@@ -34,7 +34,7 @@ class ShowSubmitter {
             }
         }
     }
-    _initSubmitters() {
+    initSubmitters() {
         return __awaiter(this, void 0, void 0, function* () {
             this.submitters.push(new TvdbSubmitter(this.username, this.password, this.email));
             for (const submitter of this.submitters) {
@@ -43,14 +43,14 @@ class ShowSubmitter {
             }
         });
     }
-    _finishSubmitters() {
+    finishSubmitters() {
         return __awaiter(this, void 0, void 0, function* () {
             for (const submitter of this.submitters) {
                 yield submitter.finish();
             }
         });
     }
-    _addEpisodes(fileToRename, series, season, episode) {
+    addEpisode(fileToRename, series, season, episode) {
         return __awaiter(this, void 0, void 0, function* () {
             for (const submitter of this.submitters) {
                 yield submitter.openSeriesSeasonPage(series, season);
@@ -61,7 +61,7 @@ class ShowSubmitter {
             }
         });
     }
-    _verifyAddedEpisodes(fileToRename, series, season) {
+    verifyAddedEpisode(fileToRename, series, season) {
         return __awaiter(this, void 0, void 0, function* () {
             let episodeTextIdentifier;
             try {
@@ -82,8 +82,8 @@ class ShowSubmitter {
     }
     addEpisodes() {
         return __awaiter(this, void 0, void 0, function* () {
-            this._parseArguments();
-            yield this._initSubmitters();
+            this.parseArguments();
+            yield this.initSubmitters();
             const fileHandler = new FileHandler(ShowSubmitter.folder);
             const shows = fileHandler.getFilesToProcess();
             for (const [series, seasons] of Object.entries(shows)) {
@@ -91,20 +91,20 @@ class ShowSubmitter {
                     console.log(`Starting ${series} - season ${season}`);
                     for (const episode of episodes) {
                         const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1);
-                        this._addEpisodes(fileToRename, series, season, episode);
-                        const finalFilename = yield this._verifyAddedEpisodes(fileToRename, series, season);
+                        this.addEpisode(fileToRename, series, season, episode);
+                        const finalFilename = yield this.verifyAddedEpisode(fileToRename, series, season);
                         yield fileHandler.renameEpisodeFiles(fileToRename, finalFilename, series, season);
                     }
                     console.log(`Finished ${series} - season ${season}`);
                 }
             }
-            yield this._finishSubmitters();
+            yield this.finishSubmitters();
         });
     }
     start() {
         this.addEpisodes().catch((e) => __awaiter(this, void 0, void 0, function* () {
             console.log(e);
-            yield this._finishSubmitters().catch(e2 => {
+            yield this.finishSubmitters().catch(e2 => {
                 console.log(e2);
             });
         }));

@@ -13,21 +13,21 @@ class FileHandler {
     constructor(folder) {
         this.folder = folder;
     }
-    _getDirectories(source) {
+    getDirectories(source) {
         return fs.readdirSync(source, {
             withFileTypes: true
         })
             .filter(dirent => dirent.isDirectory())
             .map(dirent => dirent.name);
     }
-    _fileAccumulator(acc, file) {
+    fileAccumulator(acc, file) {
         const firstCharToNum = file[0];
         if (!isNaN(firstCharToNum) && file.includes('.mp4')) {
             acc.push(file.replace('.mp4', ""));
         }
         return acc;
     }
-    _seriesAccumulator(seriesAcc, series) {
+    seriesAccumulator(seriesAcc, series) {
         const seriesPath = [this.folder, series].join('/');
         const seasonAccumulator = (seasonAcc, season) => {
             const seasonPath = [seriesPath, season].join('/');
@@ -51,10 +51,10 @@ class FileHandler {
                 //todo make sure the above has this.folder
                 return episode;
             };
-            seasonAcc[season] = files.reduce(this._fileAccumulator, []).map(episodeAccumulator);
+            seasonAcc[season] = files.reduce(this.fileAccumulator, []).map(episodeAccumulator);
             return seasonAcc;
         };
-        seriesAcc[series] = this._getDirectories(seriesPath)
+        seriesAcc[series] = this.getDirectories(seriesPath)
             .filter((dirName) => new RegExp(/season/i).test(dirName))
             .reduce(seasonAccumulator, {});
         return seriesAcc;
@@ -95,7 +95,7 @@ class FileHandler {
     }
     getFilesToProcess() {
         console.log("Collating episodes");
-        const filesForProcessing = this._getDirectories(this.folder).reduce(this._seriesAccumulator, {});
+        const filesForProcessing = this.getDirectories(this.folder).reduce(this.seriesAccumulator, {});
         console.log("Collated episodes");
         return filesForProcessing;
     }

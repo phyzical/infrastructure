@@ -80,7 +80,7 @@ class TvdbSubmitter extends BaseSubmitter {
             yield this.page.waitForXPath(seasonSelector);
         });
     }
-    _openAddEpisodePage(series, season) {
+    openAddEpisodePage(series, season) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.openSeriesSeasonPage(series, season);
             const addEpisodeSelector = '//*[contains(text(),"Add Episode")]';
@@ -89,7 +89,7 @@ class TvdbSubmitter extends BaseSubmitter {
             yield addEpisodeButton[0].click();
         });
     }
-    _updateEpisode(infoJson, jpgFile) {
+    updateEpisode(infoJson, jpgFile) {
         return __awaiter(this, void 0, void 0, function* () {
             const editEpisodeFormSelector = "form.episode-edit-form";
             yield this.page.waitForSelector(editEpisodeFormSelector);
@@ -112,7 +112,7 @@ class TvdbSubmitter extends BaseSubmitter {
     addEpisode(episode, series, season) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("adding episode", episode.name);
-            yield this._openAddEpisodePage(series, season);
+            yield this.openAddEpisodePage(series, season);
             const infoJson = episode.information();
             const addEpisodeFormSelector = "form.episode-add-form";
             yield this.page.waitForSelector(addEpisodeFormSelector);
@@ -120,16 +120,16 @@ class TvdbSubmitter extends BaseSubmitter {
             yield this.page.$eval("[name=overview]", setHtmlInput, infoJson.description());
             yield this.page.$eval(addEpisodeFormSelector, submitHtmlForm);
             try {
-                yield this._updateEpisode(infoJson, episode.thumbnailFile);
+                yield this.updateEpisode(infoJson, episode.thumbnailFile);
             }
             catch (e) {
                 //try again with tile
                 try {
-                    yield this._updateEpisode(infoJson, episode.thumbnailFileTile);
+                    yield this.updateEpisode(infoJson, episode.thumbnailFileTile);
                 }
                 catch (e2) {
                     // otherwise dont bother with an image
-                    yield this._updateEpisode(infoJson, null);
+                    yield this.updateEpisode(infoJson, null);
                 }
             }
             console.log("added episode");
