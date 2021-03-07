@@ -70,7 +70,7 @@ class TvdbSubmitter extends BaseSubmitter {
     await this.page.waitForXPath(seasonSelector);
   }
 
-  async _openAddEpisodePage(series: string, season: string): Promise<void> {
+  private async openAddEpisodePage(series: string, season: string): Promise<void> {
     await this.openSeriesSeasonPage(series, season);
     const addEpisodeSelector = '//*[contains(text(),"Add Episode")]';
     await this.page.waitForXPath(addEpisodeSelector);
@@ -78,7 +78,7 @@ class TvdbSubmitter extends BaseSubmitter {
     await addEpisodeButton[0].click();
   }
 
-  async _updateEpisode(
+  private async updateEpisode(
     infoJson: EpisodeInformation,
     jpgFile: string
   ): Promise<void> {
@@ -113,7 +113,7 @@ class TvdbSubmitter extends BaseSubmitter {
     season: string
   ): Promise<void> {
     console.log("adding episode", episode.name);
-    await this._openAddEpisodePage(series, season);
+    await this.openAddEpisodePage(series, season);
 
     const infoJson = episode.information();
 
@@ -128,14 +128,14 @@ class TvdbSubmitter extends BaseSubmitter {
     await this.page.$eval(addEpisodeFormSelector, submitHtmlForm);
 
     try {
-      await this._updateEpisode(infoJson, episode.thumbnailFile);
+      await this.updateEpisode(infoJson, episode.thumbnailFile);
     } catch (e) {
       //try again with tile
       try {
-        await this._updateEpisode(infoJson, episode.thumbnailFileTile);
+        await this.updateEpisode(infoJson, episode.thumbnailFileTile);
       } catch (e2) {
         // otherwise dont bother with an image
-        await this._updateEpisode(infoJson, null);
+        await this.updateEpisode(infoJson, null);
       }
     }
 

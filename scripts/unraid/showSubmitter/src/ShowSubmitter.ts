@@ -17,7 +17,7 @@ class ShowSubmitter {
     this.submitters = [];
   }
 
-  _parseArguments (): void {
+  private parseArguments (): void {
     const inputs = process.argv.slice(2);
     for (let i = 0; i < inputs.length; i++) {
       const inputSplit = inputs[i].split('=');
@@ -38,7 +38,7 @@ class ShowSubmitter {
     }
   }
 
-  async _initSubmitters (): Promise<void> {
+  private async initSubmitters (): Promise<void> {
     this.submitters.push(new TvdbSubmitter(this.username, this.password, this.email));
     for (const submitter of this.submitters) {
       await submitter.init();
@@ -46,13 +46,13 @@ class ShowSubmitter {
     }
   }
 
-  async _finishSubmitters (): Promise<void> {
+  private async finishSubmitters (): Promise<void> {
     for (const submitter of this.submitters) {
       await submitter.finish();
     }
   }
 
-  async _addEpisodes(fileToRename: string, series: string, season: string, episode: Episode): Promise<void> {
+  private async addEpisode(fileToRename: string, series: string, season: string, episode: Episode): Promise<void> {
     for (const submitter of this.submitters) {
       await submitter.openSeriesSeasonPage(series, season);
       const episodeTextIdentifier = await submitter.getEpisodeIdentifier(fileToRename);
@@ -62,7 +62,7 @@ class ShowSubmitter {
     }
   }
 
-  async _verifyAddedEpisodes(fileToRename: string, series: string, season: string):  Promise<string> {
+  private async verifyAddedEpisode(fileToRename: string, series: string, season: string):  Promise<string> {
     let episodeTextIdentifier;
     try {
       for (const submitter of this.submitters) {
@@ -80,9 +80,9 @@ class ShowSubmitter {
     return episodeTextIdentifier;
   }
 
-  async addEpisodes (): Promise<void> {
-    this._parseArguments();
-    await this._initSubmitters();
+  private async addEpisodes (): Promise<void> {
+    this.parseArguments();
+    await this.initSubmitters();
     const fileHandler = new FileHandler(ShowSubmitter.folder);
     const shows = fileHandler.getFilesToProcess();
     for (const [series, seasons] of Object.entries(shows)) {
@@ -90,20 +90,20 @@ class ShowSubmitter {
         console.log(`Starting ${series} - season ${season}`);
         for (const episode of episodes) {
           const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1);
-          this._addEpisodes(fileToRename, series, season, episode);
-          const finalFilename = await this._verifyAddedEpisodes(fileToRename, series, season);
+          this.addEpisode(fileToRename, series, season, episode);
+          const finalFilename = await this.verifyAddedEpisode(fileToRename, series, season);
           await fileHandler.renameEpisodeFiles(fileToRename, finalFilename, series, season);
         }
         console.log(`Finished ${series} - season ${season}`);
       }
     }
-    await this._finishSubmitters();
+    await this.finishSubmitters();
   }
 
   start(): void {
     this.addEpisodes().catch(async e => {
       console.log(e)
-      await this._finishSubmitters().catch(e2 => {
+      await this.finishSubmitters().catch(e2 => {
         console.log(e2)
       })
     })

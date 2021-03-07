@@ -1,7 +1,7 @@
 {
   "name": "show-submitter",
   "version": "0.0.1",
-  "description": "Adds shows to various show source (Mainly Youtube)",
+  "description": "Adds shows to various show sources (Youtube)",
   "license": "MIT",
   "preferGlobal": true,
   "type": "module",

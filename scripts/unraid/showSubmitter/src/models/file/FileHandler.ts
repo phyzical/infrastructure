@@ -8,7 +8,7 @@ class FileHandler {
     this.folder = folder;
   }
 
-  _getDirectories (source: string): Array<string> {
+  private getDirectories (source: string): Array<string> {
     return fs.readdirSync(source, {
       withFileTypes: true
     })
@@ -17,7 +17,7 @@ class FileHandler {
   }
 
 
-  _fileAccumulator(acc: Array<string>, file: string): Array<string> {
+  private fileAccumulator(acc: Array<string>, file: string): Array<string> {
     const firstCharToNum = <number><unknown>file[0];
     if (!isNaN(firstCharToNum) && file.includes('.mp4')) {
       acc.push(file.replace('.mp4', ""));
@@ -25,7 +25,7 @@ class FileHandler {
     return acc;
   }
 
-  _seriesAccumulator (seriesAcc: Record<string, unknown>, series: string): Record<string, unknown> {
+  private seriesAccumulator (seriesAcc: Record<string, unknown>, series: string): Record<string, unknown> {
     const seriesPath = [this.folder, series].join('/');
     const seasonAccumulator = (seasonAcc: Record<string, unknown>, season: string): Record<string, unknown> => {
       const seasonPath = [seriesPath, season].join('/');
@@ -52,10 +52,10 @@ class FileHandler {
         //todo make sure the above has this.folder
         return episode;
       };
-      seasonAcc[season] = files.reduce(this._fileAccumulator, []).map(episodeAccumulator);
+      seasonAcc[season] = files.reduce(this.fileAccumulator, []).map(episodeAccumulator);
       return seasonAcc;
     };
-    seriesAcc[series] = this._getDirectories(seriesPath)
+    seriesAcc[series] = this.getDirectories(seriesPath)
       .filter((dirName) => new RegExp(/season/i).test(dirName))
       .reduce(seasonAccumulator, {});
     return seriesAcc;
@@ -94,7 +94,7 @@ class FileHandler {
   
   getFilesToProcess (): Record<string, unknown> {
     console.log("Collating episodes");
-    const filesForProcessing = this._getDirectories(this.folder).reduce(this._seriesAccumulator, {});
+    const filesForProcessing = this.getDirectories(this.folder).reduce(this.seriesAccumulator, {});
     console.log("Collated episodes");
     return filesForProcessing;
   }
