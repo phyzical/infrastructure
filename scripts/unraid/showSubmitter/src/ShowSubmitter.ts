@@ -74,7 +74,7 @@ class ShowSubmitter {
         }
       }
     } catch (e) {
-      // we catch this error so that we can bubble up to take a screenshot
+      console.log(`Didnt add episode for ${fileToRename} something went horribly wrong!`)
     }
     
     return episodeTextIdentifier;
@@ -87,14 +87,14 @@ class ShowSubmitter {
     const shows = fileHandler.getFilesToProcess();
     for (const [series, seasons] of Object.entries(shows)) {
       for (const [season, episodes] of Object.entries(seasons)) {
-        console.log(`Starting ${series} - season ${season}`);
+        console.log(`Starting ${series} - ${season}`);
         for (const episode of episodes) {
           const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1);
-          this.addEpisode(fileToRename, series, season, episode);
+          await this.addEpisode(fileToRename, series, season, episode);
           const finalFilename = await this.verifyAddedEpisode(fileToRename, series, season);
           await fileHandler.renameEpisodeFiles(fileToRename, finalFilename, series, season);
         }
-        console.log(`Finished ${series} - season ${season}`);
+        console.log(`Finished ${series} - ${season}`);
       }
     }
     await this.finishSubmitters();

@@ -5,7 +5,11 @@ interface EpisodeInterface {
   thumbnailFile: string;
   thumbnailFileTile: string;
   name: string;
+  folder: string;
   information(): EpisodeInformationInterface;
+  informationFilePath(): string;
+  thumbnailFilePath(): string;
+  thumbnailFileTilePath(): string;
 }
 
 export { EpisodeInterface };

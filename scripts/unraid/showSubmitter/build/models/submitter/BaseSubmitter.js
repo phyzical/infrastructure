@@ -49,14 +49,18 @@ class BaseSubmitter {
             const submitterName = this.constructor.name;
             const nowDateString = new Date() //
                 .toJSON()
-                .slice(0, 10)
-                .replace(/-/g, "");
+                .replace(/-*:*T*Z*\.*/g, "");
             const screenshotPath = `${ShowSubmitter.folder}/${nowDateString}-${submitterName}.png`;
-            console.log(`screen shot can be found at ${screenshotPath}`);
-            yield this.page.screenshot({
-                path: screenshotPath,
-                fullPage: true,
-            });
+            try {
+                yield this.page.screenshot({
+                    path: screenshotPath,
+                    fullPage: true,
+                });
+                console.log(`screen shot can be found at ${screenshotPath}`);
+            }
+            catch (e) {
+                console.log("failed to save screenshot");
+            }
             yield this.browser.close();
         });
     }

@@ -23,6 +23,7 @@ class TvdbSubmitter extends BaseSubmitter {
     }
     getEpisodeIdentifier(fileToRename) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log(`Looking for episode for ${fileToRename}`);
             // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
             const cleanedFilename = fileToRename
                 .toLowerCase()
@@ -34,9 +35,10 @@ class TvdbSubmitter extends BaseSubmitter {
             let episodeIdentifier = "";
             try {
                 episodeIdentifier = yield this.page.evaluate((element) => element.textContent, episodeTextElement[0]);
+                console.log(`Found episode for ${fileToRename}`);
             }
             catch (e) {
-                console.log(e);
+                console.log(`Didnt find episode for ${fileToRename}`);
             }
             return episodeIdentifier;
         });
@@ -72,25 +74,30 @@ class TvdbSubmitter extends BaseSubmitter {
                 "official",
                 seasonClean,
             ].join("/");
+            console.log(`opening ${showSeasonURL}`);
             yield this.page.goto(showSeasonURL);
             let seasonSelector = `//*[contains(text(), "Season ${seasonClean}")]`;
             if (seasonClean == "0") {
                 seasonSelector = `//*[contains(text(), "Specials")]`;
             }
             yield this.page.waitForXPath(seasonSelector);
+            console.log(`opened ${showSeasonURL}`);
         });
     }
     openAddEpisodePage(series, season) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("opening addEpisodePage");
             yield this.openSeriesSeasonPage(series, season);
             const addEpisodeSelector = '//*[contains(text(),"Add Episode")]';
             yield this.page.waitForXPath(addEpisodeSelector);
             const addEpisodeButton = yield this.page.$x(addEpisodeSelector);
             yield addEpisodeButton[0].click();
+            console.log("opened addEpisodePage");
         });
     }
     updateEpisode(infoJson, jpgFile) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("updating episode");
             const editEpisodeFormSelector = "form.episode-edit-form";
             yield this.page.waitForSelector(editEpisodeFormSelector);
             yield this.page.$eval("[name=productioncode]", setHtmlInput, infoJson.url());
@@ -107,6 +114,7 @@ class TvdbSubmitter extends BaseSubmitter {
             yield this.page.waitForXPath(episodeAddedSuccessfully, {
                 timeout: 100000,
             });
+            console.log("updated episode");
         });
     }
     addEpisode(episode, series, season) {
@@ -120,12 +128,12 @@ class TvdbSubmitter extends BaseSubmitter {
             yield this.page.$eval("[name=overview]", setHtmlInput, infoJson.description());
             yield this.page.$eval(addEpisodeFormSelector, submitHtmlForm);
             try {
-                yield this.updateEpisode(infoJson, episode.thumbnailFile);
+                yield this.updateEpisode(infoJson, episode.thumbnailFilePath());
             }
             catch (e) {
                 //try again with tile
                 try {
-                    yield this.updateEpisode(infoJson, episode.thumbnailFileTile);
+                    yield this.updateEpisode(infoJson, episode.thumbnailFileTilePath());
                 }
                 catch (e2) {
                     // otherwise dont bother with an image

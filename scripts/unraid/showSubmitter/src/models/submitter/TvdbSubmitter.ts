@@ -7,6 +7,8 @@ class TvdbSubmitter extends BaseSubmitter {
   #baseURL = "https://thetvdb.com";
 
   async getEpisodeIdentifier(fileToRename: string): Promise<string> {
+    console.log(`Looking for episode for ${fileToRename}`)
+
     // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
     const cleanedFilename = fileToRename
       .toLowerCase()
@@ -22,8 +24,9 @@ class TvdbSubmitter extends BaseSubmitter {
         (element: Element) => element.textContent,
         episodeTextElement[0]
       );
+      console.log(`Found episode for ${fileToRename}`)
     } catch (e) {
-      console.log(e);
+      console.log(`Didnt find episode for ${fileToRename}`)
     }
     return episodeIdentifier;
   }
@@ -62,26 +65,31 @@ class TvdbSubmitter extends BaseSubmitter {
       "official",
       seasonClean,
     ].join("/");
+    console.log(`opening ${showSeasonURL}`);
     await this.page.goto(showSeasonURL);
     let seasonSelector = `//*[contains(text(), "Season ${seasonClean}")]`;
     if (seasonClean == "0") {
       seasonSelector = `//*[contains(text(), "Specials")]`;
     }
     await this.page.waitForXPath(seasonSelector);
+    console.log(`opened ${showSeasonURL}`);
   }
 
   private async openAddEpisodePage(series: string, season: string): Promise<void> {
+    console.log("opening addEpisodePage");
     await this.openSeriesSeasonPage(series, season);
     const addEpisodeSelector = '//*[contains(text(),"Add Episode")]';
     await this.page.waitForXPath(addEpisodeSelector);
     const addEpisodeButton = await this.page.$x(addEpisodeSelector);
     await addEpisodeButton[0].click();
+    console.log("opened addEpisodePage");
   }
 
   private async updateEpisode(
     infoJson: EpisodeInformation,
     jpgFile: string
   ): Promise<void> {
+    console.log("updating episode")
     const editEpisodeFormSelector = "form.episode-edit-form";
     await this.page.waitForSelector(editEpisodeFormSelector);
 
@@ -105,6 +113,7 @@ class TvdbSubmitter extends BaseSubmitter {
     await this.page.waitForXPath(episodeAddedSuccessfully, {
       timeout: 100000,
     });
+    console.log("updated episode")
   }
 
   async addEpisode(
@@ -116,6 +125,7 @@ class TvdbSubmitter extends BaseSubmitter {
     await this.openAddEpisodePage(series, season);
 
     const infoJson = episode.information();
+    // todo this is out of date
 
     const addEpisodeFormSelector = "form.episode-add-form";
     await this.page.waitForSelector(addEpisodeFormSelector);
@@ -128,11 +138,11 @@ class TvdbSubmitter extends BaseSubmitter {
     await this.page.$eval(addEpisodeFormSelector, submitHtmlForm);
 
     try {
-      await this.updateEpisode(infoJson, episode.thumbnailFile);
+      await this.updateEpisode(infoJson, episode.thumbnailFilePath());
     } catch (e) {
       //try again with tile
       try {
-        await this.updateEpisode(infoJson, episode.thumbnailFileTile);
+        await this.updateEpisode(infoJson, episode.thumbnailFileTilePath());
       } catch (e2) {
         // otherwise dont bother with an image
         await this.updateEpisode(infoJson, null);

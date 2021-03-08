@@ -25,42 +25,6 @@ class FileHandler {
     return acc;
   }
 
-  private seriesAccumulator (seriesAcc: Record<string, unknown>, series: string): Record<string, unknown> {
-    const seriesPath = [this.folder, series].join('/');
-    const seasonAccumulator = (seasonAcc: Record<string, unknown>, season: string): Record<string, unknown> => {
-      const seasonPath = [seriesPath, season].join('/');
-      const files = fs.readdirSync(seasonPath);
-      const episodeAccumulator = (key: string): Episode => {
-        const episode = new Episode();
-        episode.informationFile = files.find(function (file) {
-          return file.includes(key) && file.includes('.json');
-        });
-    
-        episode.thumbnailFile = files.find(function (file) {
-          return file.includes(key) && (file.includes('-screen.jpg') || file.includes('-thumb.jpg'));
-        });
-    
-        // look for non thumb as backup
-        episode.thumbnailFileTile = files.find(function (file) {
-          return file.includes(key) && file.includes('.jpg');
-        });
-    
-        if (!episode.thumbnailFile) {
-          episode.thumbnailFile = episode.thumbnailFileTile;
-        }
-        console.log( episode.informationFile);
-        //todo make sure the above has this.folder
-        return episode;
-      };
-      seasonAcc[season] = files.reduce(this.fileAccumulator, []).map(episodeAccumulator);
-      return seasonAcc;
-    };
-    seriesAcc[series] = this.getDirectories(seriesPath)
-      .filter((dirName) => new RegExp(/season/i).test(dirName))
-      .reduce(seasonAccumulator, {});
-    return seriesAcc;
-  }
-
   async renameEpisodeFiles (fileToRename: string, episodeText: string, series: string, season: string): Promise<void> {
     console.log(`starting renaming ${fileToRename}`);
     const seasonFolder = [this.folder, series, season].join('/');
@@ -94,7 +58,43 @@ class FileHandler {
   
   getFilesToProcess (): Record<string, unknown> {
     console.log("Collating episodes");
-    const filesForProcessing = this.getDirectories(this.folder).reduce(this.seriesAccumulator, {});
+    const directories = this.getDirectories(this.folder)
+    const filesForProcessing = directories.reduce((seriesAcc: Record<string, unknown>, series: string): Record<string, unknown> => {
+      const seriesPath = [this.folder, series].join('/');
+      const seasonAccumulator = (seasonAcc: Record<string, unknown>, season: string): Record<string, unknown> => {
+        const seasonPath = [seriesPath, season].join('/');
+        const files = fs.readdirSync(seasonPath);
+        const episodeAccumulator = (key: string): Episode => {
+          const informationFile = files.find(function (file) {
+            return file.includes(key) && file.includes('.json');
+          });
+          let thumbnailFile = files.find(function (file) {
+            return file.includes(key) && (file.includes('-screen.jpg') || file.includes('-thumb.jpg'));
+          });
+          const thumbnailFileTile = files.find(function (file) {
+            return file.includes(key) && file.includes('.jpg');
+          });
+      
+          if (!thumbnailFile) {
+            thumbnailFile = thumbnailFileTile;
+          }
+          
+          const episode = new Episode()
+          episode.folder = seasonPath
+          episode.informationFile = informationFile
+          episode.thumbnailFile = thumbnailFile
+          episode.thumbnailFileTile = thumbnailFileTile
+          episode.name = key
+          return episode;
+        };
+        seasonAcc[season] = files.reduce(this.fileAccumulator, []).map(episodeAccumulator);
+        return seasonAcc;
+      };
+      seriesAcc[series] = this.getDirectories(seriesPath)
+        .filter((dirName) => new RegExp(/season/i).test(dirName))
+        .reduce(seasonAccumulator, {});
+      return seriesAcc;
+    }, {});
     console.log("Collated episodes");
     return filesForProcessing;
   }

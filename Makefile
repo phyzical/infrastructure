@@ -5,3 +5,7 @@ include scripts/makefile-developer-tools.mk
 include deploy/makefile-common.mk
 
 PROJECT_NAME=infrastructure
+
+build-show-submitter:
+	cd scripts/unraid/showSubmitter && \
+	npm run build
