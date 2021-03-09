@@ -1,0 +1,1 @@
+{"version":3,"file":"LogHelper.js","sourceRoot":"","sources":["../../src/helpers/LogHelper.ts"],"names":[],"mappings":"AAAA,MAAM,OAAO,GAAG,KAAK,CAAA;AACrB,MAAM,GAAG,GAAG,CAAC,OAAe,EAAE,iBAA0B,KAAK,EAAQ,EAAE;IACrE,IAAI,CAAC,cAAc,IAAI,OAAO,EAAE;QAC9B,OAAO,CAAC,GAAG,CAAC,OAAO,CAAC,CAAA;KACrB;AACH,CAAC,CAAA;AAED,OAAO,EAAC,GAAG,EAAC,CAAA"}

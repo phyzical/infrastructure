@@ -3,6 +3,7 @@ import puppeteer, { Browser, Page } from "puppeteer";
 import { Episode } from "../Episode.js";
 import { GenericSubmitterInterface } from "../../interfaces/submitter/GenericSubmitterInterface.js";
 import { ShowSubmitter } from "../../ShowSubmitter.js";
+import { log } from '../../helpers/LogHelper.js'
 
 class BaseSubmitter implements GenericSubmitterInterface {
   browser: Browser;
@@ -46,7 +47,7 @@ class BaseSubmitter implements GenericSubmitterInterface {
     });
 
     const browserVersion = await this.browser.version();
-    console.log(`Started ${browserVersion}`);
+    log(`Started ${browserVersion}`);
     this.page = await this.browser.newPage();
   }
 
@@ -61,9 +62,9 @@ class BaseSubmitter implements GenericSubmitterInterface {
         path: screenshotPath,
         fullPage: true,
       })
-      console.log(`screen shot can be found at ${screenshotPath}`)
+      log(`screen shot can be found at ${screenshotPath}`)
     } catch(e) {
-      console.log("failed to save screenshot")
+      log("failed to save screenshot")
     }
     await this.browser.close();
   }

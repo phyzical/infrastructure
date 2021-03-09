@@ -1,7 +1,8 @@
-import { TvdbSubmitter} from './models/submitter/TvdbSubmitter.js';
-import {BaseSubmitter} from './models/submitter/BaseSubmitter.js';
+import { TvdbSubmitter } from './models/submitter/TvdbSubmitter.js';
+import { BaseSubmitter } from './models/submitter/BaseSubmitter.js';
 import { Episode } from './models/Episode.js';
 import { FileHandler } from './models/file/FileHandler.js';
+import { log } from './helpers/LogHelper.js'
 
 class ShowSubmitter {
   static folder: string = "/tmp/episodes"
@@ -57,7 +58,7 @@ class ShowSubmitter {
       await submitter.openSeriesSeasonPage(series, season);
       const episodeTextIdentifier = await submitter.getEpisodeIdentifier(fileToRename);
       if (!this.renameOnly && episodeTextIdentifier.length == 0) {
-        await submitter.addEpisode(episode, series, season);
+        // await submitter.addEpisode(episode, series, season);
       }
     }
   }
@@ -74,7 +75,7 @@ class ShowSubmitter {
         }
       }
     } catch (e) {
-      console.log(`Didnt add episode for ${fileToRename} something went horribly wrong!`)
+      log(`Didnt add episode for ${fileToRename} something went horribly wrong!`)
     }
     
     return episodeTextIdentifier;
@@ -87,14 +88,14 @@ class ShowSubmitter {
     const shows = fileHandler.getFilesToProcess();
     for (const [series, seasons] of Object.entries(shows)) {
       for (const [season, episodes] of Object.entries(seasons)) {
-        console.log(`Starting ${series} - ${season}`);
+        log(`Starting ${series} - ${season}`);
         for (const episode of episodes) {
           const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1);
           await this.addEpisode(fileToRename, series, season, episode);
           const finalFilename = await this.verifyAddedEpisode(fileToRename, series, season);
           await fileHandler.renameEpisodeFiles(fileToRename, finalFilename, series, season);
         }
-        console.log(`Finished ${series} - ${season}`);
+        log(`Finished ${series} - ${season}`);
       }
     }
     await this.finishSubmitters();
@@ -102,9 +103,9 @@ class ShowSubmitter {
 
   start(): void {
     this.addEpisodes().catch(async e => {
-      console.log(e)
+      log(e)
       await this.finishSubmitters().catch(e2 => {
-        console.log(e2)
+        log(e2)
       })
     })
   }

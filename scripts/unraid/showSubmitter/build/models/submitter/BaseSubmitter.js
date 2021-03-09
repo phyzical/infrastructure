@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import puppeteer from "puppeteer";
 import { ShowSubmitter } from "../../ShowSubmitter.js";
+import { log } from '../../helpers/LogHelper.js';
 class BaseSubmitter {
     constructor(username, password, email) {
         this.username = username;
@@ -40,7 +41,7 @@ class BaseSubmitter {
                 ],
             });
             const browserVersion = yield this.browser.version();
-            console.log(`Started ${browserVersion}`);
+            log(`Started ${browserVersion}`);
             this.page = yield this.browser.newPage();
         });
     }
@@ -56,10 +57,10 @@ class BaseSubmitter {
                     path: screenshotPath,
                     fullPage: true,
                 });
-                console.log(`screen shot can be found at ${screenshotPath}`);
+                log(`screen shot can be found at ${screenshotPath}`);
             }
             catch (e) {
-                console.log("failed to save screenshot");
+                log("failed to save screenshot");
             }
             yield this.browser.close();
         });

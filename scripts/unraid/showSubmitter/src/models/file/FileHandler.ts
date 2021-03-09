@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { Episode } from '../Episode.js';
+import { log } from '../../helpers/LogHelper.js'
 
 class FileHandler {
   folder:string
@@ -26,7 +27,7 @@ class FileHandler {
   }
 
   async renameEpisodeFiles (fileToRename: string, episodeText: string, series: string, season: string): Promise<void> {
-    console.log(`starting renaming ${fileToRename}`);
+    log(`starting renaming ${fileToRename}`);
     const seasonFolder = [this.folder, series, season].join('/');
     const files = fs.readdirSync(seasonFolder);
     if (episodeText.length > 0) {
@@ -42,7 +43,7 @@ class FileHandler {
         }
       });
     } else {
-      console.log("renaming failed probably means it didn't get added correctly?");
+      log("renaming failed probably means it didn't get added correctly?");
       files.forEach(function (file) {
         if (file.includes(fileToRename)) {
           const errorDir = [seasonFolder, 'errored'].join('/');
@@ -53,11 +54,11 @@ class FileHandler {
         }
       });
     }
-    console.log("finished renaming");
+    log("finished renaming");
   }
   
   getFilesToProcess (): Record<string, unknown> {
-    console.log("Collating episodes");
+    log("Collating episodes");
     const directories = this.getDirectories(this.folder)
     const filesForProcessing = directories.reduce((seriesAcc: Record<string, unknown>, series: string): Record<string, unknown> => {
       const seriesPath = [this.folder, series].join('/');
@@ -95,7 +96,7 @@ class FileHandler {
         .reduce(seasonAccumulator, {});
       return seriesAcc;
     }, {});
-    console.log("Collated episodes");
+    log("Collated episodes");
     return filesForProcessing;
   }
 }

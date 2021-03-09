@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { TvdbSubmitter } from './models/submitter/TvdbSubmitter.js';
 import { FileHandler } from './models/file/FileHandler.js';
+import { log } from './helpers/LogHelper.js';
 class ShowSubmitter {
     constructor() {
         this.renameOnly = false;
@@ -56,7 +57,7 @@ class ShowSubmitter {
                 yield submitter.openSeriesSeasonPage(series, season);
                 const episodeTextIdentifier = yield submitter.getEpisodeIdentifier(fileToRename);
                 if (!this.renameOnly && episodeTextIdentifier.length == 0) {
-                    yield submitter.addEpisode(episode, series, season);
+                    // await submitter.addEpisode(episode, series, season);
                 }
             }
         });
@@ -75,7 +76,7 @@ class ShowSubmitter {
                 }
             }
             catch (e) {
-                console.log(`Didnt add episode for ${fileToRename} something went horribly wrong!`);
+                log(`Didnt add episode for ${fileToRename} something went horribly wrong!`);
             }
             return episodeTextIdentifier;
         });
@@ -88,14 +89,14 @@ class ShowSubmitter {
             const shows = fileHandler.getFilesToProcess();
             for (const [series, seasons] of Object.entries(shows)) {
                 for (const [season, episodes] of Object.entries(seasons)) {
-                    console.log(`Starting ${series} - ${season}`);
+                    log(`Starting ${series} - ${season}`);
                     for (const episode of episodes) {
                         const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1);
                         yield this.addEpisode(fileToRename, series, season, episode);
                         const finalFilename = yield this.verifyAddedEpisode(fileToRename, series, season);
                         yield fileHandler.renameEpisodeFiles(fileToRename, finalFilename, series, season);
                     }
-                    console.log(`Finished ${series} - ${season}`);
+                    log(`Finished ${series} - ${season}`);
                 }
             }
             yield this.finishSubmitters();
@@ -103,9 +104,9 @@ class ShowSubmitter {
     }
     start() {
         this.addEpisodes().catch((e) => __awaiter(this, void 0, void 0, function* () {
-            console.log(e);
+            log(e);
             yield this.finishSubmitters().catch(e2 => {
-                console.log(e2);
+                log(e2);
             });
         }));
     }

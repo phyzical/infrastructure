@@ -1,4 +1,5 @@
 const setHtmlInput = (el, v) => (el.value = v);
 const submitHtmlForm = (form) => form.submit();
-export { setHtmlInput, submitHtmlForm };
+const clickHtmlElement = (button) => button.click();
+export { setHtmlInput, submitHtmlForm, clickHtmlElement };
 //# sourceMappingURL=PuppeteerHelper.js.map

@@ -1,13 +1,13 @@
 import { BaseSubmitter } from "./BaseSubmitter.js";
 import { Episode } from "../Episode.js";
-import { EpisodeInformation } from "../EpisodeInformation.js";
-import { setHtmlInput, submitHtmlForm } from '../../helpers/PuppeteerHelper.js';
+import { setHtmlInput, submitHtmlForm, clickHtmlElement } from '../../helpers/PuppeteerHelper.js';
+import { log } from '../../helpers/LogHelper.js'
 
 class TvdbSubmitter extends BaseSubmitter {
   #baseURL = "https://thetvdb.com";
 
   async getEpisodeIdentifier(fileToRename: string): Promise<string> {
-    console.log(`Looking for episode for ${fileToRename}`)
+    log(`Looking for episode for ${fileToRename}`, true)
 
     // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
     const cleanedFilename = fileToRename
@@ -24,15 +24,15 @@ class TvdbSubmitter extends BaseSubmitter {
         (element: Element) => element.textContent,
         episodeTextElement[0]
       );
-      console.log(`Found episode for ${fileToRename}`)
+      log(`Found episode for ${fileToRename}`, true)
     } catch (e) {
-      console.log(`Didnt find episode for ${fileToRename}`)
+      log(`Didnt find episode for ${fileToRename}`, true)
     }
     return episodeIdentifier;
   }
 
   async doLogin(): Promise<void> {
-    console.log("starting login");
+    log("starting login", true);
 
     const loginURL = [this.#baseURL, "auth", "login"].join("/");
     await this.page.goto(loginURL);
@@ -52,7 +52,7 @@ class TvdbSubmitter extends BaseSubmitter {
 
     const didLogInSelector = `//*[contains(text(),"${this.username}")]`;
     await this.page.waitForXPath(didLogInSelector);
-    console.log("finishing login");
+    log("finishing login", true);
   }
 
   async openSeriesSeasonPage(series: string, season: string): Promise<void> {
@@ -65,31 +65,51 @@ class TvdbSubmitter extends BaseSubmitter {
       "official",
       seasonClean,
     ].join("/");
-    console.log(`opening ${showSeasonURL}`);
+    log(`opening ${showSeasonURL}`, true);
     await this.page.goto(showSeasonURL);
     let seasonSelector = `//*[contains(text(), "Season ${seasonClean}")]`;
     if (seasonClean == "0") {
       seasonSelector = `//*[contains(text(), "Specials")]`;
     }
     await this.page.waitForXPath(seasonSelector);
-    console.log(`opened ${showSeasonURL}`);
+    log(`opened ${showSeasonURL}`, true);
   }
 
   private async openAddEpisodePage(series: string, season: string): Promise<void> {
-    console.log("opening addEpisodePage");
+    log("opening addEpisodePage", true);
     await this.openSeriesSeasonPage(series, season);
     const addEpisodeSelector = '//*[contains(text(),"Add Episode")]';
     await this.page.waitForXPath(addEpisodeSelector);
     const addEpisodeButton = await this.page.$x(addEpisodeSelector);
     await addEpisodeButton[0].click();
-    console.log("opened addEpisodePage");
+    log("opened addEpisodePage", true);
+  }
+
+  private async addInitialEpisode(
+    episode: Episode,
+  ): Promise<void> {
+    const infoJson = episode.information();
+    log(`starting adding`, true);
+    const addEpisodeFormSelector = "//h3[text()='Episodes']/ancestor::form";
+    await this.page.waitForXPath(addEpisodeFormSelector);
+    await this.page.$eval('[name="name[]"]', setHtmlInput, infoJson.title());
+    await this.page.$eval(
+      '[name="overview[]"]',
+      setHtmlInput,
+      infoJson.description()
+    );
+    await this.page.$eval('[name="runtime[]"]', setHtmlInput, infoJson.runTime());
+    await this.page.$eval('[name="date[]"]', setHtmlInput, infoJson.airedDate());
+    const addEpisodeFormElement = await this.page.$x(addEpisodeFormSelector);
+    await this.page.evaluate(submitHtmlForm, addEpisodeFormElement[0]);
+    log(`finished adding`, true);
   }
 
   private async updateEpisode(
-    infoJson: EpisodeInformation,
-    jpgFile: string
+    episode: Episode,
   ): Promise<void> {
-    console.log("updating episode")
+    const infoJson = episode.information();
+    log("updating episode", true)
     const editEpisodeFormSelector = "form.episode-edit-form";
     await this.page.waitForSelector(editEpisodeFormSelector);
 
@@ -98,22 +118,51 @@ class TvdbSubmitter extends BaseSubmitter {
       setHtmlInput,
       infoJson.url()
     );
-    await this.page.$eval("[name=airdate]", setHtmlInput, infoJson.airedDate());
-    await this.page.$eval("[name=runtime]", setHtmlInput, infoJson.runTime());
 
-    await this.page.waitForSelector("input[type=file]");
-    if (jpgFile) {
-      const elementHandle = await this.page.$("input[type=file]");
-      await elementHandle.uploadFile(jpgFile);
-    }
-    await this.page.waitForTimeout(2000);
     await this.page.$eval(editEpisodeFormSelector, submitHtmlForm);
     const episodeAddedSuccessfully =
       '//*[contains(text(),"Episode was successfully updated!")]';
-    await this.page.waitForXPath(episodeAddedSuccessfully, {
-      timeout: 100000,
-    });
-    console.log("updated episode")
+    await this.page.waitForXPath(episodeAddedSuccessfully);
+    log("updated episode", true)
+  }
+
+  private async uploadEpisodeThumbnail(
+    episode: Episode,
+  ): Promise<void> {
+    log("Starting image upload", true)
+    const thumbnailAdder = async (thumbnailPath: string): Promise<void> => {
+      if (thumbnailPath) {
+        await this.page.waitForSelector("input[type=file]");
+        const elementHandle = await this.page.$("input[type=file]");
+        await elementHandle.uploadFile(thumbnailPath);
+        await this.page.waitForTimeout(2000);
+        await this.page.$eval('form[action="/artwork/upload_handler"]', submitHtmlForm);
+        const imageCropFormSelector = 'form[action="/artwork/upload_cropper_handler"]'
+        await this.page.waitForSelector(imageCropFormSelector);
+        await this.page.$eval(imageCropFormSelector, submitHtmlForm);
+
+        const episodeAddedSuccessfully =
+        '//*[contains(text(),"Artwork successfully added.")]';
+        await this.page.waitForXPath(episodeAddedSuccessfully, {
+          timeout: 30000,
+        });
+      }
+    }
+    const thumbnail = episode.thumbnailFilePath()
+    const thumbnailTile = episode.thumbnailFilePath()
+    const addArtworkButton = await this.page.$x("//a[text()='Add Artwork']");
+    await this.page.evaluate(clickHtmlElement, addArtworkButton[0]);
+    try {
+      await thumbnailAdder(thumbnail);
+    } catch (e) {
+      //try again with tile
+      try {
+        if (thumbnailTile != thumbnail) {
+          await thumbnailAdder(thumbnailTile);
+        }
+      } catch (e2) { }
+    }
+    log("Finished image upload", true)
   }
 
   async addEpisode(
@@ -121,35 +170,12 @@ class TvdbSubmitter extends BaseSubmitter {
     series: string,
     season: string
   ): Promise<void> {
-    console.log("adding episode", episode.name);
+    log(`Starting ${episode.name}`, true);
     await this.openAddEpisodePage(series, season);
-
-    const infoJson = episode.information();
-    // todo this is out of date
-
-    const addEpisodeFormSelector = "form.episode-add-form";
-    await this.page.waitForSelector(addEpisodeFormSelector);
-    await this.page.$eval("[name=episodename]", setHtmlInput, infoJson.title());
-    await this.page.$eval(
-      "[name=overview]",
-      setHtmlInput,
-      infoJson.description()
-    );
-    await this.page.$eval(addEpisodeFormSelector, submitHtmlForm);
-
-    try {
-      await this.updateEpisode(infoJson, episode.thumbnailFilePath());
-    } catch (e) {
-      //try again with tile
-      try {
-        await this.updateEpisode(infoJson, episode.thumbnailFileTilePath());
-      } catch (e2) {
-        // otherwise dont bother with an image
-        await this.updateEpisode(infoJson, null);
-      }
-    }
-
-    console.log("added episode");
+    await this.addInitialEpisode(episode)
+    await this.updateEpisode(episode)
+    await this.uploadEpisodeThumbnail(episode)
+    log(`Finished ${episode.name}`, true);
   }
 }
 

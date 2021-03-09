@@ -15,7 +15,8 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _baseURL;
 import { BaseSubmitter } from "./BaseSubmitter.js";
-import { setHtmlInput, submitHtmlForm } from '../../helpers/PuppeteerHelper.js';
+import { setHtmlInput, submitHtmlForm, clickHtmlElement } from '../../helpers/PuppeteerHelper.js';
+import { log } from '../../helpers/LogHelper.js';
 class TvdbSubmitter extends BaseSubmitter {
     constructor() {
         super(...arguments);
@@ -23,7 +24,7 @@ class TvdbSubmitter extends BaseSubmitter {
     }
     getEpisodeIdentifier(fileToRename) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(`Looking for episode for ${fileToRename}`);
+            log(`Looking for episode for ${fileToRename}`, true);
             // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
             const cleanedFilename = fileToRename
                 .toLowerCase()
@@ -35,17 +36,17 @@ class TvdbSubmitter extends BaseSubmitter {
             let episodeIdentifier = "";
             try {
                 episodeIdentifier = yield this.page.evaluate((element) => element.textContent, episodeTextElement[0]);
-                console.log(`Found episode for ${fileToRename}`);
+                log(`Found episode for ${fileToRename}`, true);
             }
             catch (e) {
-                console.log(`Didnt find episode for ${fileToRename}`);
+                log(`Didnt find episode for ${fileToRename}`, true);
             }
             return episodeIdentifier;
         });
     }
     doLogin() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("starting login");
+            log("starting login", true);
             const loginURL = [__classPrivateFieldGet(this, _baseURL), "auth", "login"].join("/");
             yield this.page.goto(loginURL);
             // i accept is gone?
@@ -60,7 +61,7 @@ class TvdbSubmitter extends BaseSubmitter {
             yield this.page.$eval(loginFormSelector, (form) => form.submit());
             const didLogInSelector = `//*[contains(text(),"${this.username}")]`;
             yield this.page.waitForXPath(didLogInSelector);
-            console.log("finishing login");
+            log("finishing login", true);
         });
     }
     openSeriesSeasonPage(series, season) {
@@ -74,73 +75,101 @@ class TvdbSubmitter extends BaseSubmitter {
                 "official",
                 seasonClean,
             ].join("/");
-            console.log(`opening ${showSeasonURL}`);
+            log(`opening ${showSeasonURL}`, true);
             yield this.page.goto(showSeasonURL);
             let seasonSelector = `//*[contains(text(), "Season ${seasonClean}")]`;
             if (seasonClean == "0") {
                 seasonSelector = `//*[contains(text(), "Specials")]`;
             }
             yield this.page.waitForXPath(seasonSelector);
-            console.log(`opened ${showSeasonURL}`);
+            log(`opened ${showSeasonURL}`, true);
         });
     }
     openAddEpisodePage(series, season) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("opening addEpisodePage");
+            log("opening addEpisodePage", true);
             yield this.openSeriesSeasonPage(series, season);
             const addEpisodeSelector = '//*[contains(text(),"Add Episode")]';
             yield this.page.waitForXPath(addEpisodeSelector);
             const addEpisodeButton = yield this.page.$x(addEpisodeSelector);
             yield addEpisodeButton[0].click();
-            console.log("opened addEpisodePage");
+            log("opened addEpisodePage", true);
         });
     }
-    updateEpisode(infoJson, jpgFile) {
+    addInitialEpisode(episode) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("updating episode");
+            const infoJson = episode.information();
+            log(`starting adding`, true);
+            const addEpisodeFormSelector = "//h3[text()='Episodes']/ancestor::form";
+            yield this.page.waitForXPath(addEpisodeFormSelector);
+            yield this.page.$eval('[name="name[]"]', setHtmlInput, infoJson.title());
+            yield this.page.$eval('[name="overview[]"]', setHtmlInput, infoJson.description());
+            yield this.page.$eval('[name="runtime[]"]', setHtmlInput, infoJson.runTime());
+            yield this.page.$eval('[name="date[]"]', setHtmlInput, infoJson.airedDate());
+            const addEpisodeFormElement = yield this.page.$x(addEpisodeFormSelector);
+            yield this.page.evaluate(submitHtmlForm, addEpisodeFormElement[0]);
+            log(`finished adding`, true);
+        });
+    }
+    updateEpisode(episode) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const infoJson = episode.information();
+            log("updating episode", true);
             const editEpisodeFormSelector = "form.episode-edit-form";
             yield this.page.waitForSelector(editEpisodeFormSelector);
             yield this.page.$eval("[name=productioncode]", setHtmlInput, infoJson.url());
-            yield this.page.$eval("[name=airdate]", setHtmlInput, infoJson.airedDate());
-            yield this.page.$eval("[name=runtime]", setHtmlInput, infoJson.runTime());
-            yield this.page.waitForSelector("input[type=file]");
-            if (jpgFile) {
-                const elementHandle = yield this.page.$("input[type=file]");
-                yield elementHandle.uploadFile(jpgFile);
-            }
-            yield this.page.waitForTimeout(2000);
             yield this.page.$eval(editEpisodeFormSelector, submitHtmlForm);
             const episodeAddedSuccessfully = '//*[contains(text(),"Episode was successfully updated!")]';
-            yield this.page.waitForXPath(episodeAddedSuccessfully, {
-                timeout: 100000,
-            });
-            console.log("updated episode");
+            yield this.page.waitForXPath(episodeAddedSuccessfully);
+            log("updated episode", true);
         });
     }
-    addEpisode(episode, series, season) {
+    uploadEpisodeThumbnail(episode) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("adding episode", episode.name);
-            yield this.openAddEpisodePage(series, season);
-            const infoJson = episode.information();
-            const addEpisodeFormSelector = "form.episode-add-form";
-            yield this.page.waitForSelector(addEpisodeFormSelector);
-            yield this.page.$eval("[name=episodename]", setHtmlInput, infoJson.title());
-            yield this.page.$eval("[name=overview]", setHtmlInput, infoJson.description());
-            yield this.page.$eval(addEpisodeFormSelector, submitHtmlForm);
+            log("Starting image upload", true);
+            const thumbnailAdder = (thumbnailPath) => __awaiter(this, void 0, void 0, function* () {
+                if (thumbnailPath) {
+                    yield this.page.waitForSelector("input[type=file]");
+                    const elementHandle = yield this.page.$("input[type=file]");
+                    yield elementHandle.uploadFile(thumbnailPath);
+                    yield this.page.waitForTimeout(2000);
+                    yield this.page.$eval('form[action="/artwork/upload_handler"]', submitHtmlForm);
+                    const imageCropFormSelector = 'form[action="/artwork/upload_cropper_handler"]';
+                    yield this.page.waitForSelector(imageCropFormSelector);
+                    yield this.page.$eval(imageCropFormSelector, submitHtmlForm);
+                    const episodeAddedSuccessfully = '//*[contains(text(),"Artwork successfully added.")]';
+                    yield this.page.waitForXPath(episodeAddedSuccessfully, {
+                        timeout: 30000,
+                    });
+                }
+            });
+            const thumbnail = episode.thumbnailFilePath();
+            const thumbnailTile = episode.thumbnailFilePath();
+            const addArtworkButton = yield this.page.$x("//a[text()='Add Artwork']");
+            yield this.page.evaluate(clickHtmlElement, addArtworkButton[0]);
             try {
-                yield this.updateEpisode(infoJson, episode.thumbnailFilePath());
+                yield thumbnailAdder(thumbnail);
             }
             catch (e) {
                 //try again with tile
                 try {
-                    yield this.updateEpisode(infoJson, episode.thumbnailFileTilePath());
+                    if (thumbnailTile != thumbnail) {
+                        yield thumbnailAdder(thumbnailTile);
+                    }
                 }
-                catch (e2) {
-                    // otherwise dont bother with an image
-                    yield this.updateEpisode(infoJson, null);
-                }
+                catch (e2) { }
             }
-            console.log("added episode");
+            log("Finished image upload", true);
+        });
+    }
+    addEpisode(episode, series, season) {
+        return __awaiter(this, void 0, void 0, function* () {
+            log(`Starting ${episode.name}`, true);
+            yield this.openAddEpisodePage(series, season);
+            yield this.addInitialEpisode(episode);
+            yield this.updateEpisode(episode);
+            yield this.uploadEpisodeThumbnail(episode);
+            log(`Finished ${episode.name}`, true);
         });
     }
 }
