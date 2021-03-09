@@ -57,7 +57,7 @@ class ShowSubmitter {
                 yield submitter.openSeriesSeasonPage(series, season);
                 const episodeTextIdentifier = yield submitter.getEpisodeIdentifier(fileToRename);
                 if (!this.renameOnly && episodeTextIdentifier.length == 0) {
-                    // await submitter.addEpisode(episode, series, season);
+                    yield submitter.addEpisode(episode, series, season);
                 }
             }
         });
