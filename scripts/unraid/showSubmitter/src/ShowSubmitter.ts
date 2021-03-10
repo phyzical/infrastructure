@@ -47,9 +47,9 @@ class ShowSubmitter {
     }
   }
 
-  private async finishSubmitters (): Promise<void> {
+  private async finishSubmitters (saveScreenshot: boolean = false): Promise<void> {
     for (const submitter of this.submitters) {
-      await submitter.finish();
+      await submitter.finish(saveScreenshot);
     }
   }
 
@@ -98,13 +98,13 @@ class ShowSubmitter {
         log(`Finished ${series} - ${season}`);
       }
     }
-    await this.finishSubmitters();
+    await this.finishSubmitters(false);
   }
 
   start(): void {
     this.addEpisodes().catch(async e => {
       log(e)
-      await this.finishSubmitters().catch(e2 => {
+      await this.finishSubmitters(true).catch(e2 => {
         log(e2)
       })
     })

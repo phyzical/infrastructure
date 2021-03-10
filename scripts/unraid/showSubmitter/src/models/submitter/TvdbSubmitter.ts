@@ -119,7 +119,12 @@ class TvdbSubmitter extends BaseSubmitter {
       infoJson.url()
     );
 
-    await this.page.$eval(editEpisodeFormSelector, submitHtmlForm);
+    const saveButtonSelector = "//button[text()='Save']"
+    await this.page.waitForXPath(saveButtonSelector);
+    const saveButton = await this.page.$x(saveButtonSelector);
+    await this.page.evaluate(clickHtmlElement, saveButton[0]);
+
+    // await this.page.$eval(editEpisodeFormSelector, submitHtmlForm);
     const episodeAddedSuccessfully =
       '//*[contains(text(),"Episode was successfully updated!")]';
     await this.page.waitForXPath(episodeAddedSuccessfully);
@@ -130,39 +135,37 @@ class TvdbSubmitter extends BaseSubmitter {
     episode: Episode,
   ): Promise<void> {
     log("Starting image upload", true)
-    const thumbnailAdder = async (thumbnailPath: string): Promise<void> => {
+    const thumbnailPath = episode.thumbnailFilePath()
+    const addArtworkButton = await this.page.$x("//a[text()='Add Artwork']");
+    await this.page.evaluate(clickHtmlElement, addArtworkButton[0]);
+    try {
       if (thumbnailPath) {
         await this.page.waitForSelector("input[type=file]");
         const elementHandle = await this.page.$("input[type=file]");
         await elementHandle.uploadFile(thumbnailPath);
-        await this.page.waitForTimeout(2000);
-        await this.page.$eval('form[action="/artwork/upload_handler"]', submitHtmlForm);
-        const imageCropFormSelector = 'form[action="/artwork/upload_cropper_handler"]'
-        await this.page.waitForSelector(imageCropFormSelector);
-        await this.page.$eval(imageCropFormSelector, submitHtmlForm);
+        const continueButtonSelector = "//button[text()='Continue']"
+        await this.page.waitForXPath(continueButtonSelector);
+        const continueButton = await this.page.$x(continueButtonSelector);
+        await this.page.evaluate(clickHtmlElement, continueButton[0]);
 
-        const episodeAddedSuccessfully =
-        '//*[contains(text(),"Artwork successfully added.")]';
+
+        await this.page.waitForTimeout(2000);
+        const saveButtonSelector = "//button[text()='Finish']"
+        await this.page.waitForXPath(saveButtonSelector);
+        const saveButton = await this.page.$x(saveButtonSelector);
+        await this.page.evaluate(clickHtmlElement, saveButton[0]);
+
+        const episodeAddedSuccessfully = '//*[contains(text(),"Artwork successfully added.")]';
         await this.page.waitForXPath(episodeAddedSuccessfully, {
           timeout: 30000,
         });
+        log("Successfully uploaded image", true)
       }
-    }
-    const thumbnail = episode.thumbnailFilePath()
-    const thumbnailTile = episode.thumbnailFilePath()
-    const addArtworkButton = await this.page.$x("//a[text()='Add Artwork']");
-    await this.page.evaluate(clickHtmlElement, addArtworkButton[0]);
-    try {
-      await thumbnailAdder(thumbnail);
     } catch (e) {
       //try again with tile
-      try {
-        if (thumbnailTile != thumbnail) {
-          await thumbnailAdder(thumbnailTile);
-        }
-      } catch (e2) { }
+      // console.log(e)
+      log("Failed image upload", true)
     }
-    log("Finished image upload", true)
   }
 
   async addEpisode(
@@ -170,12 +173,12 @@ class TvdbSubmitter extends BaseSubmitter {
     series: string,
     season: string
   ): Promise<void> {
-    log(`Starting ${episode.name}`, true);
+    log(`Starting adding of ${episode.name}`, true);
     await this.openAddEpisodePage(series, season);
     await this.addInitialEpisode(episode)
     await this.updateEpisode(episode)
     await this.uploadEpisodeThumbnail(episode)
-    log(`Finished ${episode.name}`, true);
+    log(`Finished adding of ${episode.name}`, true);
   }
 }
 

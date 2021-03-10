@@ -20,14 +20,12 @@ class Episode implements EpisodeInterface {
   }
 
   thumbnailFilePath(): string {
-    return [this.folder, this.thumbnailFile].join('/')
+    let thumbnailPath = this.thumbnailFile
+    if (!thumbnailPath) {
+      thumbnailPath = this.thumbnailFileTile
+    }
+    return [this.folder, thumbnailPath].join('/')
   }
-
-  thumbnailFileTilePath(): string {
-    return [this.folder, this.thumbnailFileTile].join('/')
-  }
-
-  
 }
 
 export { Episode };

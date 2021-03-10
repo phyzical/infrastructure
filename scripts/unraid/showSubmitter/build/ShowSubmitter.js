@@ -44,10 +44,10 @@ class ShowSubmitter {
             }
         });
     }
-    finishSubmitters() {
+    finishSubmitters(saveScreenshot = false) {
         return __awaiter(this, void 0, void 0, function* () {
             for (const submitter of this.submitters) {
-                yield submitter.finish();
+                yield submitter.finish(saveScreenshot);
             }
         });
     }
@@ -99,13 +99,13 @@ class ShowSubmitter {
                     log(`Finished ${series} - ${season}`);
                 }
             }
-            yield this.finishSubmitters();
+            yield this.finishSubmitters(false);
         });
     }
     start() {
         this.addEpisodes().catch((e) => __awaiter(this, void 0, void 0, function* () {
             log(e);
-            yield this.finishSubmitters().catch(e2 => {
+            yield this.finishSubmitters(true).catch(e2 => {
                 log(e2);
             });
         }));

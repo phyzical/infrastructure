@@ -118,7 +118,11 @@ class TvdbSubmitter extends BaseSubmitter {
             const editEpisodeFormSelector = "form.episode-edit-form";
             yield this.page.waitForSelector(editEpisodeFormSelector);
             yield this.page.$eval("[name=productioncode]", setHtmlInput, infoJson.url());
-            yield this.page.$eval(editEpisodeFormSelector, submitHtmlForm);
+            const saveButtonSelector = "//button[text()='Save']";
+            yield this.page.waitForXPath(saveButtonSelector);
+            const saveButton = yield this.page.$x(saveButtonSelector);
+            yield this.page.evaluate(clickHtmlElement, saveButton[0]);
+            // await this.page.$eval(editEpisodeFormSelector, submitHtmlForm);
             const episodeAddedSuccessfully = '//*[contains(text(),"Episode was successfully updated!")]';
             yield this.page.waitForXPath(episodeAddedSuccessfully);
             log("updated episode", true);
@@ -127,49 +131,45 @@ class TvdbSubmitter extends BaseSubmitter {
     uploadEpisodeThumbnail(episode) {
         return __awaiter(this, void 0, void 0, function* () {
             log("Starting image upload", true);
-            const thumbnailAdder = (thumbnailPath) => __awaiter(this, void 0, void 0, function* () {
+            const thumbnailPath = episode.thumbnailFilePath();
+            const addArtworkButton = yield this.page.$x("//a[text()='Add Artwork']");
+            yield this.page.evaluate(clickHtmlElement, addArtworkButton[0]);
+            try {
                 if (thumbnailPath) {
                     yield this.page.waitForSelector("input[type=file]");
                     const elementHandle = yield this.page.$("input[type=file]");
                     yield elementHandle.uploadFile(thumbnailPath);
+                    const continueButtonSelector = "//button[text()='Continue']";
+                    yield this.page.waitForXPath(continueButtonSelector);
+                    const continueButton = yield this.page.$x(continueButtonSelector);
+                    yield this.page.evaluate(clickHtmlElement, continueButton[0]);
                     yield this.page.waitForTimeout(2000);
-                    yield this.page.$eval('form[action="/artwork/upload_handler"]', submitHtmlForm);
-                    const imageCropFormSelector = 'form[action="/artwork/upload_cropper_handler"]';
-                    yield this.page.waitForSelector(imageCropFormSelector);
-                    yield this.page.$eval(imageCropFormSelector, submitHtmlForm);
+                    const saveButtonSelector = "//button[text()='Finish']";
+                    yield this.page.waitForXPath(saveButtonSelector);
+                    const saveButton = yield this.page.$x(saveButtonSelector);
+                    yield this.page.evaluate(clickHtmlElement, saveButton[0]);
                     const episodeAddedSuccessfully = '//*[contains(text(),"Artwork successfully added.")]';
                     yield this.page.waitForXPath(episodeAddedSuccessfully, {
                         timeout: 30000,
                     });
+                    log("Successfully uploaded image", true);
                 }
-            });
-            const thumbnail = episode.thumbnailFilePath();
-            const thumbnailTile = episode.thumbnailFilePath();
-            const addArtworkButton = yield this.page.$x("//a[text()='Add Artwork']");
-            yield this.page.evaluate(clickHtmlElement, addArtworkButton[0]);
-            try {
-                yield thumbnailAdder(thumbnail);
             }
             catch (e) {
                 //try again with tile
-                try {
-                    if (thumbnailTile != thumbnail) {
-                        yield thumbnailAdder(thumbnailTile);
-                    }
-                }
-                catch (e2) { }
+                // console.log(e)
+                log("Failed image upload", true);
             }
-            log("Finished image upload", true);
         });
     }
     addEpisode(episode, series, season) {
         return __awaiter(this, void 0, void 0, function* () {
-            log(`Starting ${episode.name}`, true);
+            log(`Starting adding of ${episode.name}`, true);
             yield this.openAddEpisodePage(series, season);
             yield this.addInitialEpisode(episode);
             yield this.updateEpisode(episode);
             yield this.uploadEpisodeThumbnail(episode);
-            log(`Finished ${episode.name}`, true);
+            log(`Finished adding of ${episode.name}`, true);
         });
     }
 }

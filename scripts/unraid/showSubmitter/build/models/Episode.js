@@ -8,10 +8,11 @@ class Episode {
         return [this.folder, this.informationFile].join('/');
     }
     thumbnailFilePath() {
-        return [this.folder, this.thumbnailFile].join('/');
-    }
-    thumbnailFileTilePath() {
-        return [this.folder, this.thumbnailFileTile].join('/');
+        let thumbnailPath = this.thumbnailFile;
+        if (!thumbnailPath) {
+            thumbnailPath = this.thumbnailFileTile;
+        }
+        return [this.folder, thumbnailPath].join('/');
     }
 }
 export { Episode };
