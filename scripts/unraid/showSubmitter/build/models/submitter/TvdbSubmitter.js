@@ -139,15 +139,13 @@ class TvdbSubmitter extends BaseSubmitter {
                 const elementHandle = yield this.page.$("input[type=file]");
                 yield elementHandle.uploadFile(thumbnailPath);
                 const continueButtonSelector = "//button[text()='Continue']";
-                yield this.page.waitForXPath(continueButtonSelector, {
-                    timeout: 10000,
-                });
+                yield this.page.waitForXPath(continueButtonSelector);
+                yield this.page.waitForTimeout(3000);
                 const continueButton = yield this.page.$x(continueButtonSelector);
                 yield this.page.evaluate(clickHtmlElement, continueButton[0]);
+                yield this.page.waitForTimeout(3000);
                 const saveButtonSelector = "//button[text()='Finish']";
-                yield this.page.waitForXPath(saveButtonSelector, {
-                    timeout: 10000,
-                });
+                yield this.page.waitForXPath(saveButtonSelector);
                 const saveButton = yield this.page.$x(saveButtonSelector);
                 yield this.page.evaluate(clickHtmlElement, saveButton[0]);
                 const episodeAddedSuccessfully = '//*[contains(text(),"Artwork successfully added.")]';
