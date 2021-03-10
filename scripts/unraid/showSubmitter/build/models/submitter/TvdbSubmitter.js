@@ -155,8 +155,8 @@ class TvdbSubmitter extends BaseSubmitter {
                 log("Successfully uploaded image", true);
             }
             catch (e) {
-                log(e);
-                yield this.takeScreenshot();
+                // log(e)
+                // await this.takeScreenshot()
                 log("Failed image upload", true);
             }
         });
@@ -167,7 +167,6 @@ class TvdbSubmitter extends BaseSubmitter {
             yield this.openAddEpisodePage(series, season);
             yield this.addInitialEpisode(episode);
             yield this.updateEpisode(episode);
-            //todo this still isnt working
             yield this.uploadEpisodeThumbnail(episode);
             log(`Finished adding of ${episode.name}`);
         });

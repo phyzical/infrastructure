@@ -160,8 +160,8 @@ class TvdbSubmitter extends BaseSubmitter {
       });
       log("Successfully uploaded image", true)
     } catch (e) {
-      log(e)
-      await this.takeScreenshot()
+      // log(e)
+      // await this.takeScreenshot()
       log("Failed image upload", true)
     }
   }
@@ -175,7 +175,6 @@ class TvdbSubmitter extends BaseSubmitter {
     await this.openAddEpisodePage(series, season);
     await this.addInitialEpisode(episode)
     await this.updateEpisode(episode)
-    //todo this still isnt working
     await this.uploadEpisodeThumbnail(episode)
     log(`Finished adding of ${episode.name}`);
   }
