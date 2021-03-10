@@ -9,11 +9,14 @@ class TvdbSubmitter extends BaseSubmitter {
   async getEpisodeIdentifier(fileToRename: string): Promise<string> {
     log(`Looking for episode for ${fileToRename}`, true)
 
+    const filenameCleaned = fileToRename
+      .toLowerCase()
+      .replace(/\\| |'|"|_|\/|-|\|/g, "")
     // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
     const episodeFinderSelector =
       `//tr[.//a[contains(translate(translate(translate(text(),"?'/|-*: \\",""),'"',''),` +
       `'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') ,` +
-      `'${fileToRename}')]]/td`;
+      `'${filenameCleaned}')]]/td`;
     const episodeTextElement = await this.page.$x(episodeFinderSelector);
     let episodeIdentifier = "";
     try {
@@ -89,7 +92,7 @@ class TvdbSubmitter extends BaseSubmitter {
     log(`starting adding`, true);
     const addEpisodeFormSelector = "//h3[text()='Episodes']/ancestor::form";
     await this.page.waitForXPath(addEpisodeFormSelector);
-    await this.page.$eval('[name="name[]"]', setHtmlInput, episode.titleFormatted());
+    await this.page.$eval('[name="name[]"]', setHtmlInput, episode.title());
     await this.page.$eval(
       '[name="overview[]"]',
       setHtmlInput,

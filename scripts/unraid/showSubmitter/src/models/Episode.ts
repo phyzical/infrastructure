@@ -30,12 +30,6 @@ class Episode implements EpisodeInterface {
   title() {
     return this.name.substring(this.name.indexOf(".") + 1)
   }
-
-  titleFormatted() {
-    return this.title()
-      .toLowerCase()
-      .replace(/\\| |'|"|_|\/|-|\|/g, "")
-  }
 }
 
 export { Episode };

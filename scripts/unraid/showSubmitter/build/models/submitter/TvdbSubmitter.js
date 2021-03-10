@@ -25,10 +25,13 @@ class TvdbSubmitter extends BaseSubmitter {
     getEpisodeIdentifier(fileToRename) {
         return __awaiter(this, void 0, void 0, function* () {
             log(`Looking for episode for ${fileToRename}`, true);
+            const filenameCleaned = fileToRename
+                .toLowerCase()
+                .replace(/\\| |'|"|_|\/|-|\|/g, "");
             // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
             const episodeFinderSelector = `//tr[.//a[contains(translate(translate(translate(text(),"?'/|-*: \\",""),'"',''),` +
                 `'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') ,` +
-                `'${fileToRename}')]]/td`;
+                `'${filenameCleaned}')]]/td`;
             const episodeTextElement = yield this.page.$x(episodeFinderSelector);
             let episodeIdentifier = "";
             try {
@@ -99,7 +102,7 @@ class TvdbSubmitter extends BaseSubmitter {
             log(`starting adding`, true);
             const addEpisodeFormSelector = "//h3[text()='Episodes']/ancestor::form";
             yield this.page.waitForXPath(addEpisodeFormSelector);
-            yield this.page.$eval('[name="name[]"]', setHtmlInput, episode.titleFormatted());
+            yield this.page.$eval('[name="name[]"]', setHtmlInput, episode.title());
             yield this.page.$eval('[name="overview[]"]', setHtmlInput, infoJson.description());
             yield this.page.$eval('[name="runtime[]"]', setHtmlInput, infoJson.runTime());
             yield this.page.$eval('[name="date[]"]', setHtmlInput, infoJson.airedDate());

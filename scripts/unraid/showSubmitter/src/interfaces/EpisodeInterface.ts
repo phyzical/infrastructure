@@ -10,7 +10,6 @@ interface EpisodeInterface {
   informationFilePath(): string;
   thumbnailFilePath(): string;
   title(): string;
-  titleFormatted(): string;
 }
 
 export { EpisodeInterface };
