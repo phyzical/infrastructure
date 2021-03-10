@@ -10,13 +10,10 @@ class TvdbSubmitter extends BaseSubmitter {
     log(`Looking for episode for ${fileToRename}`, true)
 
     // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
-    const cleanedFilename = fileToRename
-      .toLowerCase()
-      .replace(/\\| |'|"|_|\/|-|\|/g, "");
     const episodeFinderSelector =
       `//tr[.//a[contains(translate(translate(translate(text(),"?'/|-*: \\",""),'"',''),` +
       `'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') ,` +
-      `'${cleanedFilename}')]]/td`;
+      `'${fileToRename}')]]/td`;
     const episodeTextElement = await this.page.$x(episodeFinderSelector);
     let episodeIdentifier = "";
     try {
@@ -92,7 +89,7 @@ class TvdbSubmitter extends BaseSubmitter {
     log(`starting adding`, true);
     const addEpisodeFormSelector = "//h3[text()='Episodes']/ancestor::form";
     await this.page.waitForXPath(addEpisodeFormSelector);
-    await this.page.$eval('[name="name[]"]', setHtmlInput, infoJson.title());
+    await this.page.$eval('[name="name[]"]', setHtmlInput, episode.titleFormatted());
     await this.page.$eval(
       '[name="overview[]"]',
       setHtmlInput,
@@ -173,12 +170,12 @@ class TvdbSubmitter extends BaseSubmitter {
     series: string,
     season: string
   ): Promise<void> {
-    log(`Starting adding of ${episode.name}`, true);
+    log(`Starting adding of ${episode.name}`);
     await this.openAddEpisodePage(series, season);
     await this.addInitialEpisode(episode)
     await this.updateEpisode(episode)
     await this.uploadEpisodeThumbnail(episode)
-    log(`Finished adding of ${episode.name}`, true);
+    log(`Finished adding of ${episode.name}`);
   }
 }
 

@@ -26,12 +26,9 @@ class TvdbSubmitter extends BaseSubmitter {
         return __awaiter(this, void 0, void 0, function* () {
             log(`Looking for episode for ${fileToRename}`, true);
             // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
-            const cleanedFilename = fileToRename
-                .toLowerCase()
-                .replace(/\\| |'|"|_|\/|-|\|/g, "");
             const episodeFinderSelector = `//tr[.//a[contains(translate(translate(translate(text(),"?'/|-*: \\",""),'"',''),` +
                 `'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') ,` +
-                `'${cleanedFilename}')]]/td`;
+                `'${fileToRename}')]]/td`;
             const episodeTextElement = yield this.page.$x(episodeFinderSelector);
             let episodeIdentifier = "";
             try {
@@ -102,7 +99,7 @@ class TvdbSubmitter extends BaseSubmitter {
             log(`starting adding`, true);
             const addEpisodeFormSelector = "//h3[text()='Episodes']/ancestor::form";
             yield this.page.waitForXPath(addEpisodeFormSelector);
-            yield this.page.$eval('[name="name[]"]', setHtmlInput, infoJson.title());
+            yield this.page.$eval('[name="name[]"]', setHtmlInput, episode.titleFormatted());
             yield this.page.$eval('[name="overview[]"]', setHtmlInput, infoJson.description());
             yield this.page.$eval('[name="runtime[]"]', setHtmlInput, infoJson.runTime());
             yield this.page.$eval('[name="date[]"]', setHtmlInput, infoJson.airedDate());
@@ -164,12 +161,12 @@ class TvdbSubmitter extends BaseSubmitter {
     }
     addEpisode(episode, series, season) {
         return __awaiter(this, void 0, void 0, function* () {
-            log(`Starting adding of ${episode.name}`, true);
+            log(`Starting adding of ${episode.name}`);
             yield this.openAddEpisodePage(series, season);
             yield this.addInitialEpisode(episode);
             yield this.updateEpisode(episode);
             yield this.uploadEpisodeThumbnail(episode);
-            log(`Finished adding of ${episode.name}`, true);
+            log(`Finished adding of ${episode.name}`);
         });
     }
 }

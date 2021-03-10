@@ -91,9 +91,10 @@ class ShowSubmitter {
                 for (const [season, episodes] of Object.entries(seasons)) {
                     log(`Starting ${series} - ${season}`);
                     for (const episode of episodes) {
-                        const fileToRename = episode.name.substring(episode.name.indexOf(".") + 1);
-                        yield this.addEpisode(fileToRename, series, season, episode);
-                        const finalFilename = yield this.verifyAddedEpisode(fileToRename, series, season);
+                        const fileToRename = episode.title();
+                        const fileToRenameFormatted = episode.titleFormatted();
+                        yield this.addEpisode(fileToRenameFormatted, series, season, episode);
+                        const finalFilename = yield this.verifyAddedEpisode(fileToRenameFormatted, series, season);
                         yield fileHandler.renameEpisodeFiles(fileToRename, finalFilename, series, season);
                     }
                     log(`Finished ${series} - ${season}`);

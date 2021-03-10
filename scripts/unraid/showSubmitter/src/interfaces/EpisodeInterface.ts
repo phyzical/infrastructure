@@ -9,6 +9,8 @@ interface EpisodeInterface {
   information(): EpisodeInformationInterface;
   informationFilePath(): string;
   thumbnailFilePath(): string;
+  title(): string;
+  titleFormatted(): string;
 }
 
 export { EpisodeInterface };

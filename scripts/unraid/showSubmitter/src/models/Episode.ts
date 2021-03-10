@@ -26,6 +26,16 @@ class Episode implements EpisodeInterface {
     }
     return [this.folder, thumbnailPath].join('/')
   }
+
+  title() {
+    return this.name.substring(this.name.indexOf(".") + 1)
+  }
+
+  titleFormatted() {
+    return this.title()
+      .toLowerCase()
+      .replace(/\\| |'|"|_|\/|-|\|/g, "")
+  }
 }
 
 export { Episode };
