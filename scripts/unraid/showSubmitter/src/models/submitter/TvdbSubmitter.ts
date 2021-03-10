@@ -135,7 +135,7 @@ class TvdbSubmitter extends BaseSubmitter {
     episode: Episode,
   ): Promise<void> {
     log("Starting image upload", true)
-    const thumbnailPath = episode.thumbnailFilePath()
+    const thumbnailPath = episode.thumbnailTileFilePath()
     const addArtworkButton = await this.page.$x("//a[text()='Add Artwork']");
     await this.page.evaluate(clickHtmlElement, addArtworkButton[0]);
     try {
@@ -144,14 +144,17 @@ class TvdbSubmitter extends BaseSubmitter {
         const elementHandle = await this.page.$("input[type=file]");
         await elementHandle.uploadFile(thumbnailPath);
         const continueButtonSelector = "//button[text()='Continue']"
-        await this.page.waitForXPath(continueButtonSelector);
+        await this.page.waitForXPath(continueButtonSelector, {
+          timeout: 10000,
+        });
         const continueButton = await this.page.$x(continueButtonSelector);
         await this.page.evaluate(clickHtmlElement, continueButton[0]);
 
 
-        await this.page.waitForTimeout(2000);
         const saveButtonSelector = "//button[text()='Finish']"
-        await this.page.waitForXPath(saveButtonSelector);
+        await this.page.waitForXPath(saveButtonSelector, {
+          timeout: 10000,
+        });
         const saveButton = await this.page.$x(saveButtonSelector);
         await this.page.evaluate(clickHtmlElement, saveButton[0]);
 

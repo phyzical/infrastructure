@@ -131,7 +131,7 @@ class TvdbSubmitter extends BaseSubmitter {
     uploadEpisodeThumbnail(episode) {
         return __awaiter(this, void 0, void 0, function* () {
             log("Starting image upload", true);
-            const thumbnailPath = episode.thumbnailFilePath();
+            const thumbnailPath = episode.thumbnailTileFilePath();
             const addArtworkButton = yield this.page.$x("//a[text()='Add Artwork']");
             yield this.page.evaluate(clickHtmlElement, addArtworkButton[0]);
             try {
@@ -140,12 +140,15 @@ class TvdbSubmitter extends BaseSubmitter {
                     const elementHandle = yield this.page.$("input[type=file]");
                     yield elementHandle.uploadFile(thumbnailPath);
                     const continueButtonSelector = "//button[text()='Continue']";
-                    yield this.page.waitForXPath(continueButtonSelector);
+                    yield this.page.waitForXPath(continueButtonSelector, {
+                        timeout: 10000,
+                    });
                     const continueButton = yield this.page.$x(continueButtonSelector);
                     yield this.page.evaluate(clickHtmlElement, continueButton[0]);
-                    yield this.page.waitForTimeout(2000);
                     const saveButtonSelector = "//button[text()='Finish']";
-                    yield this.page.waitForXPath(saveButtonSelector);
+                    yield this.page.waitForXPath(saveButtonSelector, {
+                        timeout: 10000,
+                    });
                     const saveButton = yield this.page.$x(saveButtonSelector);
                     yield this.page.evaluate(clickHtmlElement, saveButton[0]);
                     const episodeAddedSuccessfully = '//*[contains(text(),"Artwork successfully added.")]';
