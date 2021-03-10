@@ -47,24 +47,29 @@ class BaseSubmitter {
     }
     finish(saveScreenshot = false) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (saveScreenshot) {
+                yield this.takeScreenshot();
+            }
+            yield this.browser.close();
+        });
+    }
+    takeScreenshot() {
+        return __awaiter(this, void 0, void 0, function* () {
             const submitterName = this.constructor.name;
             const nowDateString = new Date() //
                 .toJSON()
                 .replace(/-*:*T*Z*\.*/g, "");
             const screenshotPath = `${ShowSubmitter.folder}/${nowDateString}-${submitterName}.png`;
-            if (saveScreenshot) {
-                try {
-                    yield this.page.screenshot({
-                        path: screenshotPath,
-                        fullPage: true,
-                    });
-                    log(`screen shot can be found at ${screenshotPath}`);
-                }
-                catch (e) {
-                    log("failed to save screenshot");
-                }
+            try {
+                yield this.page.screenshot({
+                    path: screenshotPath,
+                    fullPage: true,
+                });
+                log(`screen shot can be found at ${screenshotPath}`);
             }
-            yield this.browser.close();
+            catch (e) {
+                log("failed to save screenshot");
+            }
         });
     }
 }

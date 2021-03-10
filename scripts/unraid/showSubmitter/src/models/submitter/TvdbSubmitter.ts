@@ -139,34 +139,31 @@ class TvdbSubmitter extends BaseSubmitter {
     const addArtworkButton = await this.page.$x("//a[text()='Add Artwork']");
     await this.page.evaluate(clickHtmlElement, addArtworkButton[0]);
     try {
-      if (thumbnailPath) {
-        await this.page.waitForSelector("input[type=file]");
-        const elementHandle = await this.page.$("input[type=file]");
-        await elementHandle.uploadFile(thumbnailPath);
-        const continueButtonSelector = "//button[text()='Continue']"
-        await this.page.waitForXPath(continueButtonSelector, {
-          timeout: 10000,
-        });
-        const continueButton = await this.page.$x(continueButtonSelector);
-        await this.page.evaluate(clickHtmlElement, continueButton[0]);
+      await this.page.waitForSelector("input[type=file]");
+      const elementHandle = await this.page.$("input[type=file]");
+      await elementHandle.uploadFile(thumbnailPath);
+      const continueButtonSelector = "//button[text()='Continue']"
+      await this.page.waitForXPath(continueButtonSelector, {
+        timeout: 10000,
+      });
+      const continueButton = await this.page.$x(continueButtonSelector);
+      await this.page.evaluate(clickHtmlElement, continueButton[0]);
 
+      const saveButtonSelector = "//button[text()='Finish']"
+      await this.page.waitForXPath(saveButtonSelector, {
+        timeout: 10000,
+      });
+      const saveButton = await this.page.$x(saveButtonSelector);
+      await this.page.evaluate(clickHtmlElement, saveButton[0]);
 
-        const saveButtonSelector = "//button[text()='Finish']"
-        await this.page.waitForXPath(saveButtonSelector, {
-          timeout: 10000,
-        });
-        const saveButton = await this.page.$x(saveButtonSelector);
-        await this.page.evaluate(clickHtmlElement, saveButton[0]);
-
-        const episodeAddedSuccessfully = '//*[contains(text(),"Artwork successfully added.")]';
-        await this.page.waitForXPath(episodeAddedSuccessfully, {
-          timeout: 70000,
-        });
-        log("Successfully uploaded image", true)
-      }
+      const episodeAddedSuccessfully = '//*[contains(text(),"Artwork successfully added.")]';
+      await this.page.waitForXPath(episodeAddedSuccessfully, {
+        timeout: 70000,
+      });
+      log("Successfully uploaded image", true)
     } catch (e) {
-      //try again with tile
-      // console.log(e)
+      log(e)
+      await this.takeScreenshot()
       log("Failed image upload", true)
     }
   }
@@ -180,6 +177,7 @@ class TvdbSubmitter extends BaseSubmitter {
     await this.openAddEpisodePage(series, season);
     await this.addInitialEpisode(episode)
     await this.updateEpisode(episode)
+    //todo this still isnt working
     await this.uploadEpisodeThumbnail(episode)
     log(`Finished adding of ${episode.name}`);
   }

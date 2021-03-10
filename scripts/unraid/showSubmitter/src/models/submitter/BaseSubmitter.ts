@@ -52,24 +52,30 @@ class BaseSubmitter implements GenericSubmitterInterface {
   }
 
   async finish(saveScreenshot: boolean = false): Promise<void> {
+    if (saveScreenshot) {
+      await this.takeScreenshot()
+    }
+    await this.browser.close();
+  }
+
+  async takeScreenshot(): Promise<void> {
     const submitterName = this.constructor.name;
     const nowDateString = new Date() //
       .toJSON()
       .replace(/-*:*T*Z*\.*/g,"")
     const screenshotPath = `${ShowSubmitter.folder}/${nowDateString}-${submitterName}.png`
-    if (saveScreenshot) {
-      try {
-        await this.page.screenshot({
-          path: screenshotPath,
-          fullPage: true,
-        })
-        log(`screen shot can be found at ${screenshotPath}`)
-      } catch(e) {
-        log("failed to save screenshot")
-      }
+    try {
+      await this.page.screenshot({
+        path: screenshotPath,
+        fullPage: true,
+      })
+      log(`screen shot can be found at ${screenshotPath}`)
+    } catch(e) {
+      log("failed to save screenshot")
     }
-    await this.browser.close();
   }
 }
+
+
 
 export { BaseSubmitter };

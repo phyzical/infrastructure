@@ -135,32 +135,30 @@ class TvdbSubmitter extends BaseSubmitter {
             const addArtworkButton = yield this.page.$x("//a[text()='Add Artwork']");
             yield this.page.evaluate(clickHtmlElement, addArtworkButton[0]);
             try {
-                if (thumbnailPath) {
-                    yield this.page.waitForSelector("input[type=file]");
-                    const elementHandle = yield this.page.$("input[type=file]");
-                    yield elementHandle.uploadFile(thumbnailPath);
-                    const continueButtonSelector = "//button[text()='Continue']";
-                    yield this.page.waitForXPath(continueButtonSelector, {
-                        timeout: 10000,
-                    });
-                    const continueButton = yield this.page.$x(continueButtonSelector);
-                    yield this.page.evaluate(clickHtmlElement, continueButton[0]);
-                    const saveButtonSelector = "//button[text()='Finish']";
-                    yield this.page.waitForXPath(saveButtonSelector, {
-                        timeout: 10000,
-                    });
-                    const saveButton = yield this.page.$x(saveButtonSelector);
-                    yield this.page.evaluate(clickHtmlElement, saveButton[0]);
-                    const episodeAddedSuccessfully = '//*[contains(text(),"Artwork successfully added.")]';
-                    yield this.page.waitForXPath(episodeAddedSuccessfully, {
-                        timeout: 70000,
-                    });
-                    log("Successfully uploaded image", true);
-                }
+                yield this.page.waitForSelector("input[type=file]");
+                const elementHandle = yield this.page.$("input[type=file]");
+                yield elementHandle.uploadFile(thumbnailPath);
+                const continueButtonSelector = "//button[text()='Continue']";
+                yield this.page.waitForXPath(continueButtonSelector, {
+                    timeout: 10000,
+                });
+                const continueButton = yield this.page.$x(continueButtonSelector);
+                yield this.page.evaluate(clickHtmlElement, continueButton[0]);
+                const saveButtonSelector = "//button[text()='Finish']";
+                yield this.page.waitForXPath(saveButtonSelector, {
+                    timeout: 10000,
+                });
+                const saveButton = yield this.page.$x(saveButtonSelector);
+                yield this.page.evaluate(clickHtmlElement, saveButton[0]);
+                const episodeAddedSuccessfully = '//*[contains(text(),"Artwork successfully added.")]';
+                yield this.page.waitForXPath(episodeAddedSuccessfully, {
+                    timeout: 70000,
+                });
+                log("Successfully uploaded image", true);
             }
             catch (e) {
-                //try again with tile
-                // console.log(e)
+                log(e);
+                yield this.takeScreenshot();
                 log("Failed image upload", true);
             }
         });
@@ -171,6 +169,7 @@ class TvdbSubmitter extends BaseSubmitter {
             yield this.openAddEpisodePage(series, season);
             yield this.addInitialEpisode(episode);
             yield this.updateEpisode(episode);
+            //todo this still isnt working
             yield this.uploadEpisodeThumbnail(episode);
             log(`Finished adding of ${episode.name}`);
         });
