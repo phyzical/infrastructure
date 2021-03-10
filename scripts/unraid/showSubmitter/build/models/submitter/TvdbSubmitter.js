@@ -29,7 +29,7 @@ class TvdbSubmitter extends BaseSubmitter {
                 .toLowerCase()
                 .replace(/\\| |'|"|_|\/|-|\|/g, "");
             // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
-            const episodeFinderSelector = `//tr[.//a[contains(translate(translate(translate(text(),"?'/|-*: \\",""),'"',''),` +
+            const episodeFinderSelector = `//tr[.//a[contains(translate(translate(translate(text(),"?_'/|-*: \\",""),'"',''),` +
                 `'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') ,` +
                 `'${filenameCleaned}')]]/td`;
             const episodeTextElement = yield this.page.$x(episodeFinderSelector);
@@ -150,7 +150,7 @@ class TvdbSubmitter extends BaseSubmitter {
                     yield this.page.evaluate(clickHtmlElement, saveButton[0]);
                     const episodeAddedSuccessfully = '//*[contains(text(),"Artwork successfully added.")]';
                     yield this.page.waitForXPath(episodeAddedSuccessfully, {
-                        timeout: 30000,
+                        timeout: 70000,
                     });
                     log("Successfully uploaded image", true);
                 }
