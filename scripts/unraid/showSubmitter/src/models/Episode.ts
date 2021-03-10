@@ -27,10 +27,6 @@ class Episode implements EpisodeInterface {
     return [this.folder, thumbnailPath].join('/')
   }
 
-  thumbnailTileFilePath(): string {
-    return [this.folder, this.thumbnailFileTile].join('/')
-  }
-
   title() {
     return this.name.substring(this.name.indexOf(".") + 1)
   }

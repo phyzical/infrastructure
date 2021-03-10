@@ -14,9 +14,6 @@ class Episode {
         }
         return [this.folder, thumbnailPath].join('/');
     }
-    thumbnailTileFilePath() {
-        return [this.folder, this.thumbnailFileTile].join('/');
-    }
     title() {
         return this.name.substring(this.name.indexOf(".") + 1);
     }
