@@ -21,7 +21,7 @@ else
     touch $LOCKFILE
     message="tvdbsubmitter Started"
     notify normal $message "tvdbsubmitter" $message
-    docker run --rm -v $DIR/showSubmitter:/tmp/scripts \
+    docker run --rm -u $(id -u):$(id -g) -v $DIR/showSubmitter:/tmp/scripts \
     -v "$youtubeFolder":/tmp/episodes buildkite/puppeteer \
     node /tmp/scripts/main.js email="$email" \
     username="$username" password="$password" renameOnly="$renameOnly"
