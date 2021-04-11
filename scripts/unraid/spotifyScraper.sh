@@ -16,11 +16,9 @@ else
     message="Spotify Started"
     notify normal $message "Spotify" $message
     spotifyPath="/mnt/user/Downloads/spotify"
-    for sourceKey in "${!sources[@]}";
+    for source in "$sources";
     do
-        source=${sources[$sourceKey]}
-        
-        echo "Downloading ${sourceKey}"
+        echo "Downloading ${source}"
         docker run -u $(id -u):$(id -g) -v ${spotifyPath}:/download:rw --rm phyzical/spotify-dl "$source"
     done
     
