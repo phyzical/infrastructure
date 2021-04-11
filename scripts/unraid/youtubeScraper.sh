@@ -5,7 +5,7 @@ source $DIR/commonFuncs.sh
 
 LOCKFILE="/tmp/youtubeInProgress.lock"
 
-#trap 'failed_func $LOCKFILE "Youtube Failed!!" "Youtube Failed!! on line $LINENO"' ERR SIGTERM
+trap 'failed_func $LOCKFILE "Youtube Failed!!" "Youtube Failed!! on line $LINENO"' ERR SIGTERM
 
 if [ -e $LOCKFILE ]
 then
