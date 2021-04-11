@@ -27,3 +27,9 @@ thumbnail_generate() {
     docker run --rm -v "$folder":/src --user=$(id -u):$(id -g) \
     madhead/imagemagick magick mogrify -resize 640x360 -format jpg "/src/*.jpg"
 }
+
+add_timestamp() {
+    while IFS= read -r line; do
+        printf '%s %s\n' "$(date)" "$line";
+    done
+}

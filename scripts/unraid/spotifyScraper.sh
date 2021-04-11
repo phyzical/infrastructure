@@ -5,7 +5,7 @@ source $DIR/commonFuncs.sh
 
 LOCKFILE="/tmp/spotifyInProgress.lock"
 
-trap 'failed_func $LOCKFILE "Spotify Failed!!" "Spotify Failed!! on line $LINENO"' ERR SIGTERM
+#trap 'failed_func $LOCKFILE "Spotify Failed!!" "Spotify Failed!! on line $LINENO"' ERR SIGTERM
 
 if [ -e $LOCKFILE ]
 then
