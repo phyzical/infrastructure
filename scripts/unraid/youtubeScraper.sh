@@ -16,6 +16,7 @@ else
     message="Youtube Started"
     notify normal $message "Youtube" $message
     youtubePath="/mnt/user/Downloads/youtube"
+    docker pull mikenye/youtube-dl
     for sourceKey in "${!sources[@]}";
     do
         source=${sources[$sourceKey]}
@@ -35,7 +36,8 @@ else
             docker run --rm -v "$folderPath":/src --user=$(id -u):$(id -g) \
             madhead/imagemagick magick mogrify -format jpg /src/*.webp
         fi
-        
+            
+        echo "Deleting webps"
         rm -rf $folderPath/*.webp
         
         if ls $folderPath/*.mp4 1> /dev/null 2>&1; then
