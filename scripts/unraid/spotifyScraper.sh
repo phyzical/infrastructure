@@ -5,12 +5,7 @@ source $DIR/commonFuncs.sh
 
 LOCKFILE="/tmp/spotifyInProgress.lock"
 trap 'failed_func $LOCKFILE "Spotify Failed!!" "Spotify Failed!! on line $LINENO"' ERR SIGTERM
-# declare -A sources=(
-#   ["artist"]="https://open.spotify.com/artist/0DGqabk3gsZWS8zEdgt1m5?si=ECdth_rMSnafUkGLskc08g"
-#   ["album"]="https://open.spotify.com/album/3XtEGVx9uh7J46nBzEc1VS?si=hUiwIxK0SZeCtWlEMUbmPA"
-#   ["playlist"]="https://open.spotify.com/playlist/46HnjD7FcxjwcTnbtoDVxI?si=je1jJpTvRCOl9jvo_tB8TA"
-#   ["song"]="https://open.spotify.com/track/2wBjgUXl43nSK7k3jVrSac?si=O6GOeMIkRyy9q-bBBYGZJQ"
-# )
+
 if [ -e $LOCKFILE ]
 then
     echo "Spotify running already."
@@ -24,8 +19,9 @@ else
     for sourceKey in "${!sources[@]}";
     do
         source=${sources[$sourceKey]}
-        echo "Downloading ${source}"
-        docker run -u $(id -u):$(id -g) -v ${spotifyPath}:/download:rw --rm phyzical/spotify-dl "$source"
+        echo "Downloading $source"
+        docker run -u $(id -u):$(id -g) -v $spotifyPath:/download:rw --rm phyzical/spotify-dl \
+        --u $username --p $password --cf "$spotifyPath/songs.txt" $source
     done
     
     echo "Finished Spotify Download!!"

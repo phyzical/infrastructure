@@ -17,34 +17,49 @@ else
     notify normal $message "Youtube" $message
     youtubePath="/mnt/user/Downloads/youtube"
     docker pull mikenye/youtube-dl
-    for sourceKey in "${!sources[@]}";
+    for channelName in "${!urls[@]}";
     do
-        source=${sources[$sourceKey]}
-        format="bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio"
-        outputFormat="${sourceKey}/%(upload_date)s.%(title)s.%(ext)s"
-        
-        echo "Downloading ${sourceKey}"
-        docker run --rm -u $(id -u):$(id -g) -v ${youtubePath}:/workdir:rw mikenye/youtube-dl \
-        -f "$format" --download-archive "${sourceKey}.txt" --write-thumbnail --add-metadata --ignore-errors \
+        url=${urls[$channelName]}
+        format="bv*[ext=mp4]+ba[ext=m4a]"
+        outputFormat="$channelName/processing/%(upload_date)s.%(title)s.%(ext)s"
+        oneMonthAgo="$(date -d "-1 months" '+%Y%m%d')"
+        showPath="$youtubePath/$channelName"
+        processingPath="$seasonPath/processing"
+
+        echo "Downloading $channelName"
+        docker run --rm -u $(id -u):$(id -g) -v $youtubePath:/workdir:rw phyzical/yt-dlc \
+        -f "$format" --download-archive "$channelName.txt" --write-thumbnail --add-metadata \
+        --no-write-playlist-metafiles --compat-options no-youtube-unavailable-videos --sponsorblock \
         --write-auto-sub --cookies=cookies.txt --write-info-json --convert-subs=srt --sub-lang "en" \
-        --merge-output-format mp4 -o "$outputFormat" "$source"
+        --datebefore $oneMonthAgo --merge-output-format mp4 -o "$outputFormat" "$url"
         
-        folderPath="${youtubePath}/${sourceKey}"
-        
-        if ls $folderPath/*.webp 1> /dev/null 2>&1; then
+        if ls $processingPath/*.webp 1> /dev/null 2>&1; then
             echo "Converting images"
-            docker run --rm -v "$folderPath":/src --user=$(id -u):$(id -g) \
+            docker run --rm -v "$processingPath":/src --user=$(id -u):$(id -g) \
             madhead/imagemagick magick mogrify -format jpg /src/*.webp
         fi
             
         echo "Deleting webps"
-        rm -rf $folderPath/*.webp
+        rm -rf $processingPath/*.webp
         
-        if ls $folderPath/*.mp4 1> /dev/null 2>&1; then
+        if ls $processingPath/*.mp4 1> /dev/null 2>&1; then
             echo "generating thumnails"
-            thumbnail_generate "$folderPath"
+            thumbnail_generate "$processingPath"
         fi
-        
+
+        for text in ${textRemovals[@]}; do
+            rename "$text" "" "$processingPath/*"
+        done
+
+        if [[ " ${manualShows[@]} " =~ " $channelName " ]]; then
+            mv "$processingPath/*" "$showPath/"
+        else
+            #move to season folders
+            years=($(seq 2000 1 $(date "+%Y")))
+            for year in ${years[@]};
+                mv "$processingPath/$year*" "$showPath/Season $year/"
+            done
+        fi
     done
     
     echo "Finished Youtube Download!!"
