@@ -8,6 +8,7 @@ PROJECT_NAME=infrastructure
 
 build-show-submitter:
 	cd scripts/unraid/showSubmitter && \
+	npm install && \
 	npm run build
 
 run-spotify-scraper:

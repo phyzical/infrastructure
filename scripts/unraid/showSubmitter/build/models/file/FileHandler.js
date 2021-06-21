@@ -23,6 +23,9 @@ class FileHandler {
     }
     fileAccumulator(acc, file) {
         const firstCharToNum = file[0];
+        // if first letter is a number assume its an unproccessed episode this means that
+        // if we ever have shows that start with numbers we are screwed TODO check all chars before first . is numbers
+        // this still wont work if the whole show is numbers though
         if (!isNaN(firstCharToNum) && file.includes('.mp4')) {
             acc.push(file.replace('.mp4', ""));
         }
