@@ -16,7 +16,8 @@ else
     message="Youtube Started"
     notify normal $message "Youtube" $message
     youtubePath="/mnt/user/Downloads/youtube"
-    docker pull mikenye/youtube-dl
+    dockerImage="phyzical/yt-dlc"
+    docker pull $dockerImage
     for channelName in "${!urls[@]}";
     do
         url=${urls[$channelName]}
@@ -27,7 +28,7 @@ else
         processingPath="$seasonPath/processing"
 
         echo "Downloading $channelName"
-        docker run --rm -u $(id -u):$(id -g) -v $youtubePath:/workdir:rw phyzical/yt-dlc \
+        docker run --rm -u $(id -u):$(id -g) -v $youtubePath:/workdir:rw $dockerImage \
         -f "$format" --download-archive "$channelName.txt" --write-thumbnail --add-metadata \
         --no-write-playlist-metafiles --compat-options no-youtube-unavailable-videos --sponsorblock \
         --write-auto-sub --cookies=cookies.txt --write-info-json --convert-subs=srt --sub-lang "en" \
