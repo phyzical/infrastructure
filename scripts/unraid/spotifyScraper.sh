@@ -15,7 +15,6 @@ else
     message="Spotify Started"
     notify normal $message "Spotify" $message
     spotifyPath="/mnt/user/Downloads/spotify"
-    spotifyPath="$PWD/testfolder"
     dockerImage="phyzical/spotify-dl"
     docker pull $dockerImage
     for sourceKey in "${!sources[@]}";
