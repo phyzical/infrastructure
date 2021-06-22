@@ -33,7 +33,8 @@ else
         --write-auto-sub --cookies=cookies.txt --write-info-json --convert-subs=srt --sub-lang "en" \
         --datebefore $oneMonthAgo --merge-output-format mp4 -o "$outputFormat" "$url"
         
-        if ls $processingPath/*.webp 1> /dev/null 2>&1; then
+        if ls $processingPath/*.webp 1> /dev/null 2>&1;
+        then
             echo "Converting images"
             docker run --rm -v "$processingPath":/src --user=$(id -u):$(id -g) \
             madhead/imagemagick magick mogrify -format jpg /src/*.webp
@@ -42,7 +43,8 @@ else
         echo "Deleting webps"
         rm -rf $processingPath/*.webp
         
-        if ls $processingPath/*.mp4 1> /dev/null 2>&1; then
+        if ls $processingPath/*.mp4 1> /dev/null 2>&1;
+        then
             echo "generating thumnails"
             thumbnail_generate "$processingPath"
         fi
@@ -51,12 +53,14 @@ else
             rename "$text" "" "$processingPath/*"
         done
 
-        if [[ " ${manualShows[@]} " =~ " $channelName " ]]; then
+        if [[ " ${manualShows[@]} " =~ " $channelName " ]];
+        then
             mv "$processingPath/*" "$showPath/"
         else
             #move to season folders
             years=($(seq 2000 1 $(date "+%Y")))
             for year in ${years[@]};
+            do
                 mv "$processingPath/$year*" "$showPath/Season $year/"
             done
         fi
