@@ -21,7 +21,7 @@ else
     do
         source=${sources[$sourceKey]}
         echo "Downloading $source"
-        docker run -u $(id -u):$(id -g) -v $spotifyPath:/download:rw --rm phyzical/spotify-dl \
+        docker run -u 99:100 -v $spotifyPath:/download:rw --rm phyzical/spotify-dl \
         --u $username --p $password --cf "/download/songs.txt" $source
     done
     
