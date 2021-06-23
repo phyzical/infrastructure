@@ -33,3 +33,8 @@ add_timestamp() {
         printf '%s %s\n' "$(date)" "$line";
     done
 }
+
+chmod_unraid_file_permissions(){
+  find $1 -type d -exec chmod 755 {} \;
+  find $1 -type f -exec chmod 644 {} \;
+}

@@ -21,10 +21,13 @@ else
     touch $LOCKFILE
     message="tvdbsubmitter Started"
     notify normal $message "tvdbsubmitter" $message
-    docker run --rm -u $(id -u):$(id -g) -v $DIR/showSubmitter:/tmp/scripts \
+    docker run --rm -u 99:100 -v $DIR/showSubmitter:/tmp/scripts \
     -v "$youtubeFolder":/tmp/episodes buildkite/puppeteer \
     node /tmp/scripts/main.js email="$email" \
     username="$username" password="$password" renameOnly="$renameOnly"
+
+   chmod_unraid_file_permissions $youtubeFolder
+
     
     echo "Finished tvdbsubmitter Download!!"
     rm -f $LOCKFILE
