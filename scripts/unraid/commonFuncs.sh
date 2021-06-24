@@ -35,7 +35,7 @@ add_timestamp() {
 }
 
 chmod_unraid_file_permissions(){
-  echo "fixing file and folder permissions for $1"
-  find $1 -type d -exec chmod 755 {} \;
-  find $1 -type f -exec chmod 644 {} \;
+  echo "fixing file (666) and folder (766) permissions for $1"
+  find $1 -type d -exec chmod 766 {} \;
+  find $1 -type f -exec chmod 666 {} \;
 }
