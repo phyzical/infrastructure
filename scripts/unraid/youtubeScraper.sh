@@ -53,7 +53,7 @@ else
         for key in ${!textRemovals[@]}; do
             text=${textRemovals[key]}
             echo "Replacing $text"
-            rename "$text" "" $processingPath/* || :
+            rename "$text" "" $processingPath/* || echo "Nothing to rename"
         done
 
         if [[ " ${manualShows[@]} " =~ " $channelName " ]];
@@ -65,9 +65,8 @@ else
             years=($(seq 2000 1 $(date "+%Y")))
             for year in ${years[@]};
             do
-            echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
-
-                mv "$processingPath/$year*" "$showPath/Season $year/"
+                echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
+                mv $processingPath/$year* $showPath/Season\ $year/ || echo "Nothing to move"
             done
         fi
     done
