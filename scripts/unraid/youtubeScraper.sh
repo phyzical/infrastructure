@@ -50,7 +50,8 @@ else
             # thumbnail_generate "$processingPath"
         fi
 
-        for text in ${textRemovals[@]}; do
+        for key in ${!textRemovals[@]}; do
+            text=${textRemovals[key]}
             echo "Replacing $text"
             rename "$text" "" $processingPath/*
         done
