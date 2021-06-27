@@ -25,7 +25,7 @@ else
         outputFormat="$channelName/processing/%(upload_date)s.%(title)s.%(ext)s"
         oneMonthAgo="$(date -d "-1 months" '+%Y%m%d')"
         showPath="$youtubePath/$channelName"
-        processingPath="$seasonPath/processing"
+        processingPath="$showPath/processing"
 
         echo "Downloading $channelName"
         docker run --rm -u $(id -u):$(id -g) -v $youtubePath:/workdir:rw $dockerImage \
@@ -36,17 +36,17 @@ else
         
         if ls $processingPath/*.webp 1> /dev/null 2>&1;
         then
-            echo "Converting images"
+            echo "Converting images matching ($processingPath/*.webp)"
             docker run --rm -v "$processingPath":/src --user=$(id -u):$(id -g) \
             madhead/imagemagick magick mogrify -format jpg /src/*.webp
         fi
             
-        echo "Deleting webps"
+        echo "Deleting webps matching ($processingPath/*.webp)"
         rm -rf $processingPath/*.webp
         
         if ls $processingPath/*.mp4 1> /dev/null 2>&1;
         then
-            echo "generating thumnails"
+            echo "generating thumnails for ($processingPath/*.mp4)"
             thumbnail_generate "$processingPath"
         fi
 
