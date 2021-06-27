@@ -65,8 +65,11 @@ else
             years=($(seq 2000 1 $(date "+%Y")))
             for year in ${years[@]};
             do
-                echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
-                rsync -av --remove-source-files $processingPath/$year* $showPath/Season\ $year/ || echo "Nothing to move"
+                if find $processingPath/$year*;
+                then
+                  echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
+                  mkdir $showPath/Season\ $year && mv $processingPath/$year* $showPath/Season\ $year/
+                fi
             done
         fi
     done
