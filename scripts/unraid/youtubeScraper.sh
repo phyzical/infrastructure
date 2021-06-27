@@ -16,7 +16,7 @@ else
     message="Youtube Started"
     notify normal $message "Youtube" $message
     youtubePath="/mnt/user/Downloads/youtube"
-    dockerImage="phyzical/yt-dlc"
+    dockerImage="phyzical/yt-dlp"
     docker pull $dockerImage
     for channelName in "${!urls[@]}";
     do
