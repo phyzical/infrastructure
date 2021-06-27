@@ -36,29 +36,36 @@ else
         
         if ls $processingPath/*.webp 1> /dev/null 2>&1;
         then
+            echo "Converting images matching ($processingPath/*.webp)"
             docker run --rm -v "$processingPath":/src --user=$(id -u):$(id -g) \
             madhead/imagemagick magick mogrify -format jpg /src/*.webp
         fi
             
+        echo "Deleting webps matching ($processingPath/*.webp)"
         rm -rf $processingPath/*.webp
         
         if ls $processingPath/*.mp4 1> /dev/null 2>&1;
         then
-            thumbnail_generate "$processingPath"
+            echo "generating thumnails for ($processingPath/*.mp4)"
+            # thumbnail_generate "$processingPath"
         fi
 
         for text in ${textRemovals[@]}; do
+            echo "Replacing $text"
             rename "$text" "" $processingPath/*
         done
 
         if [[ " ${manualShows[@]} " =~ " $channelName " ]];
         then
+            echo "moving '$processingPath/*' to '$showPath/'"
             mv "$processingPath/*" "$showPath/"
         else
             #move to season folders
             years=($(seq 2000 1 $(date "+%Y")))
             for year in ${years[@]};
             do
+            echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
+
                 mv "$processingPath/$year*" "$showPath/Season $year/"
             done
         fi

@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 notify () {
     /usr/local/emhttp/webGui/scripts/notify -i $1 -s "$2" -e "$3" -d "$4" || echo "/usr/local/emhttp/webGui/scripts/notify is missing"
@@ -18,14 +17,14 @@ elapsed_time_message () {
 thumbnail_generate() {
     folder="$1"
     docker pull jrottenberg/ffmpeg
-    # for f in "$folder"/*.mp4;
-    # do
-    #     echo "$f"
-    #     docker run --rm -u $(id -u):$(id -g) -v "$folder":"$folder" \
-    #     -w "$folder" jrottenberg/ffmpeg -loglevel 0 -y -ss 00:02:00 -i "$f" \
-    #     -vframes 1 "${f%.mp4}-screen".jpg
-    # done
-    echo "Converting Thumbs"
+    for f in "$folder"/*.mp4;
+    do
+        echo "$f"
+        docker run --rm -u $(id -u):$(id -g) -v "$folder":"$folder" \
+        -w "$folder" jrottenberg/ffmpeg -loglevel 0 -y -ss 00:02:00 -i "$f" \
+        -vframes 1 "${f%.mp4}-screen".jpg
+    done
+    echo "Converting Thumbs for $folder"
     docker pull madhead/imagemagick
     docker run --rm -v "$folder":/src --user=$(id -u):$(id -g) \
     madhead/imagemagick magick mogrify -resize 640x360 -format jpg "/src/*.jpg"
