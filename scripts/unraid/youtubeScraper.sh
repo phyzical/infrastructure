@@ -5,7 +5,7 @@ source $DIR/commonFuncs.sh
 
 LOCKFILE="/tmp/youtubeInProgress.lock"
 
-trap 'failed_func $LOCKFILE "Youtube Failed!!" "Youtube Failed!! on line $LINENO"' ERR SIGTERM
+trap 'failed_func $LOCKFILE "Youtube Failed!! with code ($?)" "Youtube Failed!! on line $LINENO"' 1 2 3 9 15
 
 if [ -e $LOCKFILE ]
 then
@@ -53,7 +53,6 @@ else
         for key in ${!textRemovals[@]}; do
             text=${textRemovals[key]}
             echo "Replacing $text"
-            echo "rename '$text' '' $processingPath/*"
             rename "$text" "" $processingPath/*
         done
 
