@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 notify () {
     /usr/local/emhttp/webGui/scripts/notify -i $1 -s "$2" -e "$3" -d "$4" || echo "/usr/local/emhttp/webGui/scripts/notify is missing"
