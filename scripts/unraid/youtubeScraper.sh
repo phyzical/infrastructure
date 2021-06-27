@@ -53,6 +53,7 @@ else
         for key in ${!textRemovals[@]}; do
             text=${textRemovals[key]}
             echo "Replacing $text"
+            echo "rename '$text' '' $processingPath/*"
             rename "$text" "" $processingPath/*
         done
 
