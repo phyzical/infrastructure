@@ -16,14 +16,16 @@ elapsed_time_message () {
 
 thumbnail_generate() {
     folder="$1"
-    for f in "$folder"/*.mp4;
-    do
-        echo "$f"
-        docker run --rm -u $(id -u):$(id -g) -v "$folder":"$folder" \
-        -w "$folder" jrottenberg/ffmpeg -loglevel 0 -y -ss 00:02:00 -i "$f" \
-        -vframes 1 "${f%.mp4}-screen".jpg
-    done
+    docker pull jrottenberg/ffmpeg
+    # for f in "$folder"/*.mp4;
+    # do
+    #     echo "$f"
+    #     docker run --rm -u $(id -u):$(id -g) -v "$folder":"$folder" \
+    #     -w "$folder" jrottenberg/ffmpeg -loglevel 0 -y -ss 00:02:00 -i "$f" \
+    #     -vframes 1 "${f%.mp4}-screen".jpg
+    # done
     echo "Converting Thumbs"
+    docker pull madhead/imagemagick
     docker run --rm -v "$folder":/src --user=$(id -u):$(id -g) \
     madhead/imagemagick magick mogrify -resize 640x360 -format jpg "/src/*.jpg"
 }
