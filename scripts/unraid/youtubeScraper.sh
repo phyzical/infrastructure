@@ -66,7 +66,7 @@ else
             for year in ${years[@]};
             do
                 echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
-                mv $processingPath/$year* $showPath/Season\ $year/ || echo "Nothing to move"
+                rsync -av --remove-source-files $processingPath/$year* $showPath/Season\ $year/ || echo "Nothing to move"
             done
         fi
     done
