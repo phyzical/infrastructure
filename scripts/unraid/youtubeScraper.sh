@@ -65,9 +65,8 @@ else
             years=($(seq 2000 1 $(date "+%Y")))
             for year in ${years[@]};
             do
-            echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
-
-                mv "$processingPath/$year*" "$showPath/Season $year/"
+                echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
+                mv $processingPath/$year* $showPath/Season\ $year/
             done
         fi
     done
