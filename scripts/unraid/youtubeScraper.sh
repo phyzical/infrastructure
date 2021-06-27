@@ -51,7 +51,7 @@ else
         fi
 
         for text in ${textRemovals[@]}; do
-            rename "$text" "" "$processingPath/*"
+            rename "$text" "" $processingPath/*
         done
 
         if [[ " ${manualShows[@]} " =~ " $channelName " ]];
