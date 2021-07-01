@@ -34,47 +34,50 @@ else
         --write-auto-sub --cookies=cookies.txt --write-info-json --convert-subs=srt --sub-lang "en" \
         --datebefore $oneMonthAgo --merge-output-format mp4 -o "$outputFormat" "$url"
         
-        if ls $processingPath/*.webp 1> /dev/null 2>&1;
+        if [ -d "$processingPath" ]; 
         then
-            echo "Converting images matching ($processingPath/*.webp)"
-            docker run --rm -v "$processingPath":/src --user=$(id -u):$(id -g) \
-            madhead/imagemagick magick mogrify -format jpg /src/*.webp
-        fi
+            if ls $processingPath/*.webp 1> /dev/null 2>&1;
+            then
+                echo "Converting images matching ($processingPath/*.webp)"
+                docker run --rm -v "$processingPath":/src --user=$(id -u):$(id -g) \
+                madhead/imagemagick magick mogrify -format jpg /src/*.webp
+            fi
+                
+            echo "Deleting webps matching ($processingPath/*.webp)"
+            rm -rf $processingPath/*.webp
             
-        echo "Deleting webps matching ($processingPath/*.webp)"
-        rm -rf $processingPath/*.webp
-        
-        if ls $processingPath/*.mp4 1> /dev/null 2>&1;
-        then
-            echo "generating thumnails for ($processingPath/*.mp4)"
-            # thumbnail_generate "$processingPath"
-        fi
+            if ls $processingPath/*.mp4 1> /dev/null 2>&1;
+            then
+                echo "generating thumnails for ($processingPath/*.mp4)"
+                thumbnail_generate "$processingPath"
+            fi
 
-        for key in ${!textRemovals[@]}; do
-            text=${textRemovals[key]}
-            echo "Replacing $text"
-            rename "$text" "" $processingPath/* || echo "Nothing to rename"
-        done
-
-        if [[ " ${manualShows[@]} " =~ " $channelName " ]];
-        then
-            echo "moving '$processingPath/*' to '$showPath/'"
-            mv $processingPath/* $showPath/
-        else
-            #move to season folders
-            years=($(seq 2000 1 $(date "+%Y")))
-            for year in ${years[@]};
-            do
-                if find $processingPath/$year*;
-                then
-                  echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
-                  mkdir -p $showPath/Season\ $year && mv $processingPath/$year* $showPath/Season\ $year/
-                fi
+            for key in ${!textRemovals[@]}; do
+                text=${textRemovals[key]}
+                echo "Replacing $text"
+                rename "$text" "" $processingPath/* || echo "Nothing to rename"
             done
-        fi
 
-        echo "Removing $processingPath"
-        rmdir $processingPath
+            if [[ " ${manualShows[@]} " =~ " $channelName " ]];
+            then
+                echo "moving '$processingPath/*' to '$showPath/'"
+                mv $processingPath/* $showPath/
+            else
+                #move to season folders
+                years=($(seq 2000 1 $(date "+%Y")))
+                for year in ${years[@]};
+                do
+                    if find $processingPath/$year*;
+                    then
+                    echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
+                    mkdir -p $showPath/Season\ $year && mv $processingPath/$year* $showPath/Season\ $year/
+                    fi
+                done
+            fi
+
+            echo "Removing $processingPath"
+            rmdir $processingPath
+        fi
     done
     
     echo "Finished Youtube Download!!"
