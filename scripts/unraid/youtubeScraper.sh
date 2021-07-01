@@ -59,7 +59,7 @@ else
         if [[ " ${manualShows[@]} " =~ " $channelName " ]];
         then
             echo "moving '$processingPath/*' to '$showPath/'"
-            mv "$processingPath/*" "$showPath/"
+            mv $processingPath/* $showPath/
         else
             #move to season folders
             years=($(seq 2000 1 $(date "+%Y")))
