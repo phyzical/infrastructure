@@ -69,15 +69,15 @@ else
                 do
                     if find $processingPath/$year*;
                     then
-                    echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
-                    mkdir -p $showPath/Season\ $year && mv $processingPath/$year* $showPath/Season\ $year/
+                        echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
+                        mkdir -p $showPath/Season\ $year && mv $processingPath/$year* $showPath/Season\ $year/
                     fi
                 done
             fi
-
-            echo "Removing $processingPath"
-            rmdir $processingPath
         fi
+        
+        echo "Trying to remove $showPath"
+        find $showPath -type d -empty -delete
     done
     
     echo "Finished Youtube Download!!"
