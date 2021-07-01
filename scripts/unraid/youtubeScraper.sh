@@ -75,9 +75,12 @@ else
                 done
             fi
         fi
-        
-        echo "Trying to remove $showPath"
-        find $showPath -type d -empty -delete
+
+        if [ -d "$showPath" ]; 
+        then
+            echo "Trying to remove $showPath"
+            find $showPath -type d -empty -delete
+        fi
     done
     
     echo "Finished Youtube Download!!"
