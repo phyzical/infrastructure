@@ -73,6 +73,7 @@ else
             done
         fi
 
+        echo "Removing $processingPath"
         rmdir $processingPath
     done
     
