@@ -72,6 +72,8 @@ else
                 fi
             done
         fi
+        
+        rm $processingPath
     done
     
     echo "Finished Youtube Download!!"
