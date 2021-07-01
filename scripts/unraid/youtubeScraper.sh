@@ -68,12 +68,12 @@ else
                 if find $processingPath/$year*;
                 then
                   echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
-                  mkdir $showPath/Season\ $year && mv $processingPath/$year* $showPath/Season\ $year/
+                  mkdir -p $showPath/Season\ $year && mv $processingPath/$year* $showPath/Season\ $year/
                 fi
             done
         fi
-        
-        rm $processingPath
+
+        rmdir $processingPath
     done
     
     echo "Finished Youtube Download!!"
