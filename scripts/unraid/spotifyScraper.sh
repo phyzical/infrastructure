@@ -19,10 +19,9 @@ else
     docker pull $dockerImage
     sourcesString=${sources[@]}
     urlsString="\"${sourcesString// /\" \"}\""
-    echo ${urlsString}
 
-    # docker run -u 99:100 -v $spotifyPath:/download:rw --rm phyzical/spotify-dl \
-    # --u $username --p $password --cf "/download/songs.txt" $arguments $urlsString
+    docker run -u 99:100 -v $spotifyPath:/download:rw --rm phyzical/spotify-dl \
+    --cf "/download/songs.txt" $arguments $urlsString
 
     chmod_unraid_file_permissions $spotifyPath
     
