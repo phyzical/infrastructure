@@ -27,9 +27,9 @@ class TvdbSubmitter extends BaseSubmitter {
             log(`Looking for episode for ${fileToRename}`, true);
             const filenameCleaned = fileToRename
                 .toLowerCase()
-                .replace(/\\| |'|"|_|\/|-|\|/g, "");
+                .replace(/[^0-9a-zA-Z]+/g, "");
             // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
-            const episodeFinderSelector = `//tr[.//a[contains(translate(translate(translate(text(),"?_'/|-*: \\",""),'"',''),` +
+            const episodeFinderSelector = `//tr[.//a[contains(translate(translate(text(),'\\\`~!@#$%^&*()-_=+[]{}|;:<>\'",./?, ',''),` +
                 `'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') ,` +
                 `'${filenameCleaned}')]]/td`;
             const episodeTextElement = yield this.page.$x(episodeFinderSelector);
