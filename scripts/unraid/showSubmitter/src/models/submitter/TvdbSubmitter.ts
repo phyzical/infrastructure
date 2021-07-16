@@ -11,7 +11,7 @@ class TvdbSubmitter extends BaseSubmitter {
 
     const filenameCleaned = fileToRename
       .toLowerCase()
-      .replace(/[^0-9a-zA-Z]+/g, "")
+      .replace(/[-'`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, '')
     // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
     const episodeFinderSelector =
       `//tr[.//a[contains(translate(translate(translate(text(),'\\\`~!@#$%^&*()-_=+[]{}|;:<>",./?, ',''), "'", ''),` +
