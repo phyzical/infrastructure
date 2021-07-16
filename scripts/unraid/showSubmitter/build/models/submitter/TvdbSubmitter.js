@@ -29,9 +29,9 @@ class TvdbSubmitter extends BaseSubmitter {
                 .toLowerCase()
                 .replace(/[- '`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, '');
             // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
+            const capitalChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŠÚÛÜÙÝŸŽ';
             const episodeFinderSelector = `//tr[.//a[contains(translate(translate(translate(text(),'\\\`~!@#$%^&*()-_=+[]{}|;:<>",./?, ',''), "'", ''),` +
-                `'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') ,` +
-                `'${filenameCleaned}')]]/td`;
+                `'${capitalChars}', '${capitalChars.toLowerCase()}') , '${filenameCleaned}')]]/td`;
             const episodeTextElement = yield this.page.$x(episodeFinderSelector);
             let episodeIdentifier = "";
             try {
