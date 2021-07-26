@@ -17,11 +17,13 @@ else
     spotifyPath="/mnt/user/Downloads/spotify"
     dockerImage="phyzical/spotify-dl"
     docker pull $dockerImage
-    sourcesString=${sources[@]}
-    urlsString="\"${sourcesString// /\" \"}\""
-
-    docker run -u 99:100 -v $spotifyPath:/download:rw --rm phyzical/spotify-dl \
-    --cf "/download/songs.txt" $arguments $urlsString
+    for sourceKey in "${!sources[@]}";
+    do
+      source=${sources[$sourceKey]}
+      echo "Downloading $sourceKey ($source)"
+      docker run -u 99:100 -v $spotifyPath:/download:rw --rm phyzical/spotify-dl \
+      --cf "/download/songs.txt" $arguments $source
+    done
 
     chmod_unraid_file_permissions $spotifyPath
     
