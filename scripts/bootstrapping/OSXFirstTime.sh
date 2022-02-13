@@ -18,70 +18,44 @@ brew install grep
 # Install GNU `find`, `locate`, `updatedb`, and `xargs`, g-prefixed
 brew install findutils
 
-# Install Bash 4
-brew install bash
 
 echo "Installing cask..."
 
 CASKS=(
     aws-vault
-    android-studio
-    android-sdk
-    android-platform-tools
     firefox
-    flux
     gitup
     google-chrome
     iterm2
-    jetbrains-toolbox
     mamp
     macs-fan-control
     rambox
     rectangle
     react-native-debugger
-    spectacle
     sublime-text
     spotify
     tunnelblick
     thunderbird
-    the-unarchiver
     vagrant
     virtualbox
     vlc
     visual-studio-code
-    xquartz
 )
 
 echo "Installing cask apps..."
 brew cask install ${CASKS[@]}
 
 PACKAGES=(
-    ack
-    autoconf
-    automake
     ansible
     awscli
-    boot2docker
     composer
-    dep
-    diff-pdf
-    ffmpeg
-    gettext
-    gifsicle
     git
     graphviz
     hashicorp/tap/terraform-ls
     hub
-    imagemagick
-    jq
-    libjpeg
-    libmemcached 
-    lynx
     markdown
     memcached
-    mercurial
-    npm
-    pkg-config
+    np
     postgresql
     python3
     pypy
@@ -89,15 +63,10 @@ PACKAGES=(
     rename
     ssh-copy-id
     terminal-notifier
-    tmux
-    tree
     vim
     wget
     geoip
     nmap
-    # not needed anymore cause zsh lyfe
-    #bash-completion
-    watchman
     unrar
     thefuck
     terraform
