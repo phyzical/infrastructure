@@ -56,9 +56,12 @@ class BaseSubmitter {
     takeScreenshot() {
         return __awaiter(this, void 0, void 0, function* () {
             const submitterName = this.constructor.name;
-            const nowDateString = new Date() //
+            const nowDateString = new Date()
                 .toJSON()
-                .replace(/-*:*T*Z*\.*/g, "");
+                .replace(/T/g, "-")
+                .replace(/Z/g, "")
+                .replace(/:/g, "_")
+                .split(".")[0];
             const screenshotPath = `${ShowSubmitter.folder}/${nowDateString}-${submitterName}.png`;
             try {
                 yield this.page.screenshot({
