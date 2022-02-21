@@ -58,10 +58,7 @@ class BaseSubmitter {
             const submitterName = this.constructor.name;
             const nowDateString = new Date()
                 .toJSON()
-                .replace(/T/g, "-")
-                .replace(/Z/g, "")
-                .replace(/:/g, "_")
-                .split(".")[0];
+                .replace(/-*:*T*Z*\.*/g, "");
             const screenshotPath = `${ShowSubmitter.folder}/${nowDateString}-${submitterName}.png`;
             try {
                 yield this.page.screenshot({
