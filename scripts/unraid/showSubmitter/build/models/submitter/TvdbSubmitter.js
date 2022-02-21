@@ -49,17 +49,12 @@ class TvdbSubmitter extends BaseSubmitter {
             log("starting login", true);
             const loginURL = [__classPrivateFieldGet(this, _baseURL), "auth", "login"].join("/");
             yield this.page.goto(loginURL);
-            // i accept is gone?
-            // const iAcceptSelector = '//*[contains(text(),"I accept")]'
-            // await page.waitFor(iAcceptSelector)
-            // const iAcceptButton = await page.$x(iAcceptSelector)
-            // await iAcceptButton[0].click()
             const loginFormSelector = 'form[action="/auth/login"]';
             yield this.page.waitForSelector(loginFormSelector);
             yield this.page.type('[name="email"]', this.email);
             yield this.page.type('[name="password"]', this.password);
             yield this.page.$eval(loginFormSelector, (form) => form.submit());
-            const didLogInSelector = `//*[contains(text(),"${this.username}")]`;
+            const didLogInSelector = `//*[contains(text(),"Logout")]`;
             yield this.page.waitForXPath(didLogInSelector);
             log("finishing login", true);
         });

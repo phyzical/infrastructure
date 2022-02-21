@@ -6,6 +6,14 @@ include deploy/makefile-common.mk
 
 PROJECT_NAME=infrastructure
 
+update-show-submitter:
+	cd scripts/unraid/showSubmitter && \
+	npm update
+
+test-show-submitter:
+	cd scripts/unraid/showSubmitter && \
+	npm run test
+
 build-show-submitter:
 	cd scripts/unraid/showSubmitter && \
 	npm install && \

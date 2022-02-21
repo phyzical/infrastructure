@@ -36,12 +36,6 @@ class TvdbSubmitter extends BaseSubmitter {
 
     const loginURL = [this.#baseURL, "auth", "login"].join("/");
     await this.page.goto(loginURL);
-    // i accept is gone?
-    // const iAcceptSelector = '//*[contains(text(),"I accept")]'
-    // await page.waitFor(iAcceptSelector)
-    // const iAcceptButton = await page.$x(iAcceptSelector)
-    // await iAcceptButton[0].click()
-
     const loginFormSelector = 'form[action="/auth/login"]';
     await this.page.waitForSelector(loginFormSelector);
     await this.page.type('[name="email"]', this.email);
@@ -50,7 +44,7 @@ class TvdbSubmitter extends BaseSubmitter {
       (<HTMLFormElement>form).submit()
     );
 
-    const didLogInSelector = `//*[contains(text(),"${this.username}")]`;
+    const didLogInSelector = `//*[contains(text(),"Logout")]`;
     await this.page.waitForXPath(didLogInSelector);
     log("finishing login", true);
   }
