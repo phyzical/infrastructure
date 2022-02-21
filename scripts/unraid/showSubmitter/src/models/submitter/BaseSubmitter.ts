@@ -62,7 +62,9 @@ class BaseSubmitter implements GenericSubmitterInterface {
     const submitterName = this.constructor.name;
     const nowDateString = new Date()
       .toJSON()
-      .replace(/-*:*T*Z*\.*/g, "")
+      .replace(/T/g, "-")
+      .replace(/Z/g, "")
+      .replace(/:/g, "_").split(".")[0]
     const screenshotPath = `${ShowSubmitter.folder}/${nowDateString}-${submitterName}.png`
     try {
       await this.page.screenshot({
