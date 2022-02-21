@@ -64,7 +64,7 @@ class ShowSubmitter {
     }
     verifyAddedEpisode(fileToRename, series, season) {
         return __awaiter(this, void 0, void 0, function* () {
-            let episodeTextIdentifier;
+            let episodeTextIdentifier = "";
             try {
                 for (const submitter of this.submitters) {
                     yield submitter.openSeriesSeasonPage(series, season);

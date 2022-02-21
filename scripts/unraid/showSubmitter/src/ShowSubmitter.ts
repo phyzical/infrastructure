@@ -18,7 +18,7 @@ class ShowSubmitter {
     this.submitters = [];
   }
 
-  private parseArguments (): void {
+  private parseArguments(): void {
     const inputs = process.argv.slice(2);
     for (let i = 0; i < inputs.length; i++) {
       const inputSplit = inputs[i].split('=');
@@ -39,7 +39,7 @@ class ShowSubmitter {
     }
   }
 
-  private async initSubmitters (): Promise<void> {
+  private async initSubmitters(): Promise<void> {
     this.submitters.push(new TvdbSubmitter(this.username, this.password, this.email));
     for (const submitter of this.submitters) {
       await submitter.init();
@@ -47,7 +47,7 @@ class ShowSubmitter {
     }
   }
 
-  private async finishSubmitters (saveScreenshot: boolean = false): Promise<void> {
+  private async finishSubmitters(saveScreenshot: boolean = false): Promise<void> {
     for (const submitter of this.submitters) {
       await submitter.finish(saveScreenshot);
     }
@@ -63,8 +63,8 @@ class ShowSubmitter {
     }
   }
 
-  private async verifyAddedEpisode(fileToRename: string, series: string, season: string):  Promise<string> {
-    let episodeTextIdentifier;
+  private async verifyAddedEpisode(fileToRename: string, series: string, season: string): Promise<string> {
+    let episodeTextIdentifier = "";
     try {
       for (const submitter of this.submitters) {
         await submitter.openSeriesSeasonPage(series, season);
@@ -77,11 +77,11 @@ class ShowSubmitter {
     } catch (e) {
       log(`Didnt add episode for ${fileToRename} something went horribly wrong!`)
     }
-    
+
     return episodeTextIdentifier;
   }
 
-  private async addEpisodes (): Promise<void> {
+  private async addEpisodes(): Promise<void> {
     this.parseArguments();
     await this.initSubmitters();
     const fileHandler = new FileHandler(ShowSubmitter.folder);
@@ -111,4 +111,4 @@ class ShowSubmitter {
   }
 }
 
-export {ShowSubmitter};
+export { ShowSubmitter };
