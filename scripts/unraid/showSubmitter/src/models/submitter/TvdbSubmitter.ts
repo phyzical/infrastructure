@@ -103,8 +103,8 @@ class TvdbSubmitter extends BaseSubmitter {
     episode: Episode,
   ): Promise<void> {
     const editEpisodeSelector = "//a[text()='Edit Episode']";
-    const editEpisodeButton = await this.page.$x(editEpisodeSelector);
     await this.page.waitForXPath(editEpisodeSelector);
+    const editEpisodeButton = await this.page.$x(editEpisodeSelector);
     await this.page.evaluate(clickHtmlElement, editEpisodeButton[0]);
     const infoJson = episode.information();
     log("updating episode", true)
