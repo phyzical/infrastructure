@@ -108,6 +108,8 @@ class TvdbSubmitter extends BaseSubmitter {
     }
     updateEpisode(episode) {
         return __awaiter(this, void 0, void 0, function* () {
+            const editEpisodeButton = yield this.page.$x("//a[text()='Edit Episode']");
+            yield this.page.evaluate(clickHtmlElement, editEpisodeButton[0]);
             const infoJson = episode.information();
             log("updating episode", true);
             const editEpisodeFormSelector = "form.episode-edit-form";
@@ -162,7 +164,12 @@ class TvdbSubmitter extends BaseSubmitter {
             yield this.openAddEpisodePage(series, season);
             yield this.addInitialEpisode(episode);
             yield this.updateEpisode(episode);
-            yield this.uploadEpisodeThumbnail(episode);
+            try {
+                yield this.uploadEpisodeThumbnail(episode);
+            }
+            catch (_a) {
+                log(`sigh looks like they blocked images for ${series}`);
+            }
             log(`Finished adding of ${episode.name}`);
         });
     }

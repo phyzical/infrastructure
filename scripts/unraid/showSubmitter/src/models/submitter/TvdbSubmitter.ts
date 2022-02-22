@@ -102,6 +102,8 @@ class TvdbSubmitter extends BaseSubmitter {
   private async updateEpisode(
     episode: Episode,
   ): Promise<void> {
+    const editEpisodeButton = await this.page.$x("//a[text()='Edit Episode']");
+    await this.page.evaluate(clickHtmlElement, editEpisodeButton[0]);
     const infoJson = episode.information();
     log("updating episode", true)
     const editEpisodeFormSelector = "form.episode-edit-form";
@@ -169,7 +171,11 @@ class TvdbSubmitter extends BaseSubmitter {
     await this.openAddEpisodePage(series, season);
     await this.addInitialEpisode(episode)
     await this.updateEpisode(episode)
-    await this.uploadEpisodeThumbnail(episode)
+    try {
+      await this.uploadEpisodeThumbnail(episode)
+    } catch {
+      log(`sigh looks like they blocked images for ${series}`);
+    }
     log(`Finished adding of ${episode.name}`);
   }
 }
