@@ -3,6 +3,7 @@ import { BaseSubmitter } from './models/submitter/BaseSubmitter.js';
 import { Episode } from './models/Episode.js';
 import { FileHandler } from './models/file/FileHandler.js';
 import { log } from './helpers/LogHelper.js'
+import { delay } from './helpers/PuppeteerHelper.js';
 
 class ShowSubmitter {
   static folder: string = "/tmp/episodes"
@@ -58,6 +59,7 @@ class ShowSubmitter {
       await submitter.openSeriesSeasonPage(series, season);
       const episodeTextIdentifier = await submitter.getEpisodeIdentifier(fileToRename);
       if (!this.renameOnly && episodeTextIdentifier.length == 0) {
+        await delay(500)
         await submitter.addEpisode(episode, series, season);
       }
     }

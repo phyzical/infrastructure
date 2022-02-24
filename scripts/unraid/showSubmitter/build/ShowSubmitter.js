@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { TvdbSubmitter } from './models/submitter/TvdbSubmitter.js';
 import { FileHandler } from './models/file/FileHandler.js';
 import { log } from './helpers/LogHelper.js';
+import { delay } from './helpers/PuppeteerHelper.js';
 class ShowSubmitter {
     constructor() {
         this.renameOnly = false;
@@ -57,6 +58,7 @@ class ShowSubmitter {
                 yield submitter.openSeriesSeasonPage(series, season);
                 const episodeTextIdentifier = yield submitter.getEpisodeIdentifier(fileToRename);
                 if (!this.renameOnly && episodeTextIdentifier.length == 0) {
+                    yield delay(500);
                     yield submitter.addEpisode(episode, series, season);
                 }
             }
