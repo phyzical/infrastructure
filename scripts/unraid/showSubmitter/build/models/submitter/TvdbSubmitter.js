@@ -166,6 +166,8 @@ class TvdbSubmitter extends BaseSubmitter {
             }
             catch (_a) {
                 // what if we just try again?
+                const addEpisodeSelector = '//*[contains(text(),"Whoops, looks like something went wrong")]';
+                yield this.page.waitForXPath(addEpisodeSelector);
                 yield this.openAddEpisodePage(series, season);
                 yield this.addInitialEpisode(episode);
                 yield this.updateEpisode(episode);
