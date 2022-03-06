@@ -159,13 +159,21 @@ class TvdbSubmitter extends BaseSubmitter {
     addEpisode(episode, series, season) {
         return __awaiter(this, void 0, void 0, function* () {
             log(`Starting adding of ${episode.name}`);
-            yield this.openAddEpisodePage(series, season);
-            yield this.addInitialEpisode(episode);
-            yield this.updateEpisode(episode);
+            try {
+                yield this.openAddEpisodePage(series, season);
+                yield this.addInitialEpisode(episode);
+                yield this.updateEpisode(episode);
+            }
+            catch (_a) {
+                // what if we just try again?
+                yield this.openAddEpisodePage(series, season);
+                yield this.addInitialEpisode(episode);
+                yield this.updateEpisode(episode);
+            }
             try {
                 yield this.uploadEpisodeThumbnail(episode);
             }
-            catch (_a) {
+            catch (_b) {
                 log(`sigh looks like they blocked images for ${series}`);
             }
             log(`Finished adding of ${episode.name}`);

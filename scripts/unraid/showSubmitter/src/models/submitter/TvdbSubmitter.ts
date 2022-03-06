@@ -166,9 +166,17 @@ class TvdbSubmitter extends BaseSubmitter {
     season: string
   ): Promise<void> {
     log(`Starting adding of ${episode.name}`);
-    await this.openAddEpisodePage(series, season);
-    await this.addInitialEpisode(episode)
-    await this.updateEpisode(episode)
+    try {
+      await this.openAddEpisodePage(series, season);
+      await this.addInitialEpisode(episode)
+      await this.updateEpisode(episode)
+    } catch {
+      // what if we just try again?
+      await this.openAddEpisodePage(series, season);
+      await this.addInitialEpisode(episode)
+      await this.updateEpisode(episode)
+    }
+
     try {
       await this.uploadEpisodeThumbnail(episode)
     } catch {
