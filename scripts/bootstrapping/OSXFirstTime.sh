@@ -11,7 +11,7 @@ sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.serve
 # Update homebrew recipes
 brew update
 
-brew bundle --file=./Brewfile
+brew bundle --file=./scripts/bootstrapping/Brewfile
 
 echo "Cleaning up..."
 brew cleanup
@@ -83,7 +83,7 @@ defaults write com.apple.BezelServices kDimTime -int 300
 echo "Creating folder structure..."
 [[ ! -d ~/.nvm ]] && mkdir ~/.nvm
 [[ ! -d ~/Sites ]] && mkdir ~/Sites
-[[ ! -d ~/.githooks ]] && mkdir ~/.githooks && cp ../git-hooks/* ~/.githooks/
+[[ ! -d ~/.githooks ]] && mkdir ~/.githooks && cp ./scripts/git-hooks/* ~/.githooks/
 
 # hide siri
 defaults write com.apple.systemuiserver "NSStatusItem Visible Siri" -bool false
