@@ -16,17 +16,17 @@ first-time-install-linux:
 	fi
 
 first-time-install-osx:
-	if [ "$(which brew)" = "" ]; then \
+	@if [ "$(which brew)" = "" ]; then \
 		curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install >> brew-install.sh; \
 		chmod +x brew-install.sh; \
 		./brew-install.sh; \
 		rm ./brew-install.sh; \
-	fi
+	fi;
 	@if [ "$(PC_NAME)" != "" ] || [ "$(GIT_NAME)" != "" ] || [ "$(GIT_EMAIL)" != "" ]; then \
 		sudo chmod +x $(DIR)/scripts/OSXFirstTime.sh; \
-		bash $(DIR)/scripts/OSXFirstTime.sh $(PC_NAME) $(GIT_NAME) $(GIT_EMAIL); \
+		./$(DIR)/scripts/OSXFirstTime.sh $(PC_NAME) $(GIT_NAME) $(GIT_EMAIL); \
 	else \
-		echo "Please provide PC_NAME GIT_NAME and GIT_EMAIL" \
+		echo "Please provide PC_NAME GIT_NAME and GIT_EMAIL"; \
 	fi
 
 -include ../.env
