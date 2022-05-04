@@ -12,12 +12,10 @@ GIT_EMAIL=
 first-time-install-linux:
 	make first-time-install-script-linux
 	make setup-global-git-hook
-	install-AWS-cli
 
 first-time-install-osx:
 	make first-time-install-script-osx
 	make setup-global-git-hook
-	install-AWS-cli
 
 ## Please populate .env form.env.example
 first-time-install-script-osx:
@@ -36,13 +34,6 @@ first-time-install-script-linux:
 
 setup-global-git-hook:
 	git config --global core.hooksPath $(DIR)/scripts/git-hooks/
-
-install-AWS-cli:
-	@if [ "$(IS_OSX)" = "true" ]; then \
-		brew install awscli; \
-	else \
-		apt-get update && apt-get -y install awscli; \
-	fi
 
 install-composer:
 	@if [ "$(IS_OSX)" = "true" ]; then \

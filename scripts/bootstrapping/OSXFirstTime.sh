@@ -82,6 +82,7 @@ defaults write com.apple.BezelServices kDimTime -int 300
 echo "Creating folder structure..."
 [[ ! -d ~/.nvm ]] && mkdir ~/.nvm
 [[ ! -d ~/Sites ]] && mkdir ~/Sites
+[[ ! -d ~/.githooks ]] && mkdir ~/.githooks && cp ../git-hooks/* ~/.githooks/
 
 # hide siri
 defaults write com.apple.systemuiserver "NSStatusItem Visible Siri" -bool false
