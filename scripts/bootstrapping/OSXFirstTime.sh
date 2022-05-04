@@ -26,12 +26,10 @@ CASKS=(
     firefox
     gitup
     google-chrome
-    iterm2
-    mamp
-    macs-fan-control
-    rambox
     rectangle
-    react-native-debugger
+    discord
+    whatsapp
+    slack
     sublime-text
     spotify
     tunnelblick
@@ -48,27 +46,20 @@ brew cask install ${CASKS[@]}
 PACKAGES=(
     ansible
     awscli
-    composer
     git
-    graphviz
     hashicorp/tap/terraform-ls
     hub
     markdown
     memcached
     np
-    postgresql
-    python3
-    pypy
+    mysql
     rabbitmq
     rename
     ssh-copy-id
-    terminal-notifier
-    vim
     wget
     geoip
     nmap
     unrar
-    thefuck
     terraform
 )
 
@@ -89,7 +80,7 @@ fi
 if ! git config --list | grep -q "user.name"; then
  git config --global user.name $2
  git config --global user.email $3
- git config --global core.editor "vim" 
+ git config --global core.editor "nano" 
 fi
 
 echo "Installing Ruby gems"
@@ -144,9 +135,6 @@ defaults write com.apple.BezelServices kDimTime -int 300
 echo "Creating folder structure..."
 [[ ! -d ~/Sites ]] && mkdir ~/Sites
 
-# Menu bar: hide the useless Time Machine and Volume icons
-defaults write com.apple.systemuiserver menuExtras -array "/System/Library/CoreServices/Menu Extras/Display.menu" "/System/Library/CoreServices/Menu Extras/Volume.menu" "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" "/System/Library/CoreServices/Menu Extras/AirPort.menu" "/System/Library/CoreServices/Menu Extras/Battery.menu" "/System/Library/CoreServices/Menu Extras/Clock.menu"
-
 # hide siri
 defaults write com.apple.systemuiserver "NSStatusItem Visible Siri" -bool false
 
@@ -158,15 +146,14 @@ then
 
  DOCKITEMS=(
   Firefox
-  "Google Chrome"
-  iTerm
-  Rambox
+  Terminal
+  Slack
+  Discord
   Spotify
-  Messages
+  WhatsApp
   Calendar
   "System Preferences"
   "App Store"
-  "MAMP PRO.app"
   "Sublime Text"
  )
 
@@ -178,10 +165,9 @@ fi
 ##Restart Dock
 killall Dock
 
-
 ## RUN A MACOS UPDATE
 sudo softwareupdate --install -all
 
 echo "Bootstrapping complete"
 
-echo "Please Reboot"
+echo "Please scan output for errors then reboot if none"
