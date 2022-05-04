@@ -16,7 +16,7 @@ first-time-install-linux:
 	fi
 
 first-time-install-osx:
-	brew -v || curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install | sudo ruby
+	brew -v || curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install | sudo bash
 	@if [ "$(PC_NAME)" != "" ] || [ "$(GIT_NAME)" != "" ] || [ "$(GIT_EMAIL)" != "" ]; then \
 		sudo chmod +x $(DIR)/scripts/OSXFirstTime.sh; \
 		bash $(DIR)/scripts/OSXFirstTime.sh $(PC_NAME) $(GIT_NAME) $(GIT_EMAIL); \
