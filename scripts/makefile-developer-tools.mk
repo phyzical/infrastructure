@@ -16,7 +16,7 @@ first-time-install-linux:
 	fi
 
 first-time-install-osx:
-	@if [ "$(which brew)" = "" ]; then \
+	@if ![ "$(which brew)" = "" ]; then \
 		curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install >> brew-install.sh; \
 		chmod +x brew-install.sh; \
 		./brew-install.sh; \
