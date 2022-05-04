@@ -13,21 +13,20 @@ first-time-install-linux:
 	make first-time-install-script-linux
 	make setup-global-git-hook
 	install-AWS-cli
-	install-WP-CLI
 
 first-time-install-osx:
 	make first-time-install-script-osx
 	make setup-global-git-hook
 	install-AWS-cli
-	install-WP-CLI
 
 ## Please populate .env form.env.example
 first-time-install-script-osx:
-	chsh -s /bin/bash
-	ruby -v || ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	@if [ "$(PC_NAME)" != "" ]; then \
+	brew -v || sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	@if [ "$(PC_NAME)" != "" ] || [ "$(GIT_NAME)" != "" ] || [ "$(GIT_EMAIL)" != "" ]; then \
 		sudo chmod +x $(DIR)/scripts/OSXFirstTime.sh; \
-		bash $(DIR)/scripts/OSXFirstTime.sh $(PC_NAME) $(GIT_NAME) $(GIT_EMAIL); \
+		/bin/bash $(DIR)/scripts/OSXFirstTime.sh $(PC_NAME) $(GIT_NAME) $(GIT_EMAIL); \
+	else \
+		echo "Please provide PC_NAME GIT_NAME and GIT_EMAIL" \
 	fi
 first-time-install-script-linux:
 	@if [ "$(PC_NAME)" != "" ]; then \
@@ -58,11 +57,5 @@ install-ansible:
 	else \
 		apt-get update && apt-get -y install ansible; \
 	fi
-
-install-WP-CLI:
-	curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-	chmod +x wp-cli.phar
-	chmod +x wp-cli.phar
-	sudo mv wp-cli.phar /usr/local/bin/wp
 
 -include ../.env

@@ -11,60 +11,7 @@ sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.serve
 # Update homebrew recipes
 brew update
 
-# Install GNU core utilities (those that come with OS X are outdated)
-brew tap Homebrew/homebrew-core
-brew install coreutils
-brew install grep 
-# Install GNU `find`, `locate`, `updatedb`, and `xargs`, g-prefixed
-brew install findutils
-
-
-echo "Installing cask..."
-
-CASKS=(
-    aws-vault
-    firefox
-    gitup
-    google-chrome
-    rectangle
-    discord
-    whatsapp
-    slack
-    sublime-text
-    spotify
-    tunnelblick
-    thunderbird
-    vagrant
-    virtualbox
-    vlc
-    visual-studio-code
-)
-
-echo "Installing cask apps..."
-brew cask install ${CASKS[@]}
-
-PACKAGES=(
-    ansible
-    awscli
-    git
-    hashicorp/tap/terraform-ls
-    hub
-    markdown
-    memcached
-    np
-    mysql
-    rabbitmq
-    rename
-    ssh-copy-id
-    wget
-    geoip
-    nmap
-    unrar
-    terraform
-)
-
-echo "Installing packages..."
-brew install ${PACKAGES[@]}
+brew bundle --file=./Brewfile
 
 echo "Cleaning up..."
 brew cleanup
@@ -133,6 +80,7 @@ defaults write com.apple.AppleMultitouchTrackpad TrackpadRightClick -bool true
 defaults write com.apple.BezelServices kDimTime -int 300
 
 echo "Creating folder structure..."
+[[ ! -d ~/.nvm ]] && mkdir ~/.nvm
 [[ ! -d ~/Sites ]] && mkdir ~/Sites
 
 # hide siri
@@ -169,5 +117,7 @@ killall Dock
 sudo softwareupdate --install -all
 
 echo "Bootstrapping complete"
+
+echo "must manually install synergy and irvue"
 
 echo "Please scan output for errors then reboot if none"

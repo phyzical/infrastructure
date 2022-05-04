@@ -1,7 +1,7 @@
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
-
 source ~/.profile
+export NVM_DIR="$HOME/.nvm"
+    [ -s "$(brew --prefix)/opt/nvm/nvm.sh" ] && \. "$(brew --prefix)/opt/nvm/nvm.sh" # This loads nvm
+    [ -s "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
 NEWLINE=$'\n'
 
 setopt prompt_subst
@@ -36,3 +36,9 @@ PS1="${NEWLINE}%F{yellow}${DATEPS1}%f %F{green}${USERPS1}%f${NEWLINE}%F{cyan}${D
 autoload -U compinit
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 compinit
+zstyle ':completion:*:*:make:*' tag-order 'targets'
+
+COMPOSE_HTTP_TIMEOUT=300
+eval "$(rbenv init - zsh)"
+eval "$(direnv hook zsh)"
+ulimit -Sn 10240
