@@ -23,8 +23,7 @@ first-time-install-osx:
 		rm ./brew-install.sh; \
 	fi;
 	@if [ "$(PC_NAME)" != "" ] || [ "$(GIT_NAME)" != "" ] || [ "$(GIT_EMAIL)" != "" ]; then \
-		sudo chmod +x $(DIR)/scripts/OSXFirstTime.sh; \
-		. $(DIR)/scripts/OSXFirstTime.sh $(PC_NAME) $(GIT_NAME) $(GIT_EMAIL); \
+		. $(DIR)/scripts/bootstrapping/OSXFirstTime.sh $(PC_NAME) $(GIT_NAME) $(GIT_EMAIL); \
 	else \
 		echo "Please provide PC_NAME GIT_NAME and GIT_EMAIL"; \
 	fi
