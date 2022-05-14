@@ -18,7 +18,8 @@ else
     spotifyPath="/mnt/user/Downloads/spotify"
     dockerImage="putty182/spotify-ripper"
     docker pull $dockerImage
-    docker run -u 99:100 -v "$spotifyPath/config:/config" -v "$spotifyPath/songs:/music" --rm putty182/spotify-ripper /config/uris.txt
+    #-u 99:100
+    docker run -v "$spotifyPath/config:/config" -v "$spotifyPath/songs:/music" --rm putty182/spotify-ripper
 
     chmod_unraid_file_permissions $spotifyPath
     
