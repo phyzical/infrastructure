@@ -16,10 +16,10 @@ else
     message="Spotify Started"
     notify normal $message "Spotify" $message
     spotifyPath="/mnt/user/Downloads/spotify"
-    dockerImage="putty182/spotify-ripper"
+    dockerImage="phyzical/spotify-ripper"
     docker pull $dockerImage
 
-    docker run  -v "$spotifyPath/config:/config" -v "$spotifyPath/songs:/music" --rm phyzical/spotify-ripper /config/list.txt
+    docker run  -v "$spotifyPath/config:/config" -v "$spotifyPath/songs:/music" --rm $dockerImage /config/list.txt
 
     chmod_unraid_file_permissions $spotifyPath
     
