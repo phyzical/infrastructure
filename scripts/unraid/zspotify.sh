@@ -16,12 +16,10 @@ else
     message="Spotify Started"
     notify normal $message "Spotify" $message
     spotifyPath="/mnt/user/Downloads/spotify"
-    dockerImage="phyzical/zspotify"
+    dockerImage="cooper7692/zspotify"
     docker pull $dockerImage
 
-    docker run --rm -u 99:100 -v "$spotifyPath/music:/ZSpotify Music" -v "$spotifyPath/zs_config.json:/zs_config.json" \
-    -v "$spotifyPath/credentials.json:/credentials.json" -v "$spotifyPath/music:/ZSpotify Podcasts" $dockerImage \
-    --download="/app/uris.txt"
+    docker run --rm -u 99:100 -v "$spotifyPath/zspotify/zs_config.json:/zs_config.json"  -v "$spotifyPath/music:/ZSpotify Music" -v "$spotifyPath/zspotify:/app" -v "$spotifyPath/zspotify:/app" -v "$spotifyPath/music:/ZSpotify Podcasts" $dockerImage --download="/app/uris.txt"
 
     chmod_unraid_file_permissions $spotifyPath
     
