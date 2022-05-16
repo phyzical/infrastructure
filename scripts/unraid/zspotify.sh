@@ -16,11 +16,11 @@ else
     message="Spotify Started"
     notify normal $message "Spotify" $message
     spotifyPath="/mnt/user/Downloads/spotify"
-    dockerImage="cooper7692/zspotify-docker"
+    dockerImage="phyzical/zspotify"
     docker pull $dockerImage
 
     docker run --rm -u 99:100 -v "$spotifyPath/music:/ZSpotify Music" -v "$spotifyPath/zs_config.json:/zs_config.json" \
-    -v "$spotifyPath/credentials.json:/credentials.json" -v "$spotifyPath/music:/ZSpotify Podcasts" phyzical/zspotify-docker \
+    -v "$spotifyPath/credentials.json:/credentials.json" -v "$spotifyPath/music:/ZSpotify Podcasts" $dockerImage \
     --download="/app/uris.txt"
 
     chmod_unraid_file_permissions $spotifyPath
@@ -30,4 +30,3 @@ else
     notify normal "Finished Spotify Download!!" "Finished Spotify Download, it took $(elapsed_time_message $SECONDS)" ""
     exit 0
 fi
-
