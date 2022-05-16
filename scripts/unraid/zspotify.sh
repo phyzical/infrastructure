@@ -1,5 +1,5 @@
 #!/bin/bash
-## This uses the following repository https://github.com/putty182/spotify-ripper
+## This uses the following repository https://github.com/SwapnilSoni1999/spotify-dl
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)"
 
 source $DIR/commonFuncs.sh
@@ -16,10 +16,13 @@ else
     message="Spotify Started"
     notify normal $message "Spotify" $message
     spotifyPath="/mnt/user/Downloads/spotify"
-    dockerImage="phyzical/spotify-ripper"
+    dockerImage="cooper7692/zspotify-docker"
     docker pull $dockerImage
 
-    docker run  -v "$spotifyPath/config:/config" -v "$spotifyPath/songs:/music" --rm $dockerImage /config/list.txt
+    docker run --rm -u 99:100 -v "$spotifyPath/zspotify:/app" -v "$spotifyPath/music:/ZSpotify Music" cooper7692/zspotify-docker \
+    --download-real-time=True --root-path="/ZSpotify Music" --skip-previously-downloaded=True --download-format="mp3" \
+    --force-premium=True --print-errors=True --print-downloads=True --output="{artist}/{album}/{song_name}.{ext}" \
+    --credentials-location="/app/credentials.json" --download /app/uris.txt
 
     chmod_unraid_file_permissions $spotifyPath
     
