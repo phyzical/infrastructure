@@ -20,7 +20,7 @@ else
     docker pull $dockerImage
 
     docker run --rm -u 99:100 -v "$spotifyPath/zspotify:/app" -v "$spotifyPath/music:/ZSpotify Music" \
-    -v "$PWD/zspotify/zs_config.json:/zs_config.json" -v "$PWD/music:/ZSpotify Podcasts" cooper7692/zspotify-docker /app/uris.txt
+    -v "$spotifyPath/zspotify/zs_config.json:/zs_config.json" -v "$spotifyPath/music:/ZSpotify Podcasts" cooper7692/zspotify-docker /app/uris.txt
 
     chmod_unraid_file_permissions $spotifyPath
     
