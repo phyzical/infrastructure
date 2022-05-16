@@ -19,7 +19,7 @@ else
     dockerImage="cooper7692/zspotify-docker"
     docker pull $dockerImage
 
-    docker run --rm -u 99:100 -v "$spotifyPath/zspotify/zs_config.json:/zs_config.json"  -v "$spotifyPath/music:/ZSpotify Music" -v "$spotifyPath/zspotify:/app" -v "$spotifyPath/zspotify:/app" -v "$spotifyPath/music:/ZSpotify Podcasts" $dockerImage --download="/app/uris.txt"
+    docker run --rm -u 99:100 -v "$spotifyPath/zspotify/zs_config.json:/zs_config.json"  -v "$spotifyPath/music:/ZSpotify Music" -v "$spotifyPath/zspotify:/app"  -v "$spotifyPath/music:/ZSpotify Podcasts" $dockerImage --download="/app/uris.txt"
 
     chmod_unraid_file_permissions $spotifyPath
     
