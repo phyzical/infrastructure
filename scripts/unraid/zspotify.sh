@@ -19,10 +19,8 @@ else
     dockerImage="cooper7692/zspotify-docker"
     docker pull $dockerImage
 
-    docker run --rm -u 99:100 -v "$spotifyPath/zspotify:/app" -v "$spotifyPath/music:/ZSpotify Music" cooper7692/zspotify-docker \
-    --download-real-time=True --root-path="/ZSpotify Music" --skip-previously-downloaded=True --download-format="mp3" \
-    --force-premium=True --print-errors=True --print-downloads=True --output="{artist}/{album}/{song_name}.{ext}" \
-    --credentials-location="/app/credentials.json" --download /app/uris.txt
+    docker run --rm -u 99:100 -v "$spotifyPath/zspotify:/app" -v "$spotifyPath/music:/ZSpotify Music" \
+    -v "$PWD/zspotify/zs_config.json:/zs_config.json" -v "$PWD/music:/ZSpotify Podcasts" cooper7692/zspotify-docker /app/uris.txt
 
     chmod_unraid_file_permissions $spotifyPath
     
