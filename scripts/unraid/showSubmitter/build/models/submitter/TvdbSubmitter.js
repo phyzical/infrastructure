@@ -15,8 +15,8 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _baseURL;
 import { BaseSubmitter } from "./BaseSubmitter.js";
-import { setHtmlInput, submitHtmlForm, clickHtmlElement } from '../../helpers/PuppeteerHelper.js';
-import { log } from '../../helpers/LogHelper.js';
+import { setHtmlInput, submitHtmlForm, clickHtmlElement, } from "../../helpers/PuppeteerHelper.js";
+import { log } from "../../helpers/LogHelper.js";
 class TvdbSubmitter extends BaseSubmitter {
     constructor() {
         super(...arguments);
@@ -27,9 +27,9 @@ class TvdbSubmitter extends BaseSubmitter {
             log(`Looking for episode for ${fileToRename}`, true);
             const filenameCleaned = fileToRename
                 .toLowerCase()
-                .replace(/[- '`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+                .replace(/[- '`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, "");
             // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
-            const capitalChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŠÚÛÜÙÝŸŽ';
+            const capitalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŠÚÛÜÙÝŸŽ";
             const episodeFinderSelector = `//tr[.//a[contains(translate(translate(translate(text(),'\\\`~!@#$%^&*()-_=+[]{}|;:<>",./?, ',''), "'", ''),` +
                 `'${capitalChars}', '${capitalChars.toLowerCase()}') , '${filenameCleaned}')]]/td`;
             const episodeTextElement = yield this.page.$x(episodeFinderSelector);
@@ -159,23 +159,22 @@ class TvdbSubmitter extends BaseSubmitter {
     addEpisode(episode, series, season) {
         return __awaiter(this, void 0, void 0, function* () {
             log(`Starting adding of ${episode.name}`);
-            try {
-                yield this.openAddEpisodePage(series, season);
-                yield this.addInitialEpisode(episode);
-                yield this.updateEpisode(episode);
-            }
-            catch (_a) {
-                // what if we just try again?
-                const addEpisodeSelector = '//*[contains(text(),"Whoops, looks like something went wrong")]';
-                yield this.page.waitForXPath(addEpisodeSelector);
-                yield this.openAddEpisodePage(series, season);
-                yield this.addInitialEpisode(episode);
-                yield this.updateEpisode(episode);
-            }
+            // try {
+            yield this.openAddEpisodePage(series, season);
+            yield this.addInitialEpisode(episode);
+            yield this.updateEpisode(episode);
+            // } catch {
+            //   // what if we just try again?
+            //   const addEpisodeSelector = '//*[contains(text(),"Whoops, looks like something went wrong")]';
+            //   await this.page.waitForXPath(addEpisodeSelector);
+            //   await this.openAddEpisodePage(series, season);
+            //   await this.addInitialEpisode(episode)
+            //   await this.updateEpisode(episode)
+            // }
             try {
                 yield this.uploadEpisodeThumbnail(episode);
             }
-            catch (_b) {
+            catch (_a) {
                 log(`sigh looks like they blocked images for ${series}`);
             }
             log(`Finished adding of ${episode.name}`);
