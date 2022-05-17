@@ -117,8 +117,7 @@ class TvdbSubmitter extends BaseSubmitter {
             yield this.page.waitForXPath(saveButtonSelector);
             const saveButton = yield this.page.$x(saveButtonSelector);
             yield this.page.evaluate(clickHtmlElement, saveButton[0]);
-            // await this.page.$eval(editEpisodeFormSelector, submitHtmlForm);
-            const episodeAddedSuccessfully = '//*[contains(text(),"Episode was successfully updated!")]';
+            const episodeAddedSuccessfully = `//*[contains(text(),"${episode.title()}")]`;
             yield this.page.waitForXPath(episodeAddedSuccessfully);
             log("updated episode", true);
         });
