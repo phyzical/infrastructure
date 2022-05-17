@@ -151,9 +151,9 @@ class TvdbSubmitter extends BaseSubmitter {
                 log("Successfully uploaded image", true);
             }
             catch (e) {
-                // log(e)
-                // await this.takeScreenshot()
-                log("Failed image upload", true);
+                log(e);
+                yield this.takeScreenshot();
+                log("Failed image upload");
             }
         });
     }
