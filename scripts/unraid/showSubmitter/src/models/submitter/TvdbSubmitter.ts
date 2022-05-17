@@ -4,6 +4,7 @@ import {
   setHtmlInput,
   submitHtmlForm,
   clickHtmlElement,
+  delay,
 } from "../../helpers/PuppeteerHelper.js";
 import { log } from "../../helpers/LogHelper.js";
 
@@ -70,7 +71,7 @@ class TvdbSubmitter extends BaseSubmitter {
     if (seasonClean == "0") {
       seasonSelector = `//*[contains(text(), "Specials")]`;
     }
-    await this.page.waitForXPath(seasonSelector);
+    await this.page.waitForXPath(seasonSelector, { visible: true });
     log(`opened ${showSeasonURL}`, true);
   }
 
@@ -81,7 +82,7 @@ class TvdbSubmitter extends BaseSubmitter {
     log("opening addEpisodePage", true);
     await this.openSeriesSeasonPage(series, season);
     const addEpisodeSelector = '//*[contains(text(),"Add Episode")]';
-    await this.page.waitForXPath(addEpisodeSelector);
+    await this.page.waitForXPath(addEpisodeSelector, { visible: true });
     const addEpisodeButton = await this.page.$x(addEpisodeSelector);
     await addEpisodeButton[0].click();
     log("opened addEpisodePage", true);
@@ -91,7 +92,7 @@ class TvdbSubmitter extends BaseSubmitter {
     const infoJson = episode.information();
     log(`starting adding`, true);
     const addEpisodeFormSelector = "//h3[text()='Episodes']/ancestor::form";
-    await this.page.waitForXPath(addEpisodeFormSelector);
+    await this.page.waitForXPath(addEpisodeFormSelector, { visible: true });
     await this.page.$eval('[name="name[]"]', setHtmlInput, episode.title());
     await this.page.$eval(
       '[name="overview[]"]',
@@ -126,14 +127,13 @@ class TvdbSubmitter extends BaseSubmitter {
     );
 
     const saveButtonSelector = "//button[text()='Save']";
-    await this.page.waitForXPath(saveButtonSelector);
+    await this.page.waitForXPath(saveButtonSelector, { visible: true });
     const saveButton = await this.page.$x(saveButtonSelector);
     await this.page.evaluate(clickHtmlElement, saveButton[0]);
 
-    // await this.page.$eval(editEpisodeFormSelector, submitHtmlForm);
     const episodeAddedSuccessfully =
       '//*[contains(text(),"Episode was successfully updated!")]';
-    await this.page.waitForXPath(episodeAddedSuccessfully);
+    await this.page.waitForXPath(episodeAddedSuccessfully, { visible: true });
     log("updated episode", true);
   }
 
@@ -147,14 +147,14 @@ class TvdbSubmitter extends BaseSubmitter {
       const elementHandle = await this.page.$("input[type=file]");
       await elementHandle.uploadFile(thumbnailPath);
       const continueButtonSelector = "//button[text()='Continue']";
-      await this.page.waitForXPath(continueButtonSelector);
+      await this.page.waitForXPath(continueButtonSelector, { visible: true });
       await this.page.waitForTimeout(3000);
       const continueButton = await this.page.$x(continueButtonSelector);
       await this.page.evaluate(clickHtmlElement, continueButton[0]);
 
       await this.page.waitForTimeout(3000);
       const saveButtonSelector = "//button[text()='Finish']";
-      await this.page.waitForXPath(saveButtonSelector);
+      await this.page.waitForXPath(saveButtonSelector, { visible: true });
       const saveButton = await this.page.$x(saveButtonSelector);
       await this.page.evaluate(clickHtmlElement, saveButton[0]);
 

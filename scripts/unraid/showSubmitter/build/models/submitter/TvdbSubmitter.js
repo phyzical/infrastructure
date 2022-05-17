@@ -76,7 +76,7 @@ class TvdbSubmitter extends BaseSubmitter {
             if (seasonClean == "0") {
                 seasonSelector = `//*[contains(text(), "Specials")]`;
             }
-            yield this.page.waitForXPath(seasonSelector);
+            yield this.page.waitForXPath(seasonSelector, { visible: true });
             log(`opened ${showSeasonURL}`, true);
         });
     }
@@ -85,7 +85,7 @@ class TvdbSubmitter extends BaseSubmitter {
             log("opening addEpisodePage", true);
             yield this.openSeriesSeasonPage(series, season);
             const addEpisodeSelector = '//*[contains(text(),"Add Episode")]';
-            yield this.page.waitForXPath(addEpisodeSelector);
+            yield this.page.waitForXPath(addEpisodeSelector, { visible: true });
             const addEpisodeButton = yield this.page.$x(addEpisodeSelector);
             yield addEpisodeButton[0].click();
             log("opened addEpisodePage", true);
@@ -96,7 +96,7 @@ class TvdbSubmitter extends BaseSubmitter {
             const infoJson = episode.information();
             log(`starting adding`, true);
             const addEpisodeFormSelector = "//h3[text()='Episodes']/ancestor::form";
-            yield this.page.waitForXPath(addEpisodeFormSelector);
+            yield this.page.waitForXPath(addEpisodeFormSelector, { visible: true });
             yield this.page.$eval('[name="name[]"]', setHtmlInput, episode.title());
             yield this.page.$eval('[name="overview[]"]', setHtmlInput, infoJson.description());
             yield this.page.$eval('[name="runtime[]"]', setHtmlInput, infoJson.runTime());
@@ -114,12 +114,11 @@ class TvdbSubmitter extends BaseSubmitter {
             yield this.page.waitForSelector(editEpisodeFormSelector);
             yield this.page.$eval("[name=productioncode]", setHtmlInput, infoJson.url());
             const saveButtonSelector = "//button[text()='Save']";
-            yield this.page.waitForXPath(saveButtonSelector);
+            yield this.page.waitForXPath(saveButtonSelector, { visible: true });
             const saveButton = yield this.page.$x(saveButtonSelector);
             yield this.page.evaluate(clickHtmlElement, saveButton[0]);
-            // await this.page.$eval(editEpisodeFormSelector, submitHtmlForm);
             const episodeAddedSuccessfully = '//*[contains(text(),"Episode was successfully updated!")]';
-            yield this.page.waitForXPath(episodeAddedSuccessfully);
+            yield this.page.waitForXPath(episodeAddedSuccessfully, { visible: true });
             log("updated episode", true);
         });
     }
@@ -134,13 +133,13 @@ class TvdbSubmitter extends BaseSubmitter {
                 const elementHandle = yield this.page.$("input[type=file]");
                 yield elementHandle.uploadFile(thumbnailPath);
                 const continueButtonSelector = "//button[text()='Continue']";
-                yield this.page.waitForXPath(continueButtonSelector);
+                yield this.page.waitForXPath(continueButtonSelector, { visible: true });
                 yield this.page.waitForTimeout(3000);
                 const continueButton = yield this.page.$x(continueButtonSelector);
                 yield this.page.evaluate(clickHtmlElement, continueButton[0]);
                 yield this.page.waitForTimeout(3000);
                 const saveButtonSelector = "//button[text()='Finish']";
-                yield this.page.waitForXPath(saveButtonSelector);
+                yield this.page.waitForXPath(saveButtonSelector, { visible: true });
                 const saveButton = yield this.page.$x(saveButtonSelector);
                 yield this.page.evaluate(clickHtmlElement, saveButton[0]);
                 const episodeAddedSuccessfully = '//*[contains(text(),"Artwork successfully added.")]';
