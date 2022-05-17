@@ -4,7 +4,6 @@ import {
   setHtmlInput,
   submitHtmlForm,
   clickHtmlElement,
-  delay,
 } from "../../helpers/PuppeteerHelper.js";
 import { log } from "../../helpers/LogHelper.js";
 
@@ -71,7 +70,7 @@ class TvdbSubmitter extends BaseSubmitter {
     if (seasonClean == "0") {
       seasonSelector = `//*[contains(text(), "Specials")]`;
     }
-    await this.page.waitForXPath(seasonSelector, { visible: true });
+    await this.page.waitForXPath(seasonSelector);
     log(`opened ${showSeasonURL}`, true);
   }
 
@@ -92,7 +91,7 @@ class TvdbSubmitter extends BaseSubmitter {
     const infoJson = episode.information();
     log(`starting adding`, true);
     const addEpisodeFormSelector = "//h3[text()='Episodes']/ancestor::form";
-    await this.page.waitForXPath(addEpisodeFormSelector, { visible: true });
+    await this.page.waitForXPath(addEpisodeFormSelector);
     await this.page.$eval('[name="name[]"]', setHtmlInput, episode.title());
     await this.page.$eval(
       '[name="overview[]"]',
@@ -127,34 +126,37 @@ class TvdbSubmitter extends BaseSubmitter {
     );
 
     const saveButtonSelector = "//button[text()='Save']";
-    await this.page.waitForXPath(saveButtonSelector, { visible: true });
+    await this.page.waitForXPath(saveButtonSelector);
     const saveButton = await this.page.$x(saveButtonSelector);
     await this.page.evaluate(clickHtmlElement, saveButton[0]);
 
+    // await this.page.$eval(editEpisodeFormSelector, submitHtmlForm);
     const episodeAddedSuccessfully =
       '//*[contains(text(),"Episode was successfully updated!")]';
-    await this.page.waitForXPath(episodeAddedSuccessfully, { visible: true });
+    await this.page.waitForXPath(episodeAddedSuccessfully);
     log("updated episode", true);
   }
 
   private async uploadEpisodeThumbnail(episode: Episode): Promise<void> {
     log("Starting image upload", true);
     const thumbnailPath = episode.thumbnailFilePath();
-    const addArtworkButton = await this.page.$x("//a[text()='Add Artwork']");
+    const addArtworkSelector = "//a[text()='Add Artwork']";
+    await this.page.waitForXPath(addArtworkSelector, { visible: true });
+    const addArtworkButton = await this.page.$x(addArtworkSelector);
     await this.page.evaluate(clickHtmlElement, addArtworkButton[0]);
     try {
       await this.page.waitForSelector("input[type=file]");
       const elementHandle = await this.page.$("input[type=file]");
       await elementHandle.uploadFile(thumbnailPath);
       const continueButtonSelector = "//button[text()='Continue']";
-      await this.page.waitForXPath(continueButtonSelector, { visible: true });
+      await this.page.waitForXPath(continueButtonSelector);
       await this.page.waitForTimeout(3000);
       const continueButton = await this.page.$x(continueButtonSelector);
       await this.page.evaluate(clickHtmlElement, continueButton[0]);
 
       await this.page.waitForTimeout(3000);
       const saveButtonSelector = "//button[text()='Finish']";
-      await this.page.waitForXPath(saveButtonSelector, { visible: true });
+      await this.page.waitForXPath(saveButtonSelector);
       const saveButton = await this.page.$x(saveButtonSelector);
       await this.page.evaluate(clickHtmlElement, saveButton[0]);
 
