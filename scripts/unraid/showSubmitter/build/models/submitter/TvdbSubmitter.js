@@ -153,22 +153,23 @@ class TvdbSubmitter extends BaseSubmitter {
     addEpisode(episode, series, season) {
         return __awaiter(this, void 0, void 0, function* () {
             log(`Starting adding of ${episode.name}`);
-            // try {
-            yield this.openAddEpisodePage(series, season);
-            yield this.addInitialEpisode(episode);
-            yield this.updateEpisode(episode);
-            // } catch {
-            //   // what if we just try again?
-            //   const addEpisodeSelector = '//*[contains(text(),"Whoops, looks like something went wrong")]';
-            //   await this.page.waitForXPath(addEpisodeSelector);
-            //   await this.openAddEpisodePage(series, season);
-            //   await this.addInitialEpisode(episode)
-            //   await this.updateEpisode(episode)
-            // }
+            try {
+                yield this.openAddEpisodePage(series, season);
+                yield this.addInitialEpisode(episode);
+                yield this.updateEpisode(episode);
+            }
+            catch (_a) {
+                // random error that occurs from time to time
+                const addEpisodeSelector = '//*[contains(text(),"Whoops, looks like something went wrong")]';
+                yield this.page.waitForXPath(addEpisodeSelector);
+                yield this.openAddEpisodePage(series, season);
+                yield this.addInitialEpisode(episode);
+                yield this.updateEpisode(episode);
+            }
             try {
                 yield this.uploadEpisodeThumbnail(episode);
             }
-            catch (_a) {
+            catch (_b) {
                 log(`sigh looks like they blocked images for ${series}`);
             }
             log(`Finished adding of ${episode.name}`);
