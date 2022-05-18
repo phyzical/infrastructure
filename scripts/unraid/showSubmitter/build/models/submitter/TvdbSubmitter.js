@@ -104,6 +104,7 @@ class TvdbSubmitter extends BaseSubmitter {
             const addEpisodeFormElement = yield this.page.$x(addEpisodeFormSelector);
             yield this.page.evaluate(submitHtmlForm, addEpisodeFormElement[0]);
             log(`finished adding`, true);
+            return true;
         });
     }
     updateEpisode(episode) {
@@ -153,19 +154,22 @@ class TvdbSubmitter extends BaseSubmitter {
     addEpisode(episode, series, season) {
         return __awaiter(this, void 0, void 0, function* () {
             log(`Starting adding of ${episode.name}`);
+            let added = false;
             try {
                 yield this.openAddEpisodePage(series, season);
-                yield this.addInitialEpisode(episode);
+                added = yield this.addInitialEpisode(episode);
                 yield this.updateEpisode(episode);
             }
             catch (e) {
                 log(e);
-                // random error that occurs from time to time
-                const addEpisodeSelector = '//*[contains(text(),"Whoops, looks like something went wrong")]';
-                yield this.page.waitForXPath(addEpisodeSelector);
-                yield this.openAddEpisodePage(series, season);
-                yield this.addInitialEpisode(episode);
-                yield this.updateEpisode(episode);
+                // random error that occurs from time to time, only try again if its thrown from initial add
+                if (!added) {
+                    const addEpisodeSelector = '//*[contains(text(),"Whoops, looks like something went wrong")]';
+                    yield this.page.waitForXPath(addEpisodeSelector);
+                    yield this.openAddEpisodePage(series, season);
+                    yield this.addInitialEpisode(episode);
+                    yield this.updateEpisode(episode);
+                }
             }
             try {
                 yield this.uploadEpisodeThumbnail(episode);

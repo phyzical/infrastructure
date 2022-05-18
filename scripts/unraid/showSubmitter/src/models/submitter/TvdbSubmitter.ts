@@ -87,7 +87,7 @@ class TvdbSubmitter extends BaseSubmitter {
     log("opened addEpisodePage", true);
   }
 
-  private async addInitialEpisode(episode: Episode): Promise<void> {
+  private async addInitialEpisode(episode: Episode): Promise<boolean> {
     const infoJson = episode.information();
     log(`starting adding`, true);
     const addEpisodeFormSelector = "//h3[text()='Episodes']/ancestor::form";
@@ -111,6 +111,7 @@ class TvdbSubmitter extends BaseSubmitter {
     const addEpisodeFormElement = await this.page.$x(addEpisodeFormSelector);
     await this.page.evaluate(submitHtmlForm, addEpisodeFormElement[0]);
     log(`finished adding`, true);
+    return true;
   }
 
   private async updateEpisode(episode: Episode): Promise<void> {
@@ -168,19 +169,22 @@ class TvdbSubmitter extends BaseSubmitter {
     season: string
   ): Promise<void> {
     log(`Starting adding of ${episode.name}`);
+    let added = false;
     try {
       await this.openAddEpisodePage(series, season);
-      await this.addInitialEpisode(episode);
+      added = await this.addInitialEpisode(episode);
       await this.updateEpisode(episode);
     } catch (e) {
       log(e);
-      // random error that occurs from time to time
-      const addEpisodeSelector =
-        '//*[contains(text(),"Whoops, looks like something went wrong")]';
-      await this.page.waitForXPath(addEpisodeSelector);
-      await this.openAddEpisodePage(series, season);
-      await this.addInitialEpisode(episode);
-      await this.updateEpisode(episode);
+      // random error that occurs from time to time, only try again if its thrown from initial add
+      if (!added) {
+        const addEpisodeSelector =
+          '//*[contains(text(),"Whoops, looks like something went wrong")]';
+        await this.page.waitForXPath(addEpisodeSelector);
+        await this.openAddEpisodePage(series, season);
+        await this.addInitialEpisode(episode);
+        await this.updateEpisode(episode);
+      }
     }
 
     try {
