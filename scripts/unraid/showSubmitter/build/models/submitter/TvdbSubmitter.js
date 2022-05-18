@@ -158,7 +158,8 @@ class TvdbSubmitter extends BaseSubmitter {
                 yield this.addInitialEpisode(episode);
                 yield this.updateEpisode(episode);
             }
-            catch (_a) {
+            catch (e) {
+                log(e);
                 // random error that occurs from time to time
                 const addEpisodeSelector = '//*[contains(text(),"Whoops, looks like something went wrong")]';
                 yield this.page.waitForXPath(addEpisodeSelector);
@@ -169,7 +170,7 @@ class TvdbSubmitter extends BaseSubmitter {
             try {
                 yield this.uploadEpisodeThumbnail(episode);
             }
-            catch (_b) {
+            catch (_a) {
                 log(`sigh looks like they blocked images for ${series}`);
             }
             log(`Finished adding of ${episode.name}`);
