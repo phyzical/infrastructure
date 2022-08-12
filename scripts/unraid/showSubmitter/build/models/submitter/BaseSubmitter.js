@@ -66,7 +66,7 @@ class BaseSubmitter {
                 log(`html can be found at ${htmlPath}`);
             }
             catch (e) {
-                log("failed to save html");
+                log(`failed to save html: ${e}`);
             }
         });
     }
@@ -82,7 +82,7 @@ class BaseSubmitter {
                 log(`screen shot can be found at ${screenshotPath}`);
             }
             catch (e) {
-                log("failed to save screenshot");
+                log(`failed to save screenshot: ${e}`);
             }
         });
     }

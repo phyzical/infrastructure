@@ -69,7 +69,7 @@ class BaseSubmitter implements GenericSubmitterInterface {
       fs.writeFileSync(htmlPath, html);
       log(`html can be found at ${htmlPath}`);
     } catch (e) {
-      log("failed to save html");
+      log(`failed to save html: ${e}`);
     }
   }
 
@@ -83,7 +83,7 @@ class BaseSubmitter implements GenericSubmitterInterface {
       });
       log(`screen shot can be found at ${screenshotPath}`);
     } catch (e) {
-      log("failed to save screenshot");
+      log(`failed to save screenshot: ${e}`);
     }
   }
 }
