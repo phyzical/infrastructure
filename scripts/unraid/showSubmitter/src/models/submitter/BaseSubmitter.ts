@@ -64,7 +64,9 @@ class BaseSubmitter implements GenericSubmitterInterface {
   async saveHtml(): Promise<void> {
     try {
       const html = await this.page.content();
-      const filename = `${ShowSubmitter.folder}/${currentFileTimestamp}-${this.constructor.name}`;
+      const filename = `${ShowSubmitter.folder}/${currentFileTimestamp()}-${
+        this.constructor.name
+      }`;
       const htmlPath = `${filename}.html`;
       fs.writeFileSync(htmlPath, html);
       log(`html can be found at ${htmlPath}`);
@@ -74,7 +76,9 @@ class BaseSubmitter implements GenericSubmitterInterface {
   }
 
   async takeScreenshot(): Promise<void> {
-    const filename = `${ShowSubmitter.folder}/${currentFileTimestamp}-${this.constructor.name}`;
+    const filename = `${ShowSubmitter.folder}/${currentFileTimestamp()}-${
+      this.constructor.name
+    }`;
     const screenshotPath = `${filename}.png`;
     try {
       await this.page.screenshot({
