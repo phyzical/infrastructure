@@ -104,7 +104,15 @@ class TvdbSubmitter extends BaseSubmitter {
             const addEpisodeFormElement = yield this.page.$x(addEpisodeFormSelector);
             yield this.page.evaluate(submitHtmlForm, addEpisodeFormElement[0]);
             log(`finished adding`, true);
-            return true;
+            let result = true;
+            try {
+                const addEpisodeSelector = '//*[contains(text(),"Whoops, looks like something went wrong")]';
+                yield this.page.waitForXPath(addEpisodeSelector);
+                result = false;
+                yield this.page.waitForTimeout(3000);
+            }
+            catch (_e) { }
+            return result;
         });
     }
     updateEpisode(episode) {
@@ -154,30 +162,22 @@ class TvdbSubmitter extends BaseSubmitter {
     addEpisode(episode, series, season) {
         return __awaiter(this, void 0, void 0, function* () {
             log(`Starting adding of ${episode.name}`);
+            let attempts = 0;
             let added = false;
-            // try {
-            yield this.openAddEpisodePage(series, season);
-            added = yield this.addInitialEpisode(episode);
+            while (attempts < 5 || added) {
+                attempts++;
+                yield this.openAddEpisodePage(series, season);
+                added = yield this.addInitialEpisode(episode);
+            }
+            if (!added) {
+                throw new Error("Failed to add after 5 tries?");
+            }
             yield this.updateEpisode(episode);
-            // } catch (e) {
-            //   log(e);
-            //   // random error that occurs from time to time, only try again if its thrown from initial add
-            //   if (!added) {
-            //     const addEpisodeSelector =
-            //       '//*[contains(text(),"Whoops, looks like something went wrong")]';
-            //     await this.page.waitForXPath(addEpisodeSelector);
-            //     await this.openAddEpisodePage(series, season);
-            //     added = await this.addInitialEpisode(episode);
-            //     await this.updateEpisode(episode);
-            //   }
-            // }
-            if (added) {
-                try {
-                    yield this.uploadEpisodeThumbnail(episode);
-                }
-                catch (_a) {
-                    log(`sigh looks like they blocked images for ${series}`);
-                }
+            try {
+                yield this.uploadEpisodeThumbnail(episode);
+            }
+            catch (_a) {
+                log(`sigh looks like they blocked images for ${series}`);
             }
             log(`Finished adding of ${episode.name}`);
         });

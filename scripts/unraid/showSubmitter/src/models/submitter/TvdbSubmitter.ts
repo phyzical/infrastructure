@@ -111,7 +111,16 @@ class TvdbSubmitter extends BaseSubmitter {
     const addEpisodeFormElement = await this.page.$x(addEpisodeFormSelector);
     await this.page.evaluate(submitHtmlForm, addEpisodeFormElement[0]);
     log(`finished adding`, true);
-    return true;
+    let result = true;
+    try {
+      const addEpisodeSelector =
+        '//*[contains(text(),"Whoops, looks like something went wrong")]';
+      await this.page.waitForXPath(addEpisodeSelector);
+      result = false;
+      await this.page.waitForTimeout(3000);
+    } catch (_e) {}
+
+    return result;
   }
 
   private async updateEpisode(episode: Episode): Promise<void> {
@@ -169,29 +178,22 @@ class TvdbSubmitter extends BaseSubmitter {
     season: string
   ): Promise<void> {
     log(`Starting adding of ${episode.name}`);
+    let attempts = 0;
     let added = false;
-    // try {
-    await this.openAddEpisodePage(series, season);
-    added = await this.addInitialEpisode(episode);
+    while (attempts < 5 || added) {
+      attempts++;
+      await this.openAddEpisodePage(series, season);
+      added = await this.addInitialEpisode(episode);
+    }
+    if (!added) {
+      throw new Error("Failed to add after 5 tries?");
+    }
     await this.updateEpisode(episode);
-    // } catch (e) {
-    //   log(e);
-    //   // random error that occurs from time to time, only try again if its thrown from initial add
-    //   if (!added) {
-    //     const addEpisodeSelector =
-    //       '//*[contains(text(),"Whoops, looks like something went wrong")]';
-    //     await this.page.waitForXPath(addEpisodeSelector);
-    //     await this.openAddEpisodePage(series, season);
-    //     added = await this.addInitialEpisode(episode);
-    //     await this.updateEpisode(episode);
-    //   }
-    // }
-    if (added) {
-      try {
-        await this.uploadEpisodeThumbnail(episode);
-      } catch {
-        log(`sigh looks like they blocked images for ${series}`);
-      }
+
+    try {
+      await this.uploadEpisodeThumbnail(episode);
+    } catch {
+      log(`sigh looks like they blocked images for ${series}`);
     }
     log(`Finished adding of ${episode.name}`);
   }
