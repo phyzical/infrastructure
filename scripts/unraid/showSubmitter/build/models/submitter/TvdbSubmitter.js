@@ -98,8 +98,11 @@ class TvdbSubmitter extends BaseSubmitter {
             const episodeTitle = episode.title();
             log(`opening editEpisodePage ${episodeTitle}`, true);
             yield this.openSeriesSeasonPage(series, season);
-            const addEpisodeButton = yield this.page.$x(this.getEpisodeXpath(episode.title()));
-            yield addEpisodeButton[0].click();
+            const episodeLink = yield this.page.$x(this.getEpisodeXpath(episode.title()));
+            yield episodeLink[0].click();
+            const editEpisodeButtonSelector = '//*[contains(text(),"Edit Episode")]';
+            const editEpisodeButton = yield this.page.$x(editEpisodeButtonSelector);
+            yield editEpisodeButton[0].click();
             log(`opened editEpisodePage ${episodeTitle}`, true);
         });
     }
