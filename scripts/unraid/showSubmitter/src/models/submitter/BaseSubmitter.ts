@@ -1,9 +1,11 @@
+import fs from "fs";
 import puppeteer, { Browser, Page } from "puppeteer";
 
 import { Episode } from "../Episode.js";
 import { GenericSubmitterInterface } from "../../interfaces/submitter/GenericSubmitterInterface.js";
 import { ShowSubmitter } from "../../ShowSubmitter.js";
-import { log } from '../../helpers/LogHelper.js'
+import { log } from "../../helpers/LogHelper.js";
+import { currentFileTimestamp } from "../../helpers/GenericHelper.js";
 
 class BaseSubmitter implements GenericSubmitterInterface {
   browser: Browser;
@@ -53,31 +55,37 @@ class BaseSubmitter implements GenericSubmitterInterface {
 
   async finish(saveScreenshot: boolean = false): Promise<void> {
     if (saveScreenshot) {
-      await this.takeScreenshot()
+      await this.takeScreenshot();
+      await this.saveHtml();
     }
     await this.browser.close();
   }
 
+  async saveHtml(): Promise<void> {
+    try {
+      const html = await this.page.content();
+      const filename = `${ShowSubmitter.folder}/${currentFileTimestamp}-${this.constructor.name}`;
+      const htmlPath = `${filename}.html`;
+      fs.writeFileSync(htmlPath, html);
+      log(`html can be found at ${htmlPath}`);
+    } catch (e) {
+      log("failed to save html");
+    }
+  }
+
   async takeScreenshot(): Promise<void> {
-    const submitterName = this.constructor.name;
-    const nowDateString = new Date()
-      .toJSON()
-      .replace(/T/g, "-")
-      .replace(/Z/g, "")
-      .replace(/:/g, "_").split(".")[0]
-    const screenshotPath = `${ShowSubmitter.folder}/${nowDateString}-${submitterName}.png`
+    const filename = `${ShowSubmitter.folder}/${currentFileTimestamp}-${this.constructor.name}`;
+    const screenshotPath = `${filename}.png`;
     try {
       await this.page.screenshot({
         path: screenshotPath,
         fullPage: true,
-      })
-      log(`screen shot can be found at ${screenshotPath}`)
+      });
+      log(`screen shot can be found at ${screenshotPath}`);
     } catch (e) {
-      log("failed to save screenshot")
+      log("failed to save screenshot");
     }
   }
 }
-
-
 
 export { BaseSubmitter };

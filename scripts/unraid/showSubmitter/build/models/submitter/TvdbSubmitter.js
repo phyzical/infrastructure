@@ -167,17 +167,22 @@ class TvdbSubmitter extends BaseSubmitter {
                     const addEpisodeSelector = '//*[contains(text(),"Whoops, looks like something went wrong")]';
                     yield this.page.waitForXPath(addEpisodeSelector);
                     yield this.openAddEpisodePage(series, season);
-                    yield this.addInitialEpisode(episode);
+                    added = yield this.addInitialEpisode(episode);
                     yield this.updateEpisode(episode);
                 }
             }
-            try {
-                yield this.uploadEpisodeThumbnail(episode);
+            if (added) {
+                try {
+                    yield this.uploadEpisodeThumbnail(episode);
+                }
+                catch (_a) {
+                    log(`sigh looks like they blocked images for ${series}`);
+                }
+                log(`Finished adding of ${episode.name}`);
             }
-            catch (_a) {
-                log(`sigh looks like they blocked images for ${series}`);
+            else {
+                throw new Error(`something went wrong!`);
             }
-            log(`Finished adding of ${episode.name}`);
         });
     }
 }

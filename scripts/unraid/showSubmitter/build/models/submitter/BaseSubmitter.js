@@ -7,9 +7,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import fs from "fs";
 import puppeteer from "puppeteer";
 import { ShowSubmitter } from "../../ShowSubmitter.js";
-import { log } from '../../helpers/LogHelper.js';
+import { log } from "../../helpers/LogHelper.js";
+import { currentFileTimestamp } from "../../helpers/GenericHelper.js";
 class BaseSubmitter {
     constructor(username, password, email) {
         this.username = username;
@@ -49,19 +51,29 @@ class BaseSubmitter {
         return __awaiter(this, void 0, void 0, function* () {
             if (saveScreenshot) {
                 yield this.takeScreenshot();
+                yield this.saveHtml();
             }
             yield this.browser.close();
         });
     }
+    saveHtml() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const html = yield this.page.content();
+                const filename = `${ShowSubmitter.folder}/${currentFileTimestamp}-${this.constructor.name}`;
+                const htmlPath = `${filename}.html`;
+                fs.writeFileSync(htmlPath, html);
+                log(`html can be found at ${htmlPath}`);
+            }
+            catch (e) {
+                log("failed to save html");
+            }
+        });
+    }
     takeScreenshot() {
         return __awaiter(this, void 0, void 0, function* () {
-            const submitterName = this.constructor.name;
-            const nowDateString = new Date()
-                .toJSON()
-                .replace(/T/g, "-")
-                .replace(/Z/g, "")
-                .replace(/:/g, "_").split(".")[0];
-            const screenshotPath = `${ShowSubmitter.folder}/${nowDateString}-${submitterName}.png`;
+            const filename = `${ShowSubmitter.folder}/${currentFileTimestamp}-${this.constructor.name}`;
+            const screenshotPath = `${filename}.png`;
             try {
                 yield this.page.screenshot({
                     path: screenshotPath,

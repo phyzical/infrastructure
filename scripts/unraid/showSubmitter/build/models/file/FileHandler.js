@@ -7,45 +7,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import fs from 'fs';
-import { Episode } from '../Episode.js';
-import { log } from '../../helpers/LogHelper.js';
+import fs from "fs";
+import { Episode } from "../Episode.js";
+import { log } from "../../helpers/LogHelper.js";
 class FileHandler {
     constructor(folder) {
         this.folder = folder;
     }
     getDirectories(source) {
-        return fs.readdirSync(source, {
-            withFileTypes: true
+        return fs
+            .readdirSync(source, {
+            withFileTypes: true,
         })
-            .filter(dirent => dirent.isDirectory())
-            .map(dirent => dirent.name);
+            .filter((dirent) => dirent.isDirectory())
+            .map((dirent) => dirent.name);
     }
     fileAccumulator(acc, file) {
         const firstCharToNum = file[0];
         // if first letter is a number assume its an unproccessed episode this means that
         // if we ever have shows that start with numbers we are screwed TODO check all chars before first . is numbers
         // this still wont work if the whole show is numbers though
-        if (!isNaN(firstCharToNum) && file.includes('.mp4')) {
-            acc.push(file.replace('.mp4', ""));
+        if (!isNaN(firstCharToNum) && file.includes(".mp4")) {
+            acc.push(file.replace(".mp4", ""));
         }
         return acc;
     }
     renameEpisodeFiles(fileToRename, episodeText, series, season) {
         return __awaiter(this, void 0, void 0, function* () {
             log(`starting renaming ${fileToRename}`);
-            const seasonFolder = [this.folder, series, season].join('/');
+            const seasonFolder = [this.folder, series, season].join("/");
             const files = fs.readdirSync(seasonFolder);
             if (episodeText.length > 0) {
                 files.forEach(function (file) {
-                    if (file.includes(`${fileToRename}.`) || file.includes(`${fileToRename}-`)) {
-                        const filePath = [seasonFolder, file].join('/');
+                    if (file.includes(`${fileToRename}.`) ||
+                        file.includes(`${fileToRename}-`)) {
+                        const filePath = [seasonFolder, file].join("/");
                         if (file.includes(".description") || file.includes(".json")) {
                             fs.unlinkSync(filePath);
                         }
                         else {
-                            const newName = `${series.replace(/-/g, '.')}.${episodeText}${file.substring(file.indexOf("."))}`;
-                            fs.renameSync(filePath, [seasonFolder, newName].join('/'));
+                            const newName = `${series.replace(/-/g, ".")}.${episodeText}${file.substring(file.indexOf("."))}`;
+                            fs.renameSync(filePath, [seasonFolder, newName].join("/"));
                         }
                     }
                 });
@@ -54,11 +56,11 @@ class FileHandler {
                 log("renaming failed probably means it didn't get added correctly?");
                 files.forEach(function (file) {
                     if (file.includes(fileToRename)) {
-                        const errorDir = [seasonFolder, 'errored'].join('/');
+                        const errorDir = [seasonFolder, "errored"].join("/");
                         if (!fs.existsSync(errorDir)) {
                             fs.mkdirSync(errorDir);
                         }
-                        fs.renameSync([seasonFolder, file].join('/'), [errorDir, file].join('/'));
+                        fs.renameSync([seasonFolder, file].join("/"), [errorDir, file].join("/"));
                     }
                 });
             }
@@ -69,19 +71,20 @@ class FileHandler {
         log("Collating episodes");
         const directories = this.getDirectories(this.folder);
         const filesForProcessing = directories.reduce((seriesAcc, series) => {
-            const seriesPath = [this.folder, series].join('/');
+            const seriesPath = [this.folder, series].join("/");
             const seasonAccumulator = (seasonAcc, season) => {
-                const seasonPath = [seriesPath, season].join('/');
+                const seasonPath = [seriesPath, season].join("/");
                 const files = fs.readdirSync(seasonPath);
                 const episodeAccumulator = (key) => {
                     const informationFile = files.find(function (file) {
-                        return file.includes(key) && file.includes('.json');
+                        return file.includes(key) && file.includes(".json");
                     });
                     let thumbnailFile = files.find(function (file) {
-                        return file.includes(key) && (file.includes('-screen.jpg') || file.includes('-thumb.jpg'));
+                        return (file.includes(key) &&
+                            (file.includes("-screen.jpg") || file.includes("-thumb.jpg")));
                     });
                     const thumbnailFileTile = files.find(function (file) {
-                        return file.includes(key) && file.includes('.jpg');
+                        return file.includes(key) && file.includes(".jpg");
                     });
                     if (!thumbnailFile) {
                         thumbnailFile = thumbnailFileTile;
@@ -94,7 +97,9 @@ class FileHandler {
                     episode.name = key;
                     return episode;
                 };
-                seasonAcc[season] = files.reduce(this.fileAccumulator, []).map(episodeAccumulator);
+                seasonAcc[season] = files
+                    .reduce(this.fileAccumulator, [])
+                    .map(episodeAccumulator);
                 return seasonAcc;
             };
             seriesAcc[series] = this.getDirectories(seriesPath)
