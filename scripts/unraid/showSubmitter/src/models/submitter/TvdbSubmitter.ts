@@ -197,10 +197,12 @@ class TvdbSubmitter extends BaseSubmitter {
       const addEpisodeSelector =
         '//*[contains(text(),"Whoops, looks like something went wrong")]';
       await this.page.waitForXPath(addEpisodeSelector);
-      await this.openEditEpisodePage(series, season, episode);
-    } catch (e) {
-      log(e);
-    }
+      try {
+        await this.openEditEpisodePage(series, season, episode);
+      } catch (e) {
+        log(e);
+      }
+    } catch (_e) {}
     await this.updateEpisode(episode);
 
     try {
