@@ -22,24 +22,26 @@ class TvdbSubmitter extends BaseSubmitter {
         super(...arguments);
         _baseURL.set(this, "https://thetvdb.com");
     }
-    getEpisodeIdentifier(fileToRename) {
+    getEpisodeXpath(episodeTitle) {
+        const filenameCleaned = episodeTitle
+            .toLowerCase()
+            .replace(/[- '`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, "");
+        // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
+        const capitalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŠÚÛÜÙÝŸŽ";
+        return (`//tr[.//a[contains(translate(translate(translate(text(),'\\\`~!@#$%^&*()-_=+[]{}|;:<>",./?, ',''), "'", ''),` +
+            `'${capitalChars}', '${capitalChars.toLowerCase()}') , '${filenameCleaned}')]]/td`);
+    }
+    getEpisodeIdentifier(episodeTitle) {
         return __awaiter(this, void 0, void 0, function* () {
-            log(`Looking for episode for ${fileToRename}`, true);
-            const filenameCleaned = fileToRename
-                .toLowerCase()
-                .replace(/[- '`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, "");
-            // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
-            const capitalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŠÚÛÜÙÝŸŽ";
-            const episodeFinderSelector = `//tr[.//a[contains(translate(translate(translate(text(),'\\\`~!@#$%^&*()-_=+[]{}|;:<>",./?, ',''), "'", ''),` +
-                `'${capitalChars}', '${capitalChars.toLowerCase()}') , '${filenameCleaned}')]]/td`;
-            const episodeTextElement = yield this.page.$x(episodeFinderSelector);
+            log(`Looking for episode for ${episodeTitle}`, true);
+            const episodeTextElement = yield this.page.$x(this.getEpisodeXpath(episodeTitle));
             let episodeIdentifier = "";
             try {
                 episodeIdentifier = yield this.page.evaluate((element) => element.textContent, episodeTextElement[0]);
-                log(`Found episode for ${fileToRename}`, true);
+                log(`Found episode for ${episodeTitle}`, true);
             }
             catch (e) {
-                log(`Didnt find episode for ${fileToRename}`, true);
+                log(`Didnt find episode for ${episodeTitle}`, true);
             }
             return episodeIdentifier;
         });
@@ -91,6 +93,16 @@ class TvdbSubmitter extends BaseSubmitter {
             log("opened addEpisodePage", true);
         });
     }
+    openEditEpisodePage(series, season, episode) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const episodeTitle = episode.title();
+            log(`opening editEpisodePage ${episodeTitle}`, true);
+            yield this.openSeriesSeasonPage(series, season);
+            const addEpisodeButton = yield this.page.$x(this.getEpisodeXpath(episode.title()));
+            yield addEpisodeButton[0].click();
+            log(`opened editEpisodePage ${episodeTitle}`, true);
+        });
+    }
     addInitialEpisode(episode) {
         return __awaiter(this, void 0, void 0, function* () {
             const infoJson = episode.information();
@@ -104,15 +116,6 @@ class TvdbSubmitter extends BaseSubmitter {
             const addEpisodeFormElement = yield this.page.$x(addEpisodeFormSelector);
             yield this.page.evaluate(submitHtmlForm, addEpisodeFormElement[0]);
             log(`finished adding`, true);
-            let result = true;
-            try {
-                const addEpisodeSelector = '//*[contains(text(),"Whoops, looks like something went wrong")]';
-                yield this.page.waitForXPath(addEpisodeSelector);
-                result = false;
-                yield this.page.waitForTimeout(3000);
-            }
-            catch (_e) { }
-            return result;
         });
     }
     updateEpisode(episode) {
@@ -162,15 +165,15 @@ class TvdbSubmitter extends BaseSubmitter {
     addEpisode(episode, series, season) {
         return __awaiter(this, void 0, void 0, function* () {
             log(`Starting adding of ${episode.name}`);
-            let attempts = 0;
-            let added = false;
-            while (attempts < 5 || added) {
-                attempts++;
-                yield this.openAddEpisodePage(series, season);
-                added = yield this.addInitialEpisode(episode);
+            yield this.openAddEpisodePage(series, season);
+            yield this.addInitialEpisode(episode);
+            try {
+                const addEpisodeSelector = '//*[contains(text(),"Whoops, looks like something went wrong")]';
+                yield this.page.waitForXPath(addEpisodeSelector);
+                yield this.openEditEpisodePage(series, season, episode);
             }
-            if (!added) {
-                throw new Error("Failed to add after 5 tries?");
+            catch (e) {
+                log(e);
             }
             yield this.updateEpisode(episode);
             try {

@@ -27,7 +27,7 @@ class BaseSubmitter {
     addEpisode(episode, series, season) {
         throw new Error("Method not implemented.");
     }
-    getEpisodeIdentifier(fileToRename) {
+    getEpisodeIdentifier(episodeTitle) {
         throw new Error("Method not implemented.");
     }
     init() {

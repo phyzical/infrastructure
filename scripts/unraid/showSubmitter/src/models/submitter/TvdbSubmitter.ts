@@ -10,28 +10,33 @@ import { log } from "../../helpers/LogHelper.js";
 class TvdbSubmitter extends BaseSubmitter {
   #baseURL = "https://thetvdb.com";
 
-  async getEpisodeIdentifier(fileToRename: string): Promise<string> {
-    log(`Looking for episode for ${fileToRename}`, true);
-
-    const filenameCleaned = fileToRename
+  getEpisodeXpath(episodeTitle: string): string {
+    const filenameCleaned = episodeTitle
       .toLowerCase()
       .replace(/[- '`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, "");
     // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
     const capitalChars =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŠÚÛÜÙÝŸŽ";
-    const episodeFinderSelector =
+    return (
       `//tr[.//a[contains(translate(translate(translate(text(),'\\\`~!@#$%^&*()-_=+[]{}|;:<>",./?, ',''), "'", ''),` +
-      `'${capitalChars}', '${capitalChars.toLowerCase()}') , '${filenameCleaned}')]]/td`;
-    const episodeTextElement = await this.page.$x(episodeFinderSelector);
+      `'${capitalChars}', '${capitalChars.toLowerCase()}') , '${filenameCleaned}')]]/td`
+    );
+  }
+
+  async getEpisodeIdentifier(episodeTitle: string): Promise<string> {
+    log(`Looking for episode for ${episodeTitle}`, true);
+    const episodeTextElement = await this.page.$x(
+      this.getEpisodeXpath(episodeTitle)
+    );
     let episodeIdentifier = "";
     try {
       episodeIdentifier = await this.page.evaluate(
         (element: Element) => element.textContent,
         episodeTextElement[0]
       );
-      log(`Found episode for ${fileToRename}`, true);
+      log(`Found episode for ${episodeTitle}`, true);
     } catch (e) {
-      log(`Didnt find episode for ${fileToRename}`, true);
+      log(`Didnt find episode for ${episodeTitle}`, true);
     }
     return episodeIdentifier;
   }
@@ -87,7 +92,22 @@ class TvdbSubmitter extends BaseSubmitter {
     log("opened addEpisodePage", true);
   }
 
-  private async addInitialEpisode(episode: Episode): Promise<boolean> {
+  private async openEditEpisodePage(
+    series: string,
+    season: string,
+    episode: Episode
+  ): Promise<void> {
+    const episodeTitle = episode.title();
+    log(`opening editEpisodePage ${episodeTitle}`, true);
+    await this.openSeriesSeasonPage(series, season);
+    const addEpisodeButton = await this.page.$x(
+      this.getEpisodeXpath(episode.title())
+    );
+    await addEpisodeButton[0].click();
+    log(`opened editEpisodePage ${episodeTitle}`, true);
+  }
+
+  private async addInitialEpisode(episode: Episode): Promise<void> {
     const infoJson = episode.information();
     log(`starting adding`, true);
     const addEpisodeFormSelector = "//h3[text()='Episodes']/ancestor::form";
@@ -111,16 +131,6 @@ class TvdbSubmitter extends BaseSubmitter {
     const addEpisodeFormElement = await this.page.$x(addEpisodeFormSelector);
     await this.page.evaluate(submitHtmlForm, addEpisodeFormElement[0]);
     log(`finished adding`, true);
-    let result = true;
-    try {
-      const addEpisodeSelector =
-        '//*[contains(text(),"Whoops, looks like something went wrong")]';
-      await this.page.waitForXPath(addEpisodeSelector);
-      result = false;
-      await this.page.waitForTimeout(3000);
-    } catch (_e) {}
-
-    return result;
   }
 
   private async updateEpisode(episode: Episode): Promise<void> {
@@ -178,15 +188,15 @@ class TvdbSubmitter extends BaseSubmitter {
     season: string
   ): Promise<void> {
     log(`Starting adding of ${episode.name}`);
-    let attempts = 0;
-    let added = false;
-    while (attempts < 5 || added) {
-      attempts++;
-      await this.openAddEpisodePage(series, season);
-      added = await this.addInitialEpisode(episode);
-    }
-    if (!added) {
-      throw new Error("Failed to add after 5 tries?");
+    await this.openAddEpisodePage(series, season);
+    await this.addInitialEpisode(episode);
+    try {
+      const addEpisodeSelector =
+        '//*[contains(text(),"Whoops, looks like something went wrong")]';
+      await this.page.waitForXPath(addEpisodeSelector);
+      await this.openEditEpisodePage(series, season, episode);
+    } catch (e) {
+      log(e);
     }
     await this.updateEpisode(episode);
 

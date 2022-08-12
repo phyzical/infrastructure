@@ -32,7 +32,7 @@ class BaseSubmitter implements GenericSubmitterInterface {
     throw new Error("Method not implemented.");
   }
 
-  getEpisodeIdentifier(fileToRename: string): Promise<string> {
+  getEpisodeIdentifier(episodeTitle: string): Promise<string> {
     throw new Error("Method not implemented.");
   }
 

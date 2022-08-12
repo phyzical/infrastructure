@@ -8,7 +8,7 @@ interface GenericSubmitterInterface {
     series: string,
     season: string
   ): Promise<void>;
-  getEpisodeIdentifier(fileToRename: string): Promise<string>;
+  getEpisodeIdentifier(episodeTitle: string): Promise<string>;
 }
 
 export { GenericSubmitterInterface };
