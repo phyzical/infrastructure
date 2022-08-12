@@ -170,32 +170,30 @@ class TvdbSubmitter extends BaseSubmitter {
   ): Promise<void> {
     log(`Starting adding of ${episode.name}`);
     let added = false;
-    try {
-      await this.openAddEpisodePage(series, season);
-      added = await this.addInitialEpisode(episode);
-      await this.updateEpisode(episode);
-    } catch (e) {
-      log(e);
-      // random error that occurs from time to time, only try again if its thrown from initial add
-      if (!added) {
-        const addEpisodeSelector =
-          '//*[contains(text(),"Whoops, looks like something went wrong")]';
-        await this.page.waitForXPath(addEpisodeSelector);
-        await this.openAddEpisodePage(series, season);
-        added = await this.addInitialEpisode(episode);
-        await this.updateEpisode(episode);
-      }
-    }
+    // try {
+    await this.openAddEpisodePage(series, season);
+    added = await this.addInitialEpisode(episode);
+    await this.updateEpisode(episode);
+    // } catch (e) {
+    //   log(e);
+    //   // random error that occurs from time to time, only try again if its thrown from initial add
+    //   if (!added) {
+    //     const addEpisodeSelector =
+    //       '//*[contains(text(),"Whoops, looks like something went wrong")]';
+    //     await this.page.waitForXPath(addEpisodeSelector);
+    //     await this.openAddEpisodePage(series, season);
+    //     added = await this.addInitialEpisode(episode);
+    //     await this.updateEpisode(episode);
+    //   }
+    // }
     if (added) {
       try {
         await this.uploadEpisodeThumbnail(episode);
       } catch {
         log(`sigh looks like they blocked images for ${series}`);
       }
-      log(`Finished adding of ${episode.name}`);
-    } else {
-      throw new Error(`something went wrong!`);
     }
+    log(`Finished adding of ${episode.name}`);
   }
 }
 
