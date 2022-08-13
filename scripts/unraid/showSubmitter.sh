@@ -68,8 +68,11 @@ else
         season=$(echo "$season" | sed -e's/---/\ /g')  
         seasonName=$(basename "$season")
         finalDestination=$(echo "${destinationFolder}${showName}/${seasonName}" | sed -e's/-/\ /g')
-        echo "Trying to move $season to ${finalDestination}"
-        mkdir -p "$finalDestination" && mv "$season"/!(errored) "$finalDestination/"
+        anyFiles=$(find "$season" -type f  -not -path "*errored/*" )
+        if [ "$anyFiles" != "" ]; then
+          echo "Trying to move $season to ${finalDestination}"
+          mkdir -p "$finalDestination" && mv "$season"/!(errored) "$finalDestination/"
+        fi
       done
     done
     remove_empty_folders "$downloadFolder"
