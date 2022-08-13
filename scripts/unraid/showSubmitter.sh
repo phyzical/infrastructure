@@ -56,7 +56,6 @@ else
     chmod_unraid_file_permissions $youtubeFolder
 
     destinationFolder="/mnt/user/Media/Youtube/"
-    ## TODO this part isnt working?
     showFolders=($(find "$downloadFolder" -type d -maxdepth 1 -mindepth 1 | sed -e's/ /\---/g'))
     for show in "${showFolders[@]}"
     do
@@ -67,9 +66,10 @@ else
       do
         season=$(echo "$season" | sed -e's/---/\ /g')  
         seasonName=$(basename "$season")
-        finalDestination="${destinationFolder}${showName}/${seasonName}"
+        finalDestination=$(echo "${destinationFolder}${showName}/${seasonName}" | sed -e's/-/ /g')
         if [[ "$seasonName" != "errored" ]]; then
           echo "Trying to move $season to ${finalDestination}"
+          # mv "$season/*" "$finalDestination/"
         fi
       done
     done
