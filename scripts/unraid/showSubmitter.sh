@@ -52,15 +52,17 @@ else
 
     chmod_unraid_file_permissions $youtubeFolder
 
-    ## todo move finished downloads into the correct destination folder? proably need a seperate folder to make easier
-    ## for each show
-    ## for each season
-    ## move episodes into the correct show season folder
-    # find $downloadFolder -type d -print0 | while read -d $'\0' folder
-    # do
-    #   echo "Trying to remove $folder if empty"
-    #   find $folder -type d -empty -delete
-    # done
+    destinationFolder="/mnt/user/Media/Youtube/"
+    find $downloadFolder -type d -maxdepth 1 -mindepth 1 -print0 | while read -d $'\0' show
+    do
+      showName=$(basename show)
+      find $show -type d -maxdepth 1 -mindepth 1  | while read -d $'\0' season
+      seasonName=$(basename season)
+      if [[ "$seasonName" != "errored" ]]; then
+        finalDestination="${destinationFolder}/${showName}/${seasonName}"
+        echo "Trying to move $season to ${finalDestination}"
+      fi
+    done
     remove_empty_folders "$downloadFolder"
 
     echo "Finished tvdbsubmitter Download!!"
