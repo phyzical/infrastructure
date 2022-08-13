@@ -69,7 +69,7 @@ else
         finalDestination=$(echo "${destinationFolder}${showName}/${seasonName}" | sed -e's/-/ /g')
         if [[ "$seasonName" != "errored" ]]; then
           echo "Trying to move $season to ${finalDestination}"
-          # mv "$season/*" "$finalDestination/"
+          mv "$season/*" "$finalDestination/"
         fi
       done
     done
