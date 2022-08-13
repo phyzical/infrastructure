@@ -26,7 +26,8 @@ else
     notify normal $message "tvdbsubmitter" $message
 
     if [ "$retryFailedEpisodes" == "true" ]; then
-      find $downloadFolder -type d -name 'errored' -print0 | while read -d $'\0' folder
+      erroredFolders=($(find $downloadFolder -type d -name 'errored'))
+      for folder in "${erroredFolders[@]}"
       do
         cd "$folder/.."
         mv */* .
@@ -39,8 +40,9 @@ else
       nonSeasonFolders=(
         "$downloadFolderSmarter-Every-Day"
       )
-      find $downloadFolder -type d -print0 | while read -d $'\0' folder
-      do    
+      manualFolders=($(find $downloadFolder -type d))
+      for folder in "${manualFolders[@]}"
+      do
         move_episodes_to_season_folders "$folder" "$folder" "$nonSeasonFolders"
       done
     fi
@@ -53,16 +55,18 @@ else
     chmod_unraid_file_permissions $youtubeFolder
 
     destinationFolder="/mnt/user/Media/Youtube/"
-    find $downloadFolder -type d -maxdepth 1 -mindepth 1 -print0 | while read -d $'\0' show
+    ## TODO this part isnt working?
+    showFolders=($(find $downloadFolder -type d -maxdepth 1 -mindepth 1))
+    for show in "${showFolders[@]}"
     do
       echo "Trying to move $show"
       showName=$(basename show)
-      find $show -type d -maxdepth 1 -mindepth 1  | while read -d $'\0' season
+      seasonFolders=($(find $show -type d -maxdepth 1 -mindepth 1))
+      for season in "${showFolders[@]}"
       do
         echo "Trying to move $season"
         seasonName=$(basename season)
         finalDestination="${destinationFolder}/${showName}/${seasonName}"
-        echo "Trying to move $season to ${finalDestination}"
         if [[ "$seasonName" != "errored" ]]; then
           echo "Trying to move $season to ${finalDestination}"
         fi
