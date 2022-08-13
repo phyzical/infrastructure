@@ -61,15 +61,13 @@ else
     for show in "${showFolders[@]}"
     do
       show=$(echo $show | sed -e's/---/\ /g')  
-      echo "Trying to move $show"
-      showName=$(basename show)
+      showName=$(basename $show)
       seasonFolders=($(find $show -type d -maxdepth 1 -mindepth 1 | sed -e's/ /\---/g'))
       for season in "${showFolders[@]}"
       do
         season=$(echo $season | sed -e's/---/\ /g')  
-        echo "Trying to move $season"
-        seasonName=$(basename season)
-        finalDestination="${destinationFolder}/${showName}/${seasonName}"
+        seasonName=$(basename $season)
+        finalDestination="${destinationFolder}${showName}/${seasonName}"
         if [[ "$seasonName" != "errored" ]]; then
           echo "Trying to move $season to ${finalDestination}"
         fi
