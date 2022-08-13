@@ -35,9 +35,12 @@ else
 
     if [ "$handleManualShows" == "true" ]; then
       renameOnly=true
+      nonSeasonFolders=(
+        "/mnt/user/Downloads/youtube/Smarter-Every-Day"
+      )
       find /mnt/user/Downloads/youtube/ -type d -print0 | while read -d $'\0' folder
       do    
-        move_episodes_to_season_folders "$folder" "$folder"
+        move_episodes_to_season_folders "$folder" "$folder" "$nonSeasonFolders"
       done
     fi
 
