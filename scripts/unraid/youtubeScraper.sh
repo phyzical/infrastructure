@@ -7,6 +7,8 @@ LOCKFILE="/tmp/youtubeInProgress.lock"
 
 trap 'failed_func $LOCKFILE "Youtube Failed!! with code ($?)" "Youtube Failed!! on line $LINENO"' ERR SIGTERM
 
+textRemovalRegex=$1
+
 if [ -e $LOCKFILE ]
 then
     echo "Youtube running already."
@@ -53,10 +55,12 @@ else
                 thumbnail_generate "$processingPath"
             fi
 
-            for key in ${!textRemovals[@]}; do
-                text=${textRemovals[key]}
-                echo "Replacing $text"
-                rename "$text" "" $processingPath/* || echo "Nothing to rename"
+            echo "Replacing text in filename"
+            filesToRename=$(find "$processingPath/*" -type f | sed -e's/ /\~_-/g')
+            for old in $filesToRename; do
+              old=$(echo "$old" | sed -e's/~_-/\ /g')
+              new=$(echo "$old" | sed -e "s/$textRemovalRegex//")  
+              mv -v "$old" "$new"
             done
 
             if [[ " ${manualShows[@]} " =~ " $channelName " ]];
@@ -68,7 +72,7 @@ else
             fi
         fi
     done
-    
+
     remove_empty_folders "/mnt/user/Downloads/youtube/"
 
     echo "Finished Youtube Download!!"
