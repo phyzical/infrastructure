@@ -4,6 +4,7 @@ import {
   setHtmlInput,
   submitHtmlForm,
   clickHtmlElement,
+  delay,
 } from "../../helpers/PuppeteerHelper.js";
 import { log } from "../../helpers/LogHelper.js";
 
@@ -99,6 +100,7 @@ class TvdbSubmitter extends BaseSubmitter {
   ): Promise<void> {
     const episodeTitle = episode.title();
     log(`opening editEpisodePage ${episodeTitle}`, true);
+    await delay(500);
     await this.openSeriesSeasonPage(series, season);
     const episodeLink = await this.page.$x(
       this.getEpisodeXpath(episode.title())
@@ -115,6 +117,7 @@ class TvdbSubmitter extends BaseSubmitter {
     log(`starting adding`, true);
     const addEpisodeFormSelector = "//h3[text()='Episodes']/ancestor::form";
     await this.page.waitForXPath(addEpisodeFormSelector);
+    await delay(500);
     await this.page.$eval('[name="name[]"]', setHtmlInput, episode.title());
     await this.page.$eval(
       '[name="overview[]"]',
@@ -131,6 +134,7 @@ class TvdbSubmitter extends BaseSubmitter {
       setHtmlInput,
       infoJson.airedDate()
     );
+    await delay(500);
     const addEpisodeFormElement = await this.page.$x(addEpisodeFormSelector);
     await this.page.evaluate(submitHtmlForm, addEpisodeFormElement[0]);
     log(`finished adding`, true);
@@ -141,13 +145,13 @@ class TvdbSubmitter extends BaseSubmitter {
     log("updating episode", true);
     const editEpisodeFormSelector = "form.episode-edit-form";
     await this.page.waitForSelector(editEpisodeFormSelector);
-
+    await delay(500);
     await this.page.$eval(
       "[name=productioncode]",
       setHtmlInput,
       infoJson.url()
     );
-
+    await delay(500);
     const saveButtonSelector = "//button[text()='Save']";
     await this.page.waitForXPath(saveButtonSelector);
     const saveButton = await this.page.$x(saveButtonSelector);

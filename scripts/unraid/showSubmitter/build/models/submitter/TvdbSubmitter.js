@@ -15,7 +15,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _baseURL;
 import { BaseSubmitter } from "./BaseSubmitter.js";
-import { setHtmlInput, submitHtmlForm, clickHtmlElement, } from "../../helpers/PuppeteerHelper.js";
+import { setHtmlInput, submitHtmlForm, clickHtmlElement, delay, } from "../../helpers/PuppeteerHelper.js";
 import { log } from "../../helpers/LogHelper.js";
 class TvdbSubmitter extends BaseSubmitter {
     constructor() {
@@ -97,6 +97,7 @@ class TvdbSubmitter extends BaseSubmitter {
         return __awaiter(this, void 0, void 0, function* () {
             const episodeTitle = episode.title();
             log(`opening editEpisodePage ${episodeTitle}`, true);
+            yield delay(500);
             yield this.openSeriesSeasonPage(series, season);
             const episodeLink = yield this.page.$x(this.getEpisodeXpath(episode.title()));
             yield episodeLink[0].click();
@@ -112,10 +113,12 @@ class TvdbSubmitter extends BaseSubmitter {
             log(`starting adding`, true);
             const addEpisodeFormSelector = "//h3[text()='Episodes']/ancestor::form";
             yield this.page.waitForXPath(addEpisodeFormSelector);
+            yield delay(500);
             yield this.page.$eval('[name="name[]"]', setHtmlInput, episode.title());
             yield this.page.$eval('[name="overview[]"]', setHtmlInput, infoJson.description());
             yield this.page.$eval('[name="runtime[]"]', setHtmlInput, infoJson.runTime());
             yield this.page.$eval('[name="date[]"]', setHtmlInput, infoJson.airedDate());
+            yield delay(500);
             const addEpisodeFormElement = yield this.page.$x(addEpisodeFormSelector);
             yield this.page.evaluate(submitHtmlForm, addEpisodeFormElement[0]);
             log(`finished adding`, true);
@@ -127,7 +130,9 @@ class TvdbSubmitter extends BaseSubmitter {
             log("updating episode", true);
             const editEpisodeFormSelector = "form.episode-edit-form";
             yield this.page.waitForSelector(editEpisodeFormSelector);
+            yield delay(500);
             yield this.page.$eval("[name=productioncode]", setHtmlInput, infoJson.url());
+            yield delay(500);
             const saveButtonSelector = "//button[text()='Save']";
             yield this.page.waitForXPath(saveButtonSelector);
             const saveButton = yield this.page.$x(saveButtonSelector);
