@@ -67,14 +67,10 @@ else
                 move_episodes_to_season_folders "$processingPath" "$showPath"
             fi
         fi
-
-        if [ -d "$showPath" ]; 
-        then
-            echo "Trying to remove $showPath"
-            find $showPath -type d -empty -delete
-        fi
     done
     
+    remove_empty_folders "/mnt/user/Downloads/youtube/"
+
     echo "Finished Youtube Download!!"
     rm -f $LOCKFILE
     notify normal "Finished Youtube Download!!" "Finished Youtube Download, it took $(elapsed_time_message $SECONDS)" ""

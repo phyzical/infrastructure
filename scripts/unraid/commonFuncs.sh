@@ -61,3 +61,12 @@ move_episodes_to_season_folders () {
     fi
   done
 }
+
+remove_empty_folders() {
+  path=$1
+  find $path -type d -print0 | while read -d $'\0' folder
+  do
+    echo "Trying to remove $folder if empty"
+    find $folder -type d -empty -delete
+  done
+}
