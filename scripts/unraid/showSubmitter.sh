@@ -1,5 +1,6 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)"
+shopt -s extglob
 
 source $DIR/commonFuncs.sh
 
@@ -67,10 +68,8 @@ else
         season=$(echo "$season" | sed -e's/---/\ /g')  
         seasonName=$(basename "$season")
         finalDestination=$(echo "${destinationFolder}${showName}/${seasonName}" | sed -e's/-/\ /g')
-        if [[ "$seasonName" != "errored" ]]; then
-          echo "Trying to move $season to ${finalDestination}"
-          mkdir -p $finalDestination && mv "$season"/* "$finalDestination/"
-        fi
+        echo "Trying to move $season to ${finalDestination}"
+        mkdir -p "$finalDestination" && mv "$season"/!(errored) "$finalDestination/"
       done
     done
     remove_empty_folders "$downloadFolder"
