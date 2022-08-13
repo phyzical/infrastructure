@@ -47,7 +47,7 @@ move_episodes_to_season_folders () {
   sourcePath=$1
   destinationPath=$2
   nonSeasonFolders=$3
-  
+  echo $nonSeasonFolders
   for year in ${years[@]};
   do
     if find $sourcePath/$year*;
