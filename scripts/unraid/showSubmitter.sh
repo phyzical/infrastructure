@@ -15,23 +15,6 @@ renameOnly=$5
 retryFailedEpisodes=$6
 handleManualShows=$7
 
-if [ "$retryFailedEpisodes" == "true" ]; then
-  find /mnt/user/Downloads/youtube/ -type d -name 'errored' -print0 | while read -d $'\0' folder
-  do
-    cd "$folder/.."
-    mv */* .
-    rmdir "$folder"
-  done
-fi
-
-if [ "$handleManualShows" == "true" ]; then
-  renameOnly=true
-  find /mnt/user/Downloads/youtube/ -type d -print0 | while read -d $'\0' folder
-  do    
-    move_episodes_to_season_folders "$folder" "$folder"
-  done
-fi
-
 if [ -e $LOCKFILE ]
 then
     echo "tvdbsubmitter running already."
@@ -40,6 +23,24 @@ else
     touch $LOCKFILE
     message="tvdbsubmitter Started"
     notify normal $message "tvdbsubmitter" $message
+
+    if [ "$retryFailedEpisodes" == "true" ]; then
+      find /mnt/user/Downloads/youtube/ -type d -name 'errored' -print0 | while read -d $'\0' folder
+      do
+        cd "$folder/.."
+        mv */* .
+        rmdir "$folder"
+      done
+    fi
+
+    if [ "$handleManualShows" == "true" ]; then
+      renameOnly=true
+      find /mnt/user/Downloads/youtube/ -type d -print0 | while read -d $'\0' folder
+      do    
+        move_episodes_to_season_folders "$folder" "$folder"
+      done
+    fi
+
     docker run --rm -u 99:100 -v $DIR/showSubmitter:/tmp/scripts \
     -v "$youtubeFolder":/tmp/episodes buildkite/puppeteer \
     node /tmp/scripts/main.js email="$email" \
@@ -47,7 +48,7 @@ else
 
    chmod_unraid_file_permissions $youtubeFolder
 
-    
+   ## todo move finished downloads into the correct destination folder? proably need a seperate folder to make easier
     echo "Finished tvdbsubmitter Download!!"
     rm -f $LOCKFILE
     notify normal "Finished tvdbsubmitter Download!!" "Finished tvdbsubmitter Download, it took $(elapsed_time_message $SECONDS)" ""
