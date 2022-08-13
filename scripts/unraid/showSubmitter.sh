@@ -26,7 +26,7 @@ else
     notify normal $message "tvdbsubmitter" $message
 
     if [ "$retryFailedEpisodes" == "true" ]; then
-      erroredFolders=($(find $downloadFolder -type d -name 'errored'))
+      erroredFolders=($(find $downloadFolder -type d -name 'errored' -print0  | xargs -0))
       for folder in "${erroredFolders[@]}"
       do
         cd "$folder/.."
@@ -56,12 +56,12 @@ else
 
     destinationFolder="/mnt/user/Media/Youtube/"
     ## TODO this part isnt working?
-    showFolders=($(find $downloadFolder -type d -maxdepth 1 -mindepth 1))
+    showFolders=($(find $downloadFolder -type d -maxdepth 1 -mindepth 1 -print0  | xargs -0))
     for show in "${showFolders[@]}"
     do
       echo "Trying to move $show"
       showName=$(basename show)
-      seasonFolders=($(find $show -type d -maxdepth 1 -mindepth 1))
+      seasonFolders=($(find $show -type d -maxdepth 1 -mindepth 1 -print0  | xargs -0))
       for season in "${showFolders[@]}"
       do
         echo "Trying to move $season"

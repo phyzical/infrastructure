@@ -64,7 +64,7 @@ move_episodes_to_season_folders () {
 
 remove_empty_folders() {
   path=$1
-  folders=($(find $path -type d))
+  folders=($(find $path -type d -print0  | xargs -0))
   for folder in "${folders[@]}"
   do
     echo "Trying to remove $folder if empty"
