@@ -67,6 +67,6 @@ remove_empty_folders() {
   find $path -type d -print0 | while read -d $'\0' folder
   do
     echo "Trying to remove $folder if empty"
-    find $folder -type d -empty -delete
+    find "$folder" -type d -empty -delete
   done
 }
