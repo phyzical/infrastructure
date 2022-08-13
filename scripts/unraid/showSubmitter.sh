@@ -12,6 +12,25 @@ password=$2
 email=$3
 youtubeFolder=$4
 renameOnly=$5
+retryFailedEpisodes=$6
+handleManualShows=$7
+
+if [ "$retryFailedEpisodes" == "true" ]; then
+  find /mnt/user/Downloads/youtube/ -type d -name 'errored' -print0 | while read -d $'\0' folder
+  do
+    cd "$folder/.."
+    mv */* .
+    rmdir "$folder"
+  done
+fi
+
+if [ "$handleManualShows" == "true" ]; then
+  renameOnly=true
+  find /mnt/user/Downloads/youtube/ -type d -print0 | while read -d $'\0' folder
+  do    
+    move_episodes_to_season_folders "$folder" "$folder"
+  done
+fi
 
 if [ -e $LOCKFILE ]
 then

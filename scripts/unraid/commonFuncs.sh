@@ -41,3 +41,17 @@ chmod_unraid_file_permissions(){
   find $1 -type d -exec chmod 766 {} \;
   find $1 -type f -exec chmod 666 {} \;
 }
+
+move_episodes_to_season_folders () {
+  years=($(seq 2000 1 $(date "+%Y")))
+  sourcePath=$1
+  destinationPath=$2
+  for year in ${years[@]};
+  do
+      if find $sourcePath/$year*;
+      then
+          echo "moving '$sourcePath/$year*' to '$destinationPath/Season $year/'"
+          mkdir -p $destinationPath/Season\ $year && mv $sourcePath/$year* $destinationPath/Season\ $year/
+      fi
+  done
+}

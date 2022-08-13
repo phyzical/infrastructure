@@ -64,16 +64,7 @@ else
                 echo "moving '$processingPath/*' to '$showPath/'"
                 mv $processingPath/* $showPath/
             else
-                #move to season folders
-                years=($(seq 2000 1 $(date "+%Y")))
-                for year in ${years[@]};
-                do
-                    if find $processingPath/$year*;
-                    then
-                        echo "moving '$processingPath/$year*' to '$showPath/Season $year/'"
-                        mkdir -p $showPath/Season\ $year && mv $processingPath/$year* $showPath/Season\ $year/
-                    fi
-                done
+                move_episodes_to_season_folders "$processingPath" "$showPath"
             fi
         fi
 
