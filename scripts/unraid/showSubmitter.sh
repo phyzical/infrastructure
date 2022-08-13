@@ -57,11 +57,13 @@ else
     do
       showName=$(basename show)
       find $show -type d -maxdepth 1 -mindepth 1  | while read -d $'\0' season
-      seasonName=$(basename season)
-      if [[ "$seasonName" != "errored" ]]; then
-        finalDestination="${destinationFolder}/${showName}/${seasonName}"
-        echo "Trying to move $season to ${finalDestination}"
-      fi
+      do
+        seasonName=$(basename season)
+        if [[ "$seasonName" != "errored" ]]; then
+          finalDestination="${destinationFolder}/${showName}/${seasonName}"
+          echo "Trying to move $season to ${finalDestination}"
+        fi
+      done
     done
     remove_empty_folders "$downloadFolder"
 
