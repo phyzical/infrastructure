@@ -55,6 +55,7 @@ else
     destinationFolder="/mnt/user/Media/Youtube/"
     find $downloadFolder -type d -maxdepth 1 -mindepth 1 -print0 | while read -d $'\0' show
     do
+      echo "Trying to move $show"
       showName=$(basename show)
       find $show -type d -maxdepth 1 -mindepth 1  | while read -d $'\0' season
       do
