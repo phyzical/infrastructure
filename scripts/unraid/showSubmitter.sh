@@ -59,8 +59,9 @@ else
       find $show -type d -maxdepth 1 -mindepth 1  | while read -d $'\0' season
       do
         seasonName=$(basename season)
+        finalDestination="${destinationFolder}/${showName}/${seasonName}"
+        echo "Trying to move $season to ${finalDestination}"
         if [[ "$seasonName" != "errored" ]]; then
-          finalDestination="${destinationFolder}/${showName}/${seasonName}"
           echo "Trying to move $season to ${finalDestination}"
         fi
       done
