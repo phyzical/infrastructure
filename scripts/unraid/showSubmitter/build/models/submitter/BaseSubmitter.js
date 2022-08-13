@@ -60,7 +60,7 @@ class BaseSubmitter {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const html = yield this.page.content();
-                const filename = `${ShowSubmitter.folder}/${currentFileTimestamp()}-${this.constructor.name}`;
+                const filename = `${ShowSubmitter.folder}/html-${currentFileTimestamp()}-${this.constructor.name}`;
                 const htmlPath = `${filename}.html`;
                 fs.writeFileSync(htmlPath, html);
                 log(`html can be found at ${htmlPath}`);
@@ -72,7 +72,7 @@ class BaseSubmitter {
     }
     takeScreenshot() {
         return __awaiter(this, void 0, void 0, function* () {
-            const filename = `${ShowSubmitter.folder}/${currentFileTimestamp()}-${this.constructor.name}`;
+            const filename = `${ShowSubmitter.folder}/screen-${currentFileTimestamp()}-${this.constructor.name}`;
             const screenshotPath = `${filename}.png`;
             try {
                 yield this.page.screenshot({
