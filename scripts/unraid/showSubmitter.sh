@@ -63,7 +63,7 @@ else
       show=$(echo $show | sed -e's/---/\ /g')  
       showName=$(basename $show)
       seasonFolders=($(find $show -type d -maxdepth 1 -mindepth 1 | sed -e's/ /\---/g'))
-      for season in "${showFolders[@]}"
+      for season in "${seasonFolders[@]}"
       do
         season=$(echo $season | sed -e's/---/\ /g')  
         seasonName=$(basename $season)
