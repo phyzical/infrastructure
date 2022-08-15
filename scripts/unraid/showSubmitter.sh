@@ -27,10 +27,10 @@ else
     notify normal $message "tvdbsubmitter" $message
 
     if [ "$retryFailedEpisodes" == "true" ]; then
-      erroredFolders=($(find "$downloadFolder" -type d -name 'errored' | sed -e's/ /\~_-/g'))
+      erroredFolders=($(find "$downloadFolder" -type d -name 'errored' | sed -e 's/ /\~_-/g'))
       for folder in "${erroredFolders[@]}"
       do
-        folder=$(echo "$folder" | sed -e's/~_-/\ /g')  
+        folder=$(echo "$folder" | sed -e 's/~_-/\ /g')  
         cd "$folder/.."
         mv */* .
         rmdir "$folder"
@@ -57,15 +57,15 @@ else
     chmod_unraid_file_permissions $youtubeFolder
 
     destinationFolder="/mnt/user/Media/Youtube/"
-    showFolders=($(find "$downloadFolder" -type d -maxdepth 1 -mindepth 1 | sed -e's/ /\~_-/g'))
+    showFolders=($(find "$downloadFolder" -type d -maxdepth 1 -mindepth 1 | sed -e 's/ /\~_-/g'))
     for show in "${showFolders[@]}"
     do
-      show=$(echo "$show" | sed -e's/~_-/\ /g')  
+      show=$(echo "$show" | sed -e 's/~_-/\ /g')  
       showName=$(basename "$show")
-      seasonFolders=($(find "$show" -type d -maxdepth 1 -mindepth 1 | sed -e's/ /\~_-/g'))
+      seasonFolders=($(find "$show" -type d -maxdepth 1 -mindepth 1 | sed -e 's/ /\~_-/g'))
       for season in "${seasonFolders[@]}"
       do
-        season=$(echo "$season" | sed -e's/~_-/\ /g')  
+        season=$(echo "$season" | sed -e 's/~_-/\ /g')  
         seasonName=$(basename "$season")
         finalDestination=$(echo "${destinationFolder}${showName}/${seasonName}" | sed -e's/-/\ /g')
         anyFiles=$(find "$season" -type f  -not -path "*errored/*" )
