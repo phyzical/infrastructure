@@ -59,7 +59,7 @@ else
             filesToRename=$(find "$processingPath" -type f | sed -e 's/ /\~_-/g')
             for old in "${filesToRename[@]}"; do
               old=$(echo "$old" | sed -e 's/\~_-/ /g')
-              new=$(echo "$old" | sed -re "s/$textRemovalRegex//")  
+              new=$(echo "$old" | sed -e "s/$textRemovalRegex//")  
               mv -v "$old" "$new"
             done
 
