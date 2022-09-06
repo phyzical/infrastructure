@@ -28,7 +28,7 @@ else
 
     if [ "$retryFailedEpisodes" == "true" ]; then
       erroredFolders=($(find "$downloadFolder" -type d -name 'errored' | sed -e 's/ /\~_-/g'))
-      for folder in "${erroredFolders[@]}"
+      for folder in $erroredFolders
       do
         folder=$(echo "$folder" | sed -e 's/\~_-/ /g')  
         cd "$folder/.."
@@ -58,12 +58,12 @@ else
 
     destinationFolder="/mnt/user/Media/Youtube/"
     showFolders=($(find "$downloadFolder" -type d -maxdepth 1 -mindepth 1 | sed -e 's/ /\~_-/g'))
-    for show in "${showFolders[@]}"
+    for show in $showFolders
     do
       show=$(echo "$show" | sed -e 's/\~_-/ /g')  
       showName=$(basename "$show")
       seasonFolders=($(find "$show" -type d -maxdepth 1 -mindepth 1 | sed -e 's/ /\~_-/g'))
-      for season in "${seasonFolders[@]}"
+      for season in $seasonFolders
       do
         season=$(echo "$season" | sed -e 's/\~_-/ /g')  
         seasonName=$(basename "$season")
