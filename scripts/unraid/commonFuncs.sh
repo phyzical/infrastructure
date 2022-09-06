@@ -1,4 +1,6 @@
 #!/bin/bash
+PS4=':$LINENO+'
+set -x
 
 notify () {
     /usr/local/emhttp/webGui/scripts/notify -i $1 -s "$2" -e "$3" -d "$4" || echo "/usr/local/emhttp/webGui/scripts/notify is missing"
@@ -67,7 +69,7 @@ remove_empty_folders() {
   folders=($(find "$path" -type d | sed -e 's/ /\~_-/g'))
   for folder in "${folders[@]}"
   do
-    folder=$(echo "$folder" | sed -e 's/~_-/\ /g')  
+    folder=$(echo "$folder" | sed -e 's/\~_-/ /g')  
     echo "Trying to remove $folder if empty"
     find "$folder" -type d -empty -delete || true
   done
