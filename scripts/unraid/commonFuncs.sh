@@ -65,7 +65,7 @@ move_episodes_to_season_folders () {
 remove_empty_folders() {
   path=$1
   folders=($(find "$path" -type d | sed -e 's/ /\~_-/g'))
-  for folder in $folders
+  for folder in ${folders[@]}
   do
     folder=$(echo "$folder" | sed -e 's/\~_-/ /g')  
     echo "Trying to remove $folder if empty"
