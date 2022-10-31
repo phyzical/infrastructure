@@ -34,7 +34,7 @@ else
         -f "$format" --download-archive "$channelName.txt" --write-thumbnail --add-metadata \
         --no-write-playlist-metafiles --compat-options no-youtube-unavailable-videos --sponsorblock-remove "default" \
         --write-auto-sub --cookies cookies.txt --write-info-json --convert-subs=srt --sub-lang "en" --ignore-no-formats \
-        --match-filter "!is_live & live_status!=is_upcoming & availability = 'public'" \
+        --match-filter "!is_live & availability = 'public'" \
         --datebefore $oneMonthAgo --merge-output-format mp4 -o "$outputFormat" "$url"
         
         if [ -d "$processingPath" ]; 
