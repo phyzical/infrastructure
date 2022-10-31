@@ -68,7 +68,7 @@ else
             if [[ " ${manualShows[@]} " =~ " $channelName " ]];
             then
                 echo "moving '$processingPath/*' to '$showPath/'"
-                mv $processingPath/* $showPath/
+                mv $processingPath/* $showPath/ || echo "$processingPath/ must be empty"
             else
                 move_episodes_to_season_folders "$processingPath" "$showPath"
             fi
