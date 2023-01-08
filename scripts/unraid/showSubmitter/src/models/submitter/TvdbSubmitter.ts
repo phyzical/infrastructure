@@ -206,8 +206,9 @@ class TvdbSubmitter extends BaseSubmitter {
     const addArtworkButton = await this.page.$x(addArtworkSelector);
     await this.page.evaluate(clickHtmlElement, addArtworkButton[0]);
     try {
-      await this.page.waitForSelector("input[type=file]");
-      const elementHandle = await this.page.$("input[type=file]");
+      const fileSelector = "input[name='file']";
+      await this.page.waitForSelector(fileSelector);
+      const elementHandle = await this.page.$(fileSelector);
       await elementHandle.uploadFile(thumbnailPath);
       const continueButtonSelector = "//button[text()='Continue']";
       await this.page.waitForXPath(continueButtonSelector);
