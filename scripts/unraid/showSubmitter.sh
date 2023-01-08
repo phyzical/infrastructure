@@ -6,7 +6,7 @@ source $DIR/commonFuncs.sh
 
 LOCKFILE="/tmp/tvdbsubmitter.lock"
 
-trap 'failed_func $LOCKFILE "tvdbsubmitter Failed!!" "Youtube Failed!! on line $LINENO"' ERR SIGTERM
+trap 'failed_func $LOCKFILE "tvdbsubmitter Failed!!" "tvdbsubmitter Failed!! on line $LINENO"' ERR SIGTERM
 
 username=$1
 password=$2

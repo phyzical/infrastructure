@@ -28,6 +28,14 @@ class BaseSubmitter implements GenericSubmitterInterface {
     throw new Error("Method not implemented.");
   }
 
+  addSeriesSeason(series: string, season: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
+  openSeriesPage(series: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
   addEpisode(episode: Episode, series: string, season: string): Promise<void> {
     throw new Error("Method not implemented.");
   }

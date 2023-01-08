@@ -24,6 +24,12 @@ class BaseSubmitter {
     openSeriesSeasonPage(series, season) {
         throw new Error("Method not implemented.");
     }
+    addSeriesSeason(series, season) {
+        throw new Error("Method not implemented.");
+    }
+    openSeriesPage(series) {
+        throw new Error("Method not implemented.");
+    }
     addEpisode(episode, series, season) {
         throw new Error("Method not implemented.");
     }

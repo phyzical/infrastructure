@@ -80,12 +80,48 @@ class TvdbSubmitter extends BaseSubmitter {
     log(`opened ${showSeasonURL}`, true);
   }
 
+  async addSeriesSeason(series: string, season: string): Promise<void> {
+    const seasonClean = season.split(" ")[1];
+    await this.openSeriesPage(series);
+
+    const openSeasonsButton = await this.page.$x(`//a[text()="Seasons"]`);
+    await openSeasonsButton[0].click();
+
+    const addSeasonButton = await this.page.$x(`//button[@title="Add Season"]`);
+    await addSeasonButton[0].click();
+
+    await this.page.$eval('[name="season_number"]', setHtmlInput, seasonClean);
+
+    const saveSeasonsButton = await this.page.$x(
+      `//button[text()="Add Season"]`
+    );
+    await saveSeasonsButton[0].click();
+
+    await this.page.waitForXPath(`//*[contains(text(), "Season ${season}")]`);
+
+    log(`Added ${series} - ${seasonClean}`, true);
+  }
+
+  async openSeriesPage(series) {
+    const showSeriesURL = [this.#baseURL, "series", series].join("/");
+    log(`opening ${showSeriesURL}`, true);
+    await this.page.goto(showSeriesURL);
+    let seriesSelector = `//*[contains(text(), "${series}")]`;
+    await this.page.waitForXPath(seriesSelector);
+    log(`opened ${showSeriesURL}`, true);
+  }
+
   private async openAddEpisodePage(
     series: string,
     season: string
   ): Promise<void> {
     log("opening addEpisodePage", true);
-    await this.openSeriesSeasonPage(series, season);
+    try {
+      await this.openSeriesSeasonPage(series, season);
+    } catch {
+      await this.addSeriesSeason(series, season);
+      await this.openSeriesSeasonPage(series, season);
+    }
     const addEpisodeSelector = '//*[contains(text(),"Add Episode")]';
     await this.page.waitForXPath(addEpisodeSelector, { visible: true });
     const addEpisodeButton = await this.page.$x(addEpisodeSelector);
@@ -211,8 +247,8 @@ class TvdbSubmitter extends BaseSubmitter {
 
     try {
       await this.uploadEpisodeThumbnail(episode);
-    } catch {
-      log(`sigh looks like they blocked images for ${series}`);
+    } catch (e) {
+      log(`sigh looks like they blocked images for ${series} (${e})`);
     }
     log(`Finished adding of ${episode.name}`);
   }

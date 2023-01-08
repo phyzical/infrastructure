@@ -7,10 +7,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { TvdbSubmitter } from './models/submitter/TvdbSubmitter.js';
-import { FileHandler } from './models/file/FileHandler.js';
-import { log } from './helpers/LogHelper.js';
-import { delay } from './helpers/PuppeteerHelper.js';
+import { TvdbSubmitter } from "./models/submitter/TvdbSubmitter.js";
+import { FileHandler } from "./models/file/FileHandler.js";
+import { log } from "./helpers/LogHelper.js";
+import { delay } from "./helpers/PuppeteerHelper.js";
 class ShowSubmitter {
     constructor() {
         this.renameOnly = false;
@@ -19,18 +19,18 @@ class ShowSubmitter {
     parseArguments() {
         const inputs = process.argv.slice(2);
         for (let i = 0; i < inputs.length; i++) {
-            const inputSplit = inputs[i].split('=');
+            const inputSplit = inputs[i].split("=");
             switch (inputSplit[0]) {
-                case 'email':
+                case "email":
                     this.email = inputSplit[1];
                     break;
-                case 'password':
+                case "password":
                     this.password = inputSplit[1];
                     break;
-                case 'username':
+                case "username":
                     this.username = inputSplit[1];
                     break;
-                case 'renameOnly':
+                case "renameOnly":
                     this.renameOnly = inputSplit[1] == "true";
                     break;
             }
@@ -73,7 +73,7 @@ class ShowSubmitter {
                     episodeTextIdentifier = yield submitter.getEpisodeIdentifier(fileToRename);
                     // if we cant find it on a source something went wrong
                     if (episodeTextIdentifier.length == 0) {
-                        throw new Error;
+                        throw new Error();
                     }
                 }
             }
@@ -107,9 +107,10 @@ class ShowSubmitter {
     start() {
         this.addEpisodes().catch((e) => __awaiter(this, void 0, void 0, function* () {
             log(e);
-            yield this.finishSubmitters(true).catch(e2 => {
+            yield this.finishSubmitters(true).catch((e2) => {
                 log(e2);
             });
+            throw e;
         }));
     }
 }

@@ -82,10 +82,41 @@ class TvdbSubmitter extends BaseSubmitter {
             log(`opened ${showSeasonURL}`, true);
         });
     }
+    addSeriesSeason(series, season) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const seasonClean = season.split(" ")[1];
+            yield this.openSeriesPage(series);
+            const openSeasonsButton = yield this.page.$x(`//a[text()="Seasons"]`);
+            yield openSeasonsButton[0].click();
+            const addSeasonButton = yield this.page.$x(`//button[@title="Add Season"]`);
+            yield addSeasonButton[0].click();
+            yield this.page.$eval('[name="season_number"]', setHtmlInput, seasonClean);
+            const saveSeasonsButton = yield this.page.$x(`//button[text()="Add Season"]`);
+            yield saveSeasonsButton[0].click();
+            yield this.page.waitForXPath(`//*[contains(text(), "Season ${season}")]`);
+            log(`Added ${series} - ${seasonClean}`, true);
+        });
+    }
+    openSeriesPage(series) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const showSeriesURL = [__classPrivateFieldGet(this, _baseURL), "series", series].join("/");
+            log(`opening ${showSeriesURL}`, true);
+            yield this.page.goto(showSeriesURL);
+            let seriesSelector = `//*[contains(text(), "${series}")]`;
+            yield this.page.waitForXPath(seriesSelector);
+            log(`opened ${showSeriesURL}`, true);
+        });
+    }
     openAddEpisodePage(series, season) {
         return __awaiter(this, void 0, void 0, function* () {
             log("opening addEpisodePage", true);
-            yield this.openSeriesSeasonPage(series, season);
+            try {
+                yield this.openSeriesSeasonPage(series, season);
+            }
+            catch (_a) {
+                yield this.addSeriesSeason(series, season);
+                yield this.openSeriesSeasonPage(series, season);
+            }
             const addEpisodeSelector = '//*[contains(text(),"Add Episode")]';
             yield this.page.waitForXPath(addEpisodeSelector, { visible: true });
             const addEpisodeButton = yield this.page.$x(addEpisodeSelector);
@@ -190,8 +221,8 @@ class TvdbSubmitter extends BaseSubmitter {
             try {
                 yield this.uploadEpisodeThumbnail(episode);
             }
-            catch (_a) {
-                log(`sigh looks like they blocked images for ${series}`);
+            catch (e) {
+                log(`sigh looks like they blocked images for ${series} (${e})`);
             }
             log(`Finished adding of ${episode.name}`);
         });
