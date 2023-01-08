@@ -178,7 +178,7 @@ class TvdbSubmitter extends BaseSubmitter {
             log("Starting image upload", true);
             const thumbnailPath = episode.thumbnailFilePath();
             const addArtworkSelector = "//a[text()='Add Artwork']";
-            yield this.page.waitForXPath(addArtworkSelector, { visible: true });
+            yield this.page.waitForXPath(addArtworkSelector);
             const addArtworkButton = yield this.page.$x(addArtworkSelector);
             yield this.page.evaluate(clickHtmlElement, addArtworkButton[0]);
             try {
