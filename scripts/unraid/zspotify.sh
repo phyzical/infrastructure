@@ -15,7 +15,7 @@ else
     message="Spotify Started"
     notify normal $message "Spotify" $message
     spotifyPath="/mnt/user/Downloads/spotify"
-    dockerImage="phyzical/zspotify-docker"
+    dockerImage="phyzical/zspotify"
     # dockerImage="cooper7692/zspotify-docker"
     docker pull $dockerImage
 
