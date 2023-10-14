@@ -27,10 +27,12 @@ else
     notify normal $message "tvdbsubmitter" $message
 
     if [ "$retryFailedEpisodes" == "true" ]; then
+      echo "Moving failed episodes"
       erroredFolders=($(find "$downloadFolder" -type d -name 'errored' | sed -e 's/ /\~_-/g'))
       for folder in $erroredFolders
       do
         folder=$(echo "$folder" | sed -e 's/\~_-/ /g')  
+        echo "moving $folder to $folder/.."
         cd "$folder/.."
         mv */* .
         rmdir "$folder"
