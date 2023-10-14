@@ -69,6 +69,6 @@ remove_empty_folders() {
   do
     folder=$(echo "$folder" | sed -e 's/\~_-/ /g')  
     echo "Trying to remove $folder if empty"
-    find "$folder" -type d -empty -delete || true
+    find "$folder" -type d -empty -delete 2>/dev/null
   done
 }
