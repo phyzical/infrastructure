@@ -110,6 +110,7 @@ class ShowSubmitter {
     for (const [series, seasons] of Object.entries(shows)) {
       for (const [season, episodes] of Object.entries(seasons)) {
         log(`Starting ${series} - ${season}`);
+        log(`Processing ${episodes.length} episodes`);
         for (const episode of episodes) {
           const fileToRename = episode.title();
           await this.addEpisode(fileToRename, series, season, episode);
