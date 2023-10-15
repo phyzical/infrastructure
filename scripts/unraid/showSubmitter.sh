@@ -71,7 +71,10 @@ else
         seasonName=$(basename "$season")
         finalDestination=$(echo "${destinationFolder}${showName}/${seasonName}" | sed -e's/-/\ /g')
         anyFiles=$(find "$season" -type f  -not -path "*errored/*" )
-        if [ "$anyFiles" != "" ]; then
+        anyUnproccessedFiles=$(find "$season" -type f  -regextype egrep -regex ".*[0-9]{6}\..*" )
+        if [ "$anyUnproccessedFiles" != "" ]; then
+          echo "Skipping moving of $season There are unproccessed files!!!"
+        elif [ "$anyFiles" != "" ]; then
           echo "Trying to move $season to ${finalDestination}"
           mkdir -p "$finalDestination" && mv "$season"/!(errored) "$finalDestination/"
         fi
