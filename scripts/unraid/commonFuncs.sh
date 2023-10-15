@@ -20,13 +20,13 @@ thumbnail_generate() {
     for f in "$folder"/*.mp4;
     do
         echo "$f"
-        docker run --rm -u $(id -u):$(id -g) -v "$folder":"$folder" \
+        docker run --rm -u 99:100 -v "$folder":"$folder" \
         -w "$folder" jrottenberg/ffmpeg -loglevel 0 -y -ss 00:02:00 -i "$f" \
         -vframes 1 "${f%.mp4}-screen".jpg
     done
     echo "Converting Thumbs for $folder"
     docker pull madhead/imagemagick
-    docker run --rm -v "$folder":/src --user=$(id -u):$(id -g) \
+    docker run --rm -v "$folder":/src --user=99:100 \
     madhead/imagemagick magick mogrify -resize 640x360 -format jpg "/src/*.jpg"
 }
 

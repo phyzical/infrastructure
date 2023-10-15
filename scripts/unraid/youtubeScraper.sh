@@ -30,7 +30,7 @@ else
         processingPath="$showPath/processing"
 
         echo "Downloading $channelName"
-        docker run --rm -u $(id -u):$(id -g) -v $youtubePath:/workdir:rw $dockerImage \
+        docker run --rm -u 99:100 -v $youtubePath:/workdir:rw $dockerImage \
         -f "$format" --download-archive "$channelName.txt" --write-thumbnail --add-metadata \
         --no-write-playlist-metafiles --compat-options no-youtube-unavailable-videos --sponsorblock-remove "default" \
         --write-auto-sub --cookies cookies.txt --write-info-json --convert-subs=srt --sub-lang "en" --ignore-no-formats-error \
@@ -42,7 +42,7 @@ else
             if ls $processingPath/*.webp 1> /dev/null 2>&1;
             then
                 echo "Converting images matching ($processingPath/*.webp)"
-                docker run --rm -v "$processingPath":/src --user=$(id -u):$(id -g) \
+                docker run --rm -v "$processingPath":/src --user=99:100 \
                 madhead/imagemagick magick mogrify -format jpg /src/*.webp
             fi
                 
