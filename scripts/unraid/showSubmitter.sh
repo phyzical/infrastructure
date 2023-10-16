@@ -56,7 +56,7 @@ else
     node /tmp/scripts/main.js email="$email" \
     username="$username" password="$password" renameOnly="$renameOnly"
 
-    chmod_unraid_file_permissions $youtubeFolder
+    # chmod_unraid_file_permissions $youtubeFolder
 
     destinationFolder="/mnt/user/Media/Youtube/"
     showFolders=($(find "$downloadFolder" -type d -maxdepth 1 -mindepth 1 | sed -e 's/ /\~_-/g'))
