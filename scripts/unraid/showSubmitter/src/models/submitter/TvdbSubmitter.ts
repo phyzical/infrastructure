@@ -100,7 +100,9 @@ class TvdbSubmitter extends BaseSubmitter {
     );
     await saveSeasonsButton[0].click();
 
-    await this.page.waitForXPath(`//*[contains(text(), "Season ${season}")]`);
+    await this.page.waitForXPath(
+      `//*[contains(text(), "Season ${seasonClean}")]`
+    );
 
     log(`Added ${series} - ${seasonClean}`, true);
   }

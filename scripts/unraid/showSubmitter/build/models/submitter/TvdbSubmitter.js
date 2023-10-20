@@ -95,7 +95,7 @@ class TvdbSubmitter extends BaseSubmitter {
             yield this.page.$eval('[name="season_number"]', setHtmlInput, seasonClean);
             const saveSeasonsButton = yield this.page.$x(`//button[text()="Add Season"]`);
             yield saveSeasonsButton[0].click();
-            yield this.page.waitForXPath(`//*[contains(text(), "Season ${season}")]`);
+            yield this.page.waitForXPath(`//*[contains(text(), "Season ${seasonClean}")]`);
             log(`Added ${series} - ${seasonClean}`, true);
         });
     }
