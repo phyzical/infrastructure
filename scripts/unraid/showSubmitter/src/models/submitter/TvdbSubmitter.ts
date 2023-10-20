@@ -108,7 +108,8 @@ class TvdbSubmitter extends BaseSubmitter {
     const showSeriesURL = [this.#baseURL, "series", series].join("/");
     log(`opening ${showSeriesURL}`, true);
     await this.page.goto(showSeriesURL);
-    let seriesSelector = `//*[contains(text(), "${series}")]`;
+    const seriesCleaned = series.split("-").join(" ");
+    let seriesSelector = `//*[contains(text(), "${seriesCleaned}")]`;
     await this.page.waitForXPath(seriesSelector);
     log(`opened ${showSeriesURL}`, true);
   }

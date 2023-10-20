@@ -103,7 +103,8 @@ class TvdbSubmitter extends BaseSubmitter {
             const showSeriesURL = [__classPrivateFieldGet(this, _baseURL), "series", series].join("/");
             log(`opening ${showSeriesURL}`, true);
             yield this.page.goto(showSeriesURL);
-            let seriesSelector = `//*[contains(text(), "${series}")]`;
+            const seriesCleaned = series.split("-").join(" ");
+            let seriesSelector = `//*[contains(text(), "${seriesCleaned}")]`;
             yield this.page.waitForXPath(seriesSelector);
             log(`opened ${showSeriesURL}`, true);
         });
