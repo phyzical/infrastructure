@@ -85,7 +85,7 @@ class TvdbSubmitter extends BaseSubmitter {
     addSeriesSeason(series, season) {
         return __awaiter(this, void 0, void 0, function* () {
             const seasonClean = season.split(" ")[1];
-            log(`Adding ${series} - ${seasonClean}`);
+            log(`Adding ${series} - ${seasonClean}`, true);
             yield this.openSeriesPage(series);
             const openSeasonsButton = yield this.page.$x(`//a[text()="Seasons"]`);
             yield openSeasonsButton[0].click();
@@ -95,7 +95,7 @@ class TvdbSubmitter extends BaseSubmitter {
             const saveSeasonsButton = yield this.page.$x(`//button[text()="Add Season"]`);
             yield saveSeasonsButton[0].click();
             yield this.page.waitForXPath(`//*[contains(text(), "Season ${season}")]`);
-            log(`Added ${series} - ${seasonClean}`);
+            log(`Added ${series} - ${seasonClean}`, true);
         });
     }
     openSeriesPage(series) {

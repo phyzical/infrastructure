@@ -82,7 +82,7 @@ class TvdbSubmitter extends BaseSubmitter {
 
   async addSeriesSeason(series: string, season: string): Promise<void> {
     const seasonClean = season.split(" ")[1];
-    log(`Adding ${series} - ${seasonClean}`);
+    log(`Adding ${series} - ${seasonClean}`, true);
 
     await this.openSeriesPage(series);
 
@@ -101,7 +101,7 @@ class TvdbSubmitter extends BaseSubmitter {
 
     await this.page.waitForXPath(`//*[contains(text(), "Season ${season}")]`);
 
-    log(`Added ${series} - ${seasonClean}`);
+    log(`Added ${series} - ${seasonClean}`, true);
   }
 
   async openSeriesPage(series) {
