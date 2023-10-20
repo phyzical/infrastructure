@@ -89,6 +89,7 @@ class TvdbSubmitter extends BaseSubmitter {
             yield this.openSeriesPage(series);
             const openSeasonsButton = yield this.page.$x(`//a[text()="Seasons"]`);
             yield openSeasonsButton[0].click();
+            yield delay(500);
             const addSeasonButton = yield this.page.$x(`//button[@title="Add Season"]`);
             yield addSeasonButton[0].click();
             yield this.page.$eval('[name="season_number"]', setHtmlInput, seasonClean);

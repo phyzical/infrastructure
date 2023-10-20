@@ -89,6 +89,7 @@ class TvdbSubmitter extends BaseSubmitter {
     const openSeasonsButton = await this.page.$x(`//a[text()="Seasons"]`);
     await openSeasonsButton[0].click();
 
+    await delay(500);
     const addSeasonButton = await this.page.$x(`//button[@title="Add Season"]`);
     await addSeasonButton[0].click();
 
