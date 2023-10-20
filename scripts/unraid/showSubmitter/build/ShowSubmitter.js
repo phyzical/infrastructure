@@ -55,7 +55,13 @@ class ShowSubmitter {
     addEpisode(fileToRename, series, season, episode) {
         return __awaiter(this, void 0, void 0, function* () {
             for (const submitter of this.submitters) {
-                yield submitter.openSeriesSeasonPage(series, season);
+                try {
+                    yield submitter.openSeriesSeasonPage(series, season);
+                }
+                catch (_e) {
+                    yield submitter.addSeriesSeason(series, season);
+                    yield submitter.openSeriesSeasonPage(series, season);
+                }
                 const episodeTextIdentifier = yield submitter.getEpisodeIdentifier(fileToRename);
                 if (!this.renameOnly && episodeTextIdentifier.length == 0) {
                     yield delay(500);

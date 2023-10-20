@@ -111,13 +111,7 @@ class TvdbSubmitter extends BaseSubmitter {
     openAddEpisodePage(series, season) {
         return __awaiter(this, void 0, void 0, function* () {
             log("opening addEpisodePage", true);
-            try {
-                yield this.openSeriesSeasonPage(series, season);
-            }
-            catch (_a) {
-                yield this.addSeriesSeason(series, season);
-                yield this.openSeriesSeasonPage(series, season);
-            }
+            yield this.openSeriesSeasonPage(series, season);
             const addEpisodeSelector = '//*[contains(text(),"Add Episode")]';
             yield this.page.waitForXPath(addEpisodeSelector, { visible: true });
             const addEpisodeButton = yield this.page.$x(addEpisodeSelector);
