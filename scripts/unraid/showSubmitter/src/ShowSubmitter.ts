@@ -65,7 +65,12 @@ class ShowSubmitter {
     episode: Episode
   ): Promise<void> {
     for (const submitter of this.submitters) {
-      await submitter.openSeriesSeasonPage(series, season);
+      try {
+        await submitter.openSeriesSeasonPage(series, season);
+      } catch (_e) {
+        await submitter.addSeriesSeason(series, season);
+        await submitter.openSeriesSeasonPage(series, season);
+      }
       const episodeTextIdentifier = await submitter.getEpisodeIdentifier(
         fileToRename
       );

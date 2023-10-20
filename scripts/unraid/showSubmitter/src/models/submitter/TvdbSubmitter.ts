@@ -118,12 +118,7 @@ class TvdbSubmitter extends BaseSubmitter {
     season: string
   ): Promise<void> {
     log("opening addEpisodePage", true);
-    try {
-      await this.openSeriesSeasonPage(series, season);
-    } catch {
-      await this.addSeriesSeason(series, season);
-      await this.openSeriesSeasonPage(series, season);
-    }
+    await this.openSeriesSeasonPage(series, season);
     const addEpisodeSelector = '//*[contains(text(),"Add Episode")]';
     await this.page.waitForXPath(addEpisodeSelector, { visible: true });
     const addEpisodeButton = await this.page.$x(addEpisodeSelector);
