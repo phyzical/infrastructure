@@ -28,7 +28,7 @@ else
     #   --audio-format mp3 --music-dir /root/Music --antiban-time 20 \
     #   --episodes-dir /root/Music \
     #   --force-premium --skip-downloaded --bulk-download /root/.zspotify/uris.txt --config-dir /root/.zspotify/
-    # chmod_unraid_file_permissions $spotifyPath
+    chmod_unraid_file_permissions $spotifyPath
     
     echo "Finished Spotify Download!!"
     rm -f $LOCKFILE

@@ -37,9 +37,10 @@ add_timestamp() {
 }
 
 chmod_unraid_file_permissions(){
-  echo "fixing file (666) and folder (766) permissions for $1"
-  find $1 -type d -exec chmod 766 {} \;
-  find $1 -type f -exec chmod 666 {} \;
+  echo "fixing permissions for $1"
+  chmod -R u-x,go-rwx,go+u,ugo+X $1
+  chown -R nobody:users $1
+  sync
 }
 
 move_episodes_to_season_folders () {
