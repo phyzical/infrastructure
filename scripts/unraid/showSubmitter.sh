@@ -29,7 +29,7 @@ else
     if [ "$retryFailedEpisodes" == "true" ]; then
       echo "Moving failed episodes"
       erroredFolders=($(find "$downloadFolder" -type d -name 'errored' | sed -e 's/ /\~_-/g'))
-      for folder in $erroredFolders
+      for folder in ${erroredFolders[@]}
       do
         folder=$(echo "$folder" | sed -e 's/\~_-/ /g')  
         echo "moving $folder to $folder/.."
@@ -42,10 +42,10 @@ else
     if [ "$handleManualShows" == "true" ]; then
       renameOnly=true
       nonSeasonFolders=(
-        "$downloadFolderSmarter-Every-Day"
+        "${downloadFolder}Smarter-Every-Day"
       )
-      manualFolders=($(find $downloadFolder -type d))
-      for folder in "${manualFolders[@]}"
+      showFolders=($(find $downloadFolder -type d -maxdepth 1 -mindepth 1))
+      for folder in "${showFolders[@]}"
       do
         move_episodes_to_season_folders "$folder" "$folder" "$nonSeasonFolders"
       done

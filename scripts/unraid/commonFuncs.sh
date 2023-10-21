@@ -50,14 +50,15 @@ move_episodes_to_season_folders () {
   nonSeasonFolders=$3
   for year in ${years[@]};
   do
-    if find $sourcePath/$year*;
-    then
-      if [[ " ${nonSeasonFolders[*]} " =~ " ${sourcePath} " ]]; then
-        echo "moving '$sourcePath/$year*' to '$destinationPath/Season 1/'"
-        mkdir -p $destinationPath/Season\ 1 && mv $sourcePath/$year* $destinationPath/Season\ 1/
-      else
-        echo "moving '$sourcePath/$year*' to '$destinationPath/Season $year/'"
-        mkdir -p $destinationPath/Season\ $year && mv $sourcePath/$year* $destinationPath/Season\ $year/
+    if [ -d "$sourcePath/$year" ]; then
+      if find $sourcePath/$year*; then
+        if [[ " ${nonSeasonFolders[*]} " =~ " ${sourcePath} " ]]; then
+          echo "moving '$sourcePath/$year*' to '$destinationPath/Season 1/'"
+          mkdir -p $destinationPath/Season\ 1 && mv $sourcePath/$year* $destinationPath/Season\ 1/
+        else
+          echo "moving '$sourcePath/$year*' to '$destinationPath/Season $year/'"
+          mkdir -p $destinationPath/Season\ $year && mv $sourcePath/$year* $destinationPath/Season\ $year/
+        fi
       fi
     fi
   done
