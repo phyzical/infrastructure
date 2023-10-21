@@ -1,4 +1,4 @@
-const verbose = true;
+const verbose = false;
 const log = (message, checkVerbosity = false) => {
     if (!checkVerbosity || verbose) {
         console.log(message);
