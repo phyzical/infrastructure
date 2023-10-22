@@ -35,7 +35,7 @@ else
         --no-write-playlist-metafiles --compat-options no-youtube-unavailable-videos --sponsorblock-remove "default" \
         --write-auto-sub --cookies cookies.txt --write-info-json --convert-subs=srt --sub-lang "en" --ignore-no-formats-error \
         --match-filter "original_url!*=/shorts/ & !is_live & !was_live & availability!=premium_only" --no-progress \
-        --datebefore $oneMonthAgo --merge-output-format mp4 -o "$outputFormat" "$url"
+        --cache-dir /workdir/.cache --datebefore $oneMonthAgo --merge-output-format mp4 -o "$outputFormat" "$url"
 
         if [ -d "$processingPath" ]; 
         then
