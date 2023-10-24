@@ -19,8 +19,12 @@ else
     # dockerImage="cooper7692/zspotify-docker"
     docker pull $dockerImage
 
-    docker run --rm -u 99:100 -v "$spotifyPath/zspotify/zs_config.json:/zs_config.json" \
-      -v "$spotifyPath/music:/ZSpotify Music" -v "$spotifyPath/zspotify:/app" -v "$spotifyPath/music:/ZSpotify Podcasts" \
+    docker run --rm -u 99:100 -v "$spotifyPath/zs_config.json:/app/zs_config.json" \
+      -v "$spotifyPath/credentials.json:/app/credentials.json" \
+      -v "$spotifyPath/uris.txt:/app/uris.txt" \
+      -v "$spotifyPath/.song_archive:/app/.song_archive" \
+      -v "$spotifyPath/music:/ZSpotify Music" \
+      -v "$spotifyPath/music:/ZSpotify Podcasts" \
       $dockerImage --download="/app/uris.txt"
     
     # dockerImage="jsavargas/zspotify"
