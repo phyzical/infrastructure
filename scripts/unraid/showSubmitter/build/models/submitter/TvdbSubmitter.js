@@ -21,15 +21,19 @@ class TvdbSubmitter extends BaseSubmitter {
     constructor() {
         super(...arguments);
         _baseURL.set(this, "https://thetvdb.com");
+        this.capitalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŠÚÛÜÙÝŸŽ";
     }
     getEpisodeXpath(episodeTitle) {
         const filenameCleaned = episodeTitle
             .toLowerCase()
             .replace(/[- '`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, "");
         // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
-        const capitalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŠÚÛÜÙÝŸŽ";
         return (`//tr[.//a[contains(translate(translate(translate(text(),'\\\`~!@#$%^&*()-_=+[]{}|;:<>",./?, ',''), "'", ''),` +
-            `'${capitalChars}', '${capitalChars.toLowerCase()}') , '${filenameCleaned}')]]/td`);
+            `'${this.capitalChars}', '${this.capitalChars.toLowerCase()}') , '${filenameCleaned}')]]/td`);
+    }
+    getSeasonXpath(seasonTitle) {
+        const seriesCleaned = seasonTitle.split("-").join(" ");
+        return `//*[contains(translate(text(),'${this.capitalChars}', '${this.capitalChars.toLowerCase()}')), "${seriesCleaned}")]`;
     }
     getEpisodeIdentifier(episodeTitle) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -78,7 +82,10 @@ class TvdbSubmitter extends BaseSubmitter {
             if (seasonClean == "0") {
                 seasonSelector = `//*[contains(text(), "Specials")]`;
             }
-            yield this.page.waitForXPath(seasonSelector);
+            try {
+                yield this.page.waitForXPath(seasonSelector);
+            }
+            catch (e) { }
             log(`opened ${showSeasonURL}`, true);
         });
     }
@@ -104,9 +111,7 @@ class TvdbSubmitter extends BaseSubmitter {
             const showSeriesURL = [__classPrivateFieldGet(this, _baseURL), "series", series].join("/");
             log(`opening ${showSeriesURL}`, true);
             yield this.page.goto(showSeriesURL);
-            const seriesCleaned = series.split("-").join(" ");
-            let seriesSelector = `//*[contains(text(), "${seriesCleaned}")]`;
-            yield this.page.waitForXPath(seriesSelector);
+            yield this.page.waitForXPath(this.getSeasonXpath(series));
             log(`opened ${showSeriesURL}`, true);
         });
     }

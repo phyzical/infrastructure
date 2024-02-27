@@ -10,18 +10,26 @@ import { log } from "../../helpers/LogHelper.js";
 
 class TvdbSubmitter extends BaseSubmitter {
   #baseURL = "https://thetvdb.com";
+  capitalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŠÚÛÜÙÝŸŽ";
 
   getEpisodeXpath(episodeTitle: string): string {
     const filenameCleaned = episodeTitle
       .toLowerCase()
       .replace(/[- '`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, "");
     // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
-    const capitalChars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŠÚÛÜÙÝŸŽ";
     return (
       `//tr[.//a[contains(translate(translate(translate(text(),'\\\`~!@#$%^&*()-_=+[]{}|;:<>",./?, ',''), "'", ''),` +
-      `'${capitalChars}', '${capitalChars.toLowerCase()}') , '${filenameCleaned}')]]/td`
+      `'${
+        this.capitalChars
+      }', '${this.capitalChars.toLowerCase()}') , '${filenameCleaned}')]]/td`
     );
+  }
+
+  getSeasonXpath(seasonTitle: string): string {
+    const seriesCleaned = seasonTitle.split("-").join(" ");
+    return `//*[contains(translate(text(),'${
+      this.capitalChars
+    }', '${this.capitalChars.toLowerCase()}')), "${seriesCleaned}")]`;
   }
 
   async getEpisodeIdentifier(episodeTitle: string): Promise<string> {
@@ -76,7 +84,9 @@ class TvdbSubmitter extends BaseSubmitter {
     if (seasonClean == "0") {
       seasonSelector = `//*[contains(text(), "Specials")]`;
     }
-    await this.page.waitForXPath(seasonSelector);
+    try {
+      await this.page.waitForXPath(seasonSelector);
+    } catch (e) {}
     log(`opened ${showSeasonURL}`, true);
   }
 
@@ -111,9 +121,7 @@ class TvdbSubmitter extends BaseSubmitter {
     const showSeriesURL = [this.#baseURL, "series", series].join("/");
     log(`opening ${showSeriesURL}`, true);
     await this.page.goto(showSeriesURL);
-    const seriesCleaned = series.split("-").join(" ");
-    let seriesSelector = `//*[contains(text(), "${seriesCleaned}")]`;
-    await this.page.waitForXPath(seriesSelector);
+    await this.page.waitForXPath(this.getSeasonXpath(series));
     log(`opened ${showSeriesURL}`, true);
   }
 
