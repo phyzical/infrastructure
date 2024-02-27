@@ -26,7 +26,7 @@ class TvdbSubmitter extends BaseSubmitter {
   }
 
   getSeriesXpath(seriesTitle: string): string {
-    const seriesCleaned = seriesTitle.split("-").join(" ");
+    const seriesCleaned = seriesTitle.split("-").join(" ").toLowerCase();
     return `//*[contains(translate(text(),'${
       this.capitalChars
     }', '${this.capitalChars.toLowerCase()}'), "${seriesCleaned}")]`;

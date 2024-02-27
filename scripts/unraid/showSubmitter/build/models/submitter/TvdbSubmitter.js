@@ -32,7 +32,7 @@ class TvdbSubmitter extends BaseSubmitter {
             `'${this.capitalChars}', '${this.capitalChars.toLowerCase()}') , '${filenameCleaned}')]]/td`);
     }
     getSeriesXpath(seriesTitle) {
-        const seriesCleaned = seriesTitle.split("-").join(" ");
+        const seriesCleaned = seriesTitle.split("-").join(" ").toLowerCase();
         return `//*[contains(translate(text(),'${this.capitalChars}', '${this.capitalChars.toLowerCase()}'), "${seriesCleaned}")]`;
     }
     getEpisodeIdentifier(episodeTitle) {
