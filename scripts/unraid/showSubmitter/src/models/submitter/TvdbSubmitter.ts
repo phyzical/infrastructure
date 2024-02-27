@@ -25,8 +25,8 @@ class TvdbSubmitter extends BaseSubmitter {
     );
   }
 
-  getSeasonXpath(seasonTitle: string): string {
-    const seriesCleaned = seasonTitle.split("-").join(" ");
+  getSeriesXpath(seriesTitle: string): string {
+    const seriesCleaned = seriesTitle.split("-").join(" ");
     return `//*[contains(translate(text(),'${
       this.capitalChars
     }', '${this.capitalChars.toLowerCase()}'), "${seriesCleaned}")]`;
@@ -84,9 +84,7 @@ class TvdbSubmitter extends BaseSubmitter {
     if (seasonClean == "0") {
       seasonSelector = `//*[contains(text(), "Specials")]`;
     }
-    try {
-      await this.page.waitForXPath(seasonSelector);
-    } catch (e) {}
+    await this.page.waitForXPath(seasonSelector);
     log(`opened ${showSeasonURL}`, true);
   }
 
@@ -121,7 +119,7 @@ class TvdbSubmitter extends BaseSubmitter {
     const showSeriesURL = [this.#baseURL, "series", series].join("/");
     log(`opening ${showSeriesURL}`, true);
     await this.page.goto(showSeriesURL);
-    await this.page.waitForXPath(this.getSeasonXpath(series));
+    await this.page.waitForXPath(this.getSeriesXpath(series));
     log(`opened ${showSeriesURL}`, true);
   }
 

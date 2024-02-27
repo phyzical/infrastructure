@@ -31,8 +31,8 @@ class TvdbSubmitter extends BaseSubmitter {
         return (`//tr[.//a[contains(translate(translate(translate(text(),'\\\`~!@#$%^&*()-_=+[]{}|;:<>",./?, ',''), "'", ''),` +
             `'${this.capitalChars}', '${this.capitalChars.toLowerCase()}') , '${filenameCleaned}')]]/td`);
     }
-    getSeasonXpath(seasonTitle) {
-        const seriesCleaned = seasonTitle.split("-").join(" ");
+    getSeriesXpath(seriesTitle) {
+        const seriesCleaned = seriesTitle.split("-").join(" ");
         return `//*[contains(translate(text(),'${this.capitalChars}', '${this.capitalChars.toLowerCase()}'), "${seriesCleaned}")]`;
     }
     getEpisodeIdentifier(episodeTitle) {
@@ -82,10 +82,7 @@ class TvdbSubmitter extends BaseSubmitter {
             if (seasonClean == "0") {
                 seasonSelector = `//*[contains(text(), "Specials")]`;
             }
-            try {
-                yield this.page.waitForXPath(seasonSelector);
-            }
-            catch (e) { }
+            yield this.page.waitForXPath(seasonSelector);
             log(`opened ${showSeasonURL}`, true);
         });
     }
@@ -111,7 +108,7 @@ class TvdbSubmitter extends BaseSubmitter {
             const showSeriesURL = [__classPrivateFieldGet(this, _baseURL), "series", series].join("/");
             log(`opening ${showSeriesURL}`, true);
             yield this.page.goto(showSeriesURL);
-            yield this.page.waitForXPath(this.getSeasonXpath(series));
+            yield this.page.waitForXPath(this.getSeriesXpath(series));
             log(`opened ${showSeriesURL}`, true);
         });
     }
