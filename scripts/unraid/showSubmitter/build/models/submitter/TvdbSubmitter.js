@@ -33,7 +33,7 @@ class TvdbSubmitter extends BaseSubmitter {
     }
     getSeasonXpath(seasonTitle) {
         const seriesCleaned = seasonTitle.split("-").join(" ");
-        return `//*[contains(translate(text(),'${this.capitalChars}', '${this.capitalChars.toLowerCase()}')), "${seriesCleaned}")]`;
+        return `//*[contains(translate(text(),'${this.capitalChars}', '${this.capitalChars.toLowerCase()}'), "${seriesCleaned}")]`;
     }
     getEpisodeIdentifier(episodeTitle) {
         return __awaiter(this, void 0, void 0, function* () {

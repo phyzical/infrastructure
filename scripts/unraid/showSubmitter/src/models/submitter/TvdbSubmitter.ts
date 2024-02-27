@@ -29,7 +29,7 @@ class TvdbSubmitter extends BaseSubmitter {
     const seriesCleaned = seasonTitle.split("-").join(" ");
     return `//*[contains(translate(text(),'${
       this.capitalChars
-    }', '${this.capitalChars.toLowerCase()}')), "${seriesCleaned}")]`;
+    }', '${this.capitalChars.toLowerCase()}'), "${seriesCleaned}")]`;
   }
 
   async getEpisodeIdentifier(episodeTitle: string): Promise<string> {
