@@ -23,17 +23,20 @@ class TvdbSubmitter extends BaseSubmitter {
         _baseURL.set(this, "https://thetvdb.com");
         this.capitalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŠÚÛÜÙÝŸŽ";
     }
-    getEpisodeXpath(episodeTitle) {
-        const filenameCleaned = episodeTitle
+    cleanTextContainsXpath(text) {
+        // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
+        return `contains(translate(translate(translate(text(),'\\\`~!@#$%^&*()-_=+[]{}|;:<>",./?, ',''), "'", ''),'${this.capitalChars}', '${this.capitalChars.toLowerCase()}') , '${this.cleanText(text)}')`;
+    }
+    cleanText(text) {
+        return text
             .toLowerCase()
             .replace(/[- '`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, "");
-        // Remove following chars from filename and document contexts ?'/|-*: \ And lowercase all chars to increase matching
-        return (`//tr[.//a[contains(translate(translate(translate(text(),'\\\`~!@#$%^&*()-_=+[]{}|;:<>",./?, ',''), "'", ''),` +
-            `'${this.capitalChars}', '${this.capitalChars.toLowerCase()}') , '${filenameCleaned}')]]/td`);
+    }
+    getEpisodeXpath(episodeTitle) {
+        return `//tr[.//a[${this.cleanTextContainsXpath(episodeTitle)}]]/td`;
     }
     getSeriesXpath(seriesTitle) {
-        const seriesCleaned = seriesTitle.split("-").join(" ").toLowerCase();
-        return `//*[contains(translate(text(),'${this.capitalChars}', '${this.capitalChars.toLowerCase()}'), "${seriesCleaned}")]`;
+        return `//*[${this.cleanTextContainsXpath(seriesTitle)}]`;
     }
     getEpisodeIdentifier(episodeTitle) {
         return __awaiter(this, void 0, void 0, function* () {
