@@ -22,7 +22,7 @@ class TvdbSubmitter extends BaseSubmitter {
   cleanText(text: string): string {
     return text
       .toLowerCase()
-      .replace(/[- '`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, "");
+      .replace(/[- '`~!@#$%^&*()_|+=?;:'",\.<>\{\}\[\]\\\/]/gi, "");
   }
 
   getEpisodeXpath(episodeTitle: string): string {

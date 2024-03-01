@@ -30,7 +30,7 @@ class TvdbSubmitter extends BaseSubmitter {
     cleanText(text) {
         return text
             .toLowerCase()
-            .replace(/[- '`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, "");
+            .replace(/[- '`~!@#$%^&*()_|+=?;:'",\.<>\{\}\[\]\\\/]/gi, "");
     }
     getEpisodeXpath(episodeTitle) {
         return `//tr[.//a[${this.cleanTextContainsXpath(episodeTitle)}]]/td`;
