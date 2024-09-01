@@ -21,7 +21,6 @@ else
   echo "Making $toFolder"
   mkdir -p "$toFolder"
   for folder in "${backupFolders[@]}"; do
-    folderKey="$(echo "$folder" | awk -F'/' ' { print $NF } ')"
     folder="$folder/"
     folderKey="${folderKey//\\/}/"
     folderKey="${folderKey//\/mnt\/user\//}"
