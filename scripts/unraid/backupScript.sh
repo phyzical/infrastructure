@@ -23,7 +23,9 @@ else
   for folder in "${backupFolders[@]}"; do
     folderKey="${folder//\/mnt\/user\//}"
     echo "Rsyncing $fromFolder:$folder to $toFolder$folderKey"
-    rsync -a "$fromFolder:$folder" "$toFolder$folderKey" --log-file="$toFolder/rsync-log.txt" --delete
+    fullToFolder="$toFolder$folderKey"
+    mkdir -p "$fullToFolder"
+    rsync -a --progress "$fromFolder:$folder" "$fullToFolder" --log-file="$toFolder/rsync-log.txt" --delete
   done
   echo "Finished Backing Up!!"
   rm -f $LOCKFILE
