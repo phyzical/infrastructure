@@ -25,7 +25,7 @@ else
     echo "Rsyncing $fromFolder:$folder to $toFolder$folderKey"
     fullToFolder="$toFolder$folderKey"
     mkdir -p "$fullToFolder"
-    rsync -a --progress --info=progress2 "$fromFolder:$folder" "$fullToFolder" --log-file="$toFolder/rsync-log.txt" --delete
+    rsync -av --delete --progress --info=progress2 "$fromFolder:$folder" "$fullToFolder" --log-file="$toFolder/rsync-log.txt" --delete
   done
   echo "Finished Backing Up!!"
   rm -f $LOCKFILE
