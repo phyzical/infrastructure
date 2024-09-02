@@ -16,6 +16,7 @@ else
   notify normal "$message" "Cronjob" "$message"
   toFolder="/mnt/user/Backup/"
   fromFolder="$1"
+  dryRun="$2"
   shift
   backupFolders=("$@")
   echo "Making $toFolder"
@@ -25,7 +26,11 @@ else
     echo "Rsyncing $fromFolder:$folder to $toFolder$folderKey"
     fullToFolder="$toFolder$folderKey"
     mkdir -p "$fullToFolder"
-    rsync -av --delete --progress --info=progress2 "$fromFolder:$folder" "$fullToFolder" --log-file="$toFolder/rsync-log.txt" --delete
+    dryRunFlag=""
+    if [ "$dryRun" == "true" ]; then
+      dryRunFlag="--dry-run"
+    fi
+    rsync -a --progress $dryRunFlag --info=progress2 "$fromFolder:$folder" "$fullToFolder" --log-file="$toFolder/rsync-log.txt" --delete
   done
   echo "Finished Backing Up!!"
   rm -f $LOCKFILE
