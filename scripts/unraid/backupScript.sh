@@ -15,6 +15,8 @@ else
   message="Backup Started"
   notify normal "$message" "Cronjob" "$message"
   toFolder="/mnt/user/Backup/"
+  password="$1"
+  shift
   fromFolder="$1"
   shift
   dryRun="$1"
@@ -31,7 +33,7 @@ else
     if [ "$dryRun" == "true" ]; then
       dryRunFlag="--dry-run"
     fi
-    rsync -a --progress $dryRunFlag --info=progress2 "$fromFolder:$folder" "$fullToFolder" --log-file="$toFolder/rsync-log.txt" --delete
+    rsync -a --rsh="/usr/bin/sshpass -p $password ssh -o StrictHostKeyChecking=no -l root" --progress $dryRunFlag --info=progress2 "$fromFolder:$folder" "$fullToFolder" --log-file="$toFolder/rsync-log.txt" --delete
   done
   echo "Finished Backing Up!!"
   rm -f $LOCKFILE
