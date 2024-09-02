@@ -16,7 +16,8 @@ else
   notify normal "$message" "Cronjob" "$message"
   toFolder="/mnt/user/Backup/"
   fromFolder="$1"
-  dryRun="$2"
+  shift
+  dryRun="$1"
   shift
   backupFolders=("$@")
   echo "Making $toFolder"
