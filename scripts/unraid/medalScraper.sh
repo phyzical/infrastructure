@@ -16,7 +16,7 @@ else
   notify normal "$message" "Medal" "$message"
   dockerImage="ghcr.io/phyzical/medal.tv-bulk-downloader"
   docker pull $dockerImage
-  docker run \
+  docker run --rm \
     -v /mnt/user/Downloads/medal/config.json:/app/config.json \
     -v /mnt/user/Downloads/medal:/downloads \
     $dockerImage:latest
