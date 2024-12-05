@@ -14,7 +14,7 @@ else
   touch $LOCKFILE
   message="Medal Started"
   notify normal "$message" "Medal" "$message"
-  dockerImage="ghcr.io/phyzical/medal.tv-bulk-downloader"
+  dockerImage="ghcr.io/dave-swagten/medal.tv-bulk-downloader"
   docker pull $dockerImage
   docker run --rm -u 99:100 \
     -v /mnt/user/Downloads/medal/config.json:/app/config.json \
